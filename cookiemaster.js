@@ -14,7 +14,7 @@ CookieMaster.config = {
 	settings: {},
 
 	// Cookie Clicker settings
-	CCVersion = ''
+	CCVersion: ''
 
 };
 
