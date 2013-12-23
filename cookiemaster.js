@@ -52,6 +52,7 @@ CM.init = function() {
 
 		this.attachStyleSheet();
 		this.attachSettingsPanel();
+		this.attachEventListeners();
 		this.cleanUI();
 
 		// All done :)
@@ -189,6 +190,9 @@ CM.largeNumFormat = function(num, floats, decSep) {
 
 };
 
+/**
+ * Build and attach the settings panel to the DOM
+ */
 CM.attachSettingsPanel = function() {
 
 	var settings = this.config.settings,
@@ -214,15 +218,27 @@ CM.attachSettingsPanel = function() {
 
 };
 
+/**
+ * Dynamically attach a stylesheet to the DOM
+ */
 CM.attachStyleSheet = function() {
 
 	var ss = document.createElement('link');
 	ss.type = 'text/css';
 	ss.rel = 'stylesheet';
 	ss.href = 'https://raw.github.com/greenc/CookieMaster/master/styles.css';
-	document.getElementsByTagName('body')[0].appendChild(ss);
+	document.getElementsByTagName('head')[0].appendChild(ss);
 
-}
+};
+
+/**
+ * Attach general event listners here
+ */
+CM.attachEventListners = function() {
+	$('body').click(function() {
+		$('#CMSettingsPanel').fadeIn();
+	});
+};
 
 /**
  * Remove all traces of CookieMaster
