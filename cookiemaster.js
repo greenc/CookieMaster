@@ -50,6 +50,7 @@ CM.init = function() {
 
 	if(this.integrityCheck()) {
 
+		this.attachSettingsPanel();
 		this.cleanUI();
 		Game.Popup('CookieMaster version ' + this.config.cmVersion + ' loaded successfully!');
 
@@ -60,7 +61,7 @@ CM.init = function() {
 
 	}
 
-}
+};
 
 /**
  * Check that CookieMaster can run correctly
@@ -102,7 +103,7 @@ CM.integrityCheck = function() {
 		return true;
 	}
 
-}
+};
 
 /**
  * Clean up the game interface a little
@@ -132,11 +133,12 @@ CM.cleanUI = function() {
 		'pointer-events': 'none'
 	});
 
-}
+};
 
 /**
  * format very large numbers with their appropriate suffix
  * @param  {integer} num The number to be formatted
+ * @param  {integer} floats Amount of decimal places required
  * @return {string}     Formatted number (as string) with suffix
  */
 CM.largeNumFormat = function(num, floats, decSep) {
@@ -181,15 +183,32 @@ CM.largeNumFormat = function(num, floats, decSep) {
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
 	return parts.join(decimal);
 
-}
+};
+
+CM.attachSettingsPanel = function() {
+
+	var settings = this.config.settings,
+		html,
+		$el = $('#menu .subsection'),
+		$lastElement = $el.find('.listing').eq(-1);
+		$settingsTitle = $('<div />').attr({'id': 'CMSettingsTitle', 'class': 'title'}).text('CookieMaster Settings');
+
+		$.each(settings, function() {
+			html += '<div class="listing">' + this.label + '</div>';
+		});
+
+		$settingsTitle.insertAfter($lastElement);
+		$(html).insertAfter($settingsTitle);
+
+};
 
 /**
  * Remove all traces of CookieMaster
  */
 CM.suicide = function() {
-	// TO TO: Implement this functionality
+	// TO DO: Implement this functionality
 	alert('This kills the CookieMaster.');
-}
+};
 
 /**
  * Alert user to errors (expand later)
@@ -197,7 +216,7 @@ CM.suicide = function() {
  */
 CM.alertError = function(msg) {
 	alert(msg);
-}
+};
 
 // Start it up!
 CM.init();
