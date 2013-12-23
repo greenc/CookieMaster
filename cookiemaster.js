@@ -139,11 +139,12 @@ CM.cleanUI = function() {
  * @param  {integer} num The number to be formatted
  * @return {string}     Formatted number (as string) with suffix
  */
-CM.largeNumFormat = function(num, decSep) {
+CM.largeNumFormat = function(num, floats, decSep) {
 
 	var decSep = decSep || this.config.cmDecimalSeparator,
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
+		floats = floats || 0,
 		parts,
 		ranges = [
 			{divider: 1e33, suffix: 'Dc'},
@@ -162,6 +163,7 @@ CM.largeNumFormat = function(num, decSep) {
 
 		if(num >= ranges[i].divider) {
 			num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
+			// Apply localization if necessary
 			if(decSep === ',') {
 				return num.replace('.', ',');
 			} else {
@@ -171,7 +173,10 @@ CM.largeNumFormat = function(num, decSep) {
 
 	}
 
-	// Prettify the remaining "smaller" numbers
+	// Apply rounding, if any
+	num = Math.round(num * Math.pow(10, floats)) / Math.pow(10, floats);
+
+	// Prettify and localize the remaining "smaller" numbers
 	parts = num.toString().split('.');
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
 	return parts.join(decimal);
@@ -205,11 +210,13 @@ CM.init();
 /**
  * Override for default CC number formatting
  * @param {integer} what   The number to beautify
- * @param {integer} floats Not actually sure :/
+ * @param {integer} floats Number of decimal places desired :/
  */
 function Beautify(what, floats) {
 
-	return CM.largeNumFormat(what, CM.config.cmDecimalSeparator);
+	var floats = floats || 0;
+
+	return CM.largeNumFormat(what, floats, CM.config.cmDecimalSeparator);
 
 }
 /*  ===========================================
