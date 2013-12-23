@@ -80,7 +80,7 @@ CM.integrityCheck = function() {
 	} else if(!Game) {
 		// Game class doesn't exist
 		error = 'Cookie Clicker Game() does not appear to be initialized';
-	} else if(this.config.ccVersion !== this.config.ccTargetVersion) {
+	} else if(Game.version.toString() !== this.config.ccTargetVersion) {
 		// Wrong version
 		error = 'This version of Cookie Clicker is not supported. Expecting version ' + this.config.ccTargetVersion;
 	}
