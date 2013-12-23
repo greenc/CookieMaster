@@ -50,6 +50,7 @@ CM.init = function() {
 
 	if(this.integrityCheck()) {
 
+		$('head').append('<link rel="stylesheet" type="text/css" href="//raw.github.com/greenc/CookieMaster/master/styles.css">');
 		this.attachSettingsPanel();
 		this.cleanUI();
 
