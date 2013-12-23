@@ -202,7 +202,7 @@ CM.init();
  */
 function Beautify(what, floats) {
 
-	return CM.largeNumFormat(what, cmDecimalSeparator);
+	return CM.largeNumFormat(what, CM.config.cmDecimalSeparator);
 
 }
 /*  ===========================================
