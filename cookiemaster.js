@@ -52,6 +52,9 @@ CM.init = function() {
 
 		this.attachSettingsPanel();
 		this.cleanUI();
+
+		// All done :)
+		this.config.cmIsLoaded = true;
 		Game.Popup('CookieMaster version ' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
@@ -188,17 +191,25 @@ CM.largeNumFormat = function(num, floats, decSep) {
 CM.attachSettingsPanel = function() {
 
 	var settings = this.config.settings,
-		html,
-		$el = $('#menu .subsection'),
-		$lastElement = $el.find('.listing').eq(-1);
-		$settingsTitle = $('<div />').attr({'id': 'CMSettingsTitle', 'class': 'title'}).text('CookieMaster Settings');
+		items = [],
+		$wrapper = $('#wrapper'),
+		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
+		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('CookieMaster Settings');
+		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList');
 
+		// Build each setting item
 		$.each(settings, function() {
-			html += '<div class="listing">' + this.label + '</div>';
+			items.push('<li class="setting">' + this.label + '</li>');
+
 		});
 
-		$settingsTitle.insertAfter($lastElement);
-		$(html).insertAfter($settingsTitle);
+		// Glue it together
+		$cmSettingsList.append(items.join(''));
+		$cmSettingsPanel.append($cmSettingsTitle);
+		$cmSettingsPanel.append($cmSettingsList);
+
+		// Attach to DOM
+		$wrapper.append($cmSettingsPanel);
 
 };
 
