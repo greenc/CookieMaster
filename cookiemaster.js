@@ -30,6 +30,7 @@ CM.init = function() {
 	if(this.integrityCheck()) {
 
 		this.cleanUI();
+		Game.Popup('CookieMaster version ' + this.config.version + ' loaded successfully!');
 
 	} else {
 
@@ -71,10 +72,13 @@ CM.integrityCheck = function() {
 
 }
 
+/**
+ * Clean up the game interface a little
+ */
 CM.cleanUI = function() {
 
-	var $game = this.config.ccGame;
-	var gameFixes =
+	var $game = this.config.ccGame,
+		gameFixes =
 		'-webkit-touch-callout: none;' +
 		'-webkit-user-select: none;' +
 		'-khtml-user-select: none;' +
@@ -82,16 +86,10 @@ CM.cleanUI = function() {
 		'-ms-user-select: none;' +
 		'-o-user-select: none;' +
 		'user-select: none;' +
-		'top: 0px;' +
-		'bottom: 57px;';
-	var storeTileFixes =
-		'font-size: 18px;' +
-		'padding: 4px 8px 2px 8px;' +
-		'border-bottom: 1px solid black;';
+		'top: 0;';
 
 	$('#topBar').css('display', 'none');
 	$game.css('cssText', gameFixes);
-	$game.find('#storeTitle').css('cssText', storeTileFixes);
 	$game.find('#cookies').css({
 		'background': 'rgba(0,0,0,0.75)',
 		'border-top': '1px solid black',
@@ -105,7 +103,7 @@ CM.cleanUI = function() {
 }
 
 /**
- * Remove all traces of the script
+ * Remove all traces of CookieMaster
  */
 CM.suicide = function() {
 	// ToDo: Implement this
