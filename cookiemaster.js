@@ -141,7 +141,10 @@ CM.cleanUI = function() {
  */
 CM.largeNumFormat = function(num, decSep) {
 
-	var ranges = [
+	var parts,
+		decimal,
+		comma,
+		ranges = [
 		{divider: 1e33, suffix: 'Dc'},
 		{divider: 1e30, suffix: 'No'},
 		{divider: 1e27, suffix: 'Oc'},
@@ -157,7 +160,7 @@ CM.largeNumFormat = function(num, decSep) {
 	for(var i = 0; i < ranges.length; i++) {
 
 		if(num >= ranges[i].divider) {
-			num = (num / ranges[i].divider).toFixed(3) + ranges[i].suffix;
+			num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
 			if(decSep === ',') {
 				return num.replace('.', ',');
 			} else {
@@ -167,7 +170,14 @@ CM.largeNumFormat = function(num, decSep) {
 
 	}
 
-	return num;
+	// Set the decimal and thousand separators
+	decimal = decSep === '.' ? '.' : ',';
+	comma = decSep === '.' ? ',' : '.';
+
+	// Prettify the remaining "smaller" numbers
+	parts = num.toString().split('.');
+	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
+	return parts.join(decimal);
 
 }
 
