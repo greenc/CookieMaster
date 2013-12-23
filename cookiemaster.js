@@ -219,7 +219,7 @@ CM.attachStyleSheet = function() {
 	var ss = document.createElement("link");
 	ss.type = "text/css";
 	ss.rel = "stylesheet";
-	ss.href = "//raw.github.com/greenc/CookieMaster/master/styles.css";
+	ss.href = "https://raw.github.com/greenc/CookieMaster/master/styles.css";
 	document.getElementsByTagName("head")[0].appendChild(ss);
 
 }
