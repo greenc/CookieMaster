@@ -13,12 +13,14 @@ CM.config = {
 
 	cmVersion: '0.1',									// CM version
 	cmIsLoaded: false,									// CM loaded flag
+	cmDecimalSeparator: '.',							// CM . or , separator
 
 	ccTargetVersion: '1.0402',							// CC supported version
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',	// CC URL
 	ccVersion: '',										// CC reported verison
 	ccGame: {},											// CC game wrapper
 
+	// TO DO: Make these actually do something :)
 	settings: {
 		cleanUI: {
 			label: 'Clean UI',
@@ -135,35 +137,45 @@ CM.cleanUI = function() {
 /**
  * format very large numbers with their appropriate suffix
  * @param  {integer} num The number to be formatted
- * @return {string}     Formatted number with suffix
+ * @return {string}     Formatted number (as string) with suffix
  */
-CM.largeNumFormat = function(num) {
-	if (num >= 1000000000000000000000) {
-	return (num / 1000000000000000000000).toFixed(1).replace(/\.0$/, '') + 'Sx';
+CM.largeNumFormat = function(num, decSep) {
+
+	var ranges = [
+		{divider: 1e33, suffix: 'Dc'},
+		{divider: 1e30, suffix: 'No'},
+		{divider: 1e27, suffix: 'Oc'},
+		{divider: 1e24, suffix: 'Sp'},
+		{divider: 1e21, suffix: 'Sx'},
+		{divider: 1e18, suffix: 'Qi'},
+		{divider: 1e15, suffix: 'Qa'},
+		{divider: 1e12, suffix: 'T'},
+		{divider: 1e9, suffix: 'B'},
+		{divider: 1e6, suffix: 'M'}
+	];
+
+	for(var i = 0; i < ranges.length; i++) {
+
+		if(num >= ranges[i].divider) {
+			num = (num / ranges[i].divider).toFixed(3) + ranges[i].suffix;
+			if(decSep === ',') {
+				return num.replace('.', ',');
+			} else {
+				return num;
+			}
+		}
+
 	}
-	if (num >= 1000000000000000000) {
-	return (num / 1000000000000000000).toFixed(1).replace(/\.0$/, '') + 'Qi';
-	}
-	if (num >= 1000000000000000) {
-	return (num / 1000000000000000).toFixed(1).replace(/\.0$/, '') + 'Qa';
-	}
-	if (num >= 1000000000000) {
-	return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
-	}
-	if (num >= 1000000000) {
-	return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
-	}
-	if (num >= 1000000) {
-	return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-	}
+
 	return num;
+
 }
 
 /**
  * Remove all traces of CookieMaster
  */
 CM.suicide = function() {
-	// ToDo: Implement this
+	// TO TO: Implement this functionality
 	alert('This kills the CookieMaster.');
 }
 
@@ -190,7 +202,7 @@ CM.init();
  */
 function Beautify(what, floats) {
 
-	return CM.largeNumFormat(what);
+	return CM.largeNumFormat(what, cmDecimalSeparator);
 
 }
 /*  ===========================================
