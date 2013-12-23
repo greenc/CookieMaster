@@ -50,7 +50,7 @@ CM.init = function() {
 
 	if(this.integrityCheck()) {
 
-		$('head').append('<link rel="stylesheet" type="text/css" href="//raw.github.com/greenc/CookieMaster/master/styles.css">');
+		this.attachStyleSheet();
 		this.attachSettingsPanel();
 		this.cleanUI();
 
@@ -213,6 +213,16 @@ CM.attachSettingsPanel = function() {
 		$wrapper.append($cmSettingsPanel);
 
 };
+
+CM.attachStyleSheet = function() {
+
+	var ss = document.createElement("link");
+	ss.type = "text/css";
+	ss.rel = "stylesheet";
+	ss.href = "//raw.github.com/greenc/CookieMaster/master/styles.css";
+	document.getElementsByTagName("head")[0].appendChild(ss);
+
+}
 
 /**
  * Remove all traces of CookieMaster
