@@ -234,7 +234,7 @@ CM.attachStyleSheet = function() {
 /**
  * Attach general event listners here
  */
-CM.attachEventListners = function() {
+CM.attachEventListeners = function() {
 	$('body').click(function() {
 		$('#CMSettingsPanel').fadeIn();
 	});
