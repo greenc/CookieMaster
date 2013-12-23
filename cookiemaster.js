@@ -11,12 +11,31 @@ CM = {};
  */
 CM.config = {
 
-	version: '0.1',										// CookieMaster version
-	ccTargetVersion: '1.0402',							// Cookie Clicker supported version
-	ccURL: 'http://orteil.dashnet.org/cookieclicker/',	// Cookie Clicker URL
-	ccVersion: '',										// Cookie Clicker reported verison
-	ccGame: {},											// Cookie Clicker game wrapper
-	settings: {}										// User config settings
+	cmVersion: '0.1',									// CM version
+	cmIsLoaded: false,									// CM loaded flag
+
+	ccTargetVersion: '1.0402',							// CC supported version
+	ccURL: 'http://orteil.dashnet.org/cookieclicker/',	// CC URL
+	ccVersion: '',										// CC reported verison
+	ccGame: {},											// CC game wrapper
+
+	settings: {
+		cleanUI: {
+			label: 'Clean UI',
+			desc: 'Hide the top bar, and make other small graphical enhancements to the game interface',
+			options: true
+		},
+		numFormat: {
+			label: 'Decimal Separator',
+			desc: 'Display numbers in US or European format',
+			options: ['us', 'eu']
+		},
+		shortNums: {
+			label: 'Short Numbers',
+			desc: 'Shorten large numbers with suffixes',
+			options: true
+		}
+	},
 
 };
 
@@ -30,7 +49,7 @@ CM.init = function() {
 	if(this.integrityCheck()) {
 
 		this.cleanUI();
-		Game.Popup('CookieMaster version ' + this.config.version + ' loaded successfully!');
+		Game.Popup('CookieMaster version ' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
 
@@ -47,28 +66,39 @@ CM.init = function() {
  */
 CM.integrityCheck = function() {
 
-	if(document.location.href.indexOf(this.config.ccURL) !== -1 && Game) {
+	var error = null;
 
+	if(this.config.cmIsLoaded) {
+		// Already loaded
+		error = 'CookieMaster is already running!';
+	} else if(document.location.href.indexOf(this.config.ccURL) === -1) {
+		// Wrong URL
+		error = 'This isn\'t the Cookie Clicker URL';
+	} else if(!window.jQuery) {
+		// jQuery isn't loaded
+		error = 'jQuery is not loaded';
+	} else if(!Game) {
+		// Game class doesn't exist
+		error = 'Cookie Clicker Game() does not appear to be initialized';
+	} else if(this.config.ccVersion !== this.config.ccTargetVersion) {
+		// Wrong version
+		error = 'This version of Cookie Clicker is not supported. Expecting version ' + this.config.ccTargetVersion;
+	}
+
+	if(error) {
+
+		// Alert user to the error and quit
+		this.alertError('Error: ' + error);
+		return false;
+
+	} else {
 
 		// Set the CC version and game wrapper in our global config
 		this.config.ccVersion = Game.version.toString();
 		this.config.ccGame = $('#game');
 
-		if(this.config.ccVersion !== this.config.ccTargetVersion) {
-
-			this.alertError("Error: This version of Cookie Clicker is not supported.\n\nExpecting version " + this.config.ccTargetVersion);
-			return false;
-
-		}
-
-	} else {
-
-		this.alertError('Error: You appear to be trying to load CookieMaster outside of Cookie Clicker');
-		return false;
-
+		return true;
 	}
-
-	return true;
 
 }
 
@@ -103,6 +133,33 @@ CM.cleanUI = function() {
 }
 
 /**
+ * format very large numbers with their appropriate suffix
+ * @param  {integer} num The number to be formatted
+ * @return {string}     Formatted number with suffix
+ */
+CM.largeNumFormat = function(num) {
+	if (num >= 1000000000000000000000) {
+	return (num / 1000000000000000000000).toFixed(1).replace(/\.0$/, '') + 'Sx';
+	}
+	if (num >= 1000000000000000000) {
+	return (num / 1000000000000000000).toFixed(1).replace(/\.0$/, '') + 'Qi';
+	}
+	if (num >= 1000000000000000) {
+	return (num / 1000000000000000).toFixed(1).replace(/\.0$/, '') + 'Qa';
+	}
+	if (num >= 1000000000000) {
+	return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
+	}
+	if (num >= 1000000000) {
+	return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+	}
+	if (num >= 1000000) {
+	return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+	}
+	return num;
+}
+
+/**
  * Remove all traces of CookieMaster
  */
 CM.suicide = function() {
@@ -120,3 +177,22 @@ CM.alertError = function(msg) {
 
 // Start it up!
 CM.init();
+
+
+/*  ===========================================
+		COOKIE CLICKER FUNCTION OVERRIDES
+	=========================================== */
+
+/**
+ * Override for default CC number formatting
+ * @param {integer} what   The number to beautify
+ * @param {integer} floats Not actually sure :/
+ */
+function Beautify(what, floats) {
+
+	return CM.largeNumFormat(what);
+
+}
+/*  ===========================================
+		END COOKIE CLICKER FUNCTION OVERRIDES
+	=========================================== */
