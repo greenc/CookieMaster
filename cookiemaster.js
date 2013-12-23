@@ -141,21 +141,22 @@ CM.cleanUI = function() {
  */
 CM.largeNumFormat = function(num, decSep) {
 
-	var parts,
-		decimal,
-		comma,
+	var decSep = decSep || this.config.cmDecimalSeparator,
+		decimal = decSep === '.' ? '.' : ',',
+		comma = decSep === '.' ? ',' : '.',
+		parts,
 		ranges = [
-		{divider: 1e33, suffix: 'Dc'},
-		{divider: 1e30, suffix: 'No'},
-		{divider: 1e27, suffix: 'Oc'},
-		{divider: 1e24, suffix: 'Sp'},
-		{divider: 1e21, suffix: 'Sx'},
-		{divider: 1e18, suffix: 'Qi'},
-		{divider: 1e15, suffix: 'Qa'},
-		{divider: 1e12, suffix: 'T'},
-		{divider: 1e9, suffix: 'B'},
-		{divider: 1e6, suffix: 'M'}
-	];
+			{divider: 1e33, suffix: 'Dc'},
+			{divider: 1e30, suffix: 'No'},
+			{divider: 1e27, suffix: 'Oc'},
+			{divider: 1e24, suffix: 'Sp'},
+			{divider: 1e21, suffix: 'Sx'},
+			{divider: 1e18, suffix: 'Qi'},
+			{divider: 1e15, suffix: 'Qa'},
+			{divider: 1e12, suffix: 'T'},
+			{divider: 1e9, suffix: 'B'},
+			{divider: 1e6, suffix: 'M'}
+		];
 
 	for(var i = 0; i < ranges.length; i++) {
 
@@ -169,10 +170,6 @@ CM.largeNumFormat = function(num, decSep) {
 		}
 
 	}
-
-	// Set the decimal and thousand separators
-	decimal = decSep === '.' ? '.' : ',';
-	comma = decSep === '.' ? ',' : '.';
 
 	// Prettify the remaining "smaller" numbers
 	parts = num.toString().split('.');
