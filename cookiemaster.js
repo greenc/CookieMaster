@@ -216,11 +216,11 @@ CM.attachSettingsPanel = function() {
 
 CM.attachStyleSheet = function() {
 
-	var ss = document.createElement("link");
-	ss.type = "text/css";
-	ss.rel = "stylesheet";
-	ss.href = "https://raw.github.com/greenc/CookieMaster/master/styles.css";
-	document.getElementsByTagName("head")[0].appendChild(ss);
+	var ss = document.createElement('link');
+	ss.type = 'text/css';
+	ss.rel = 'stylesheet';
+	ss.href = 'https://raw.github.com/greenc/CookieMaster/master/styles.css';
+	document.getElementsByTagName('body')[0].appendChild(ss);
 
 }
 
