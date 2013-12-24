@@ -17,6 +17,7 @@ CM.config = {
 	cmVersion: '0.1',
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
+	cmStyleID: 'cmStyles',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -59,9 +60,29 @@ CM.init = function() {
 	 */
 	if(this.integrityCheck()) {
 
-		this.attachCSS();
 		this.attachSettingsPanel();
 		this.cleanUI();
+
+		this.attachStyleElement(this.config.cmStyleID);
+		this.addStyles({
+			'#CMSettingsPanel': {
+				'position': 'absolute',
+				'z-index': '9001',
+				'bottom': '0',
+				'left': '0',
+				'width': '300px',
+				'height': '300px',
+				'background-color': 'rgba(0,0,0,0.95)',
+				'padding': '20px',
+				'color': '#FFF',
+				'border': '2px solid #555'
+			},
+			'#CMSettingsTitle': {
+				'margin': '0 0 20px',
+				'font-size': '22px',
+				'font-family': '"Kavoon", Georgia, serif'
+			}
+		}, document.selectElementById('CMStyles'));
 
 		// All done :)
 		this.config.cmIsLoaded = true;
@@ -270,62 +291,52 @@ CM.attachSettingsPanel = function() {
 };
 
 /**
- * Dynamically attach a style element and add CSS styles
+ * Append a style element to document head for adding CSS styles
+ *
+ * @param  {string} Desired element ID
+ *
+ * @return {object}    The inserted style element
  */
-CM.attachCSS = function() {
+CM.attachStyleElement = function(id) {
 
-	function addStylesheetRules(rules, sheet) {
-		var s = sheet;
-		for(var selector in rules) {
-			var props = rules[selector],
-				propStr = '';
-			for(var propName in props) {
-				var propVal = props[propName],
-					propImportant = '';
-				if(propVal[1] === true) {
-					// propVal is an array of value/important, rather than a string.
-					propVal = propVal[0];
-					propImportant = ' !important';
-				}
-				propStr += propName + ':' + propVal + propImportant + ';\n';
+	var styleEl = document.createElement('style'),
+		id = id || '';
+
+	styleEl.setAttribute('id', id);
+	styleEl.appendChild(document.createTextNode(''));
+	document.head.appendChild(styleEl);
+
+	return styleEl;
+
+};
+
+/**
+ * Adds CSS rules to the specified style element
+ *
+ * @param {object} rules List of rules in JSON format
+ * @param {object} sheet The style element to apply the rules to
+ *
+ * @return {object}    The style element
+ */
+CM.addStyles = function(rules, sheet) {
+
+	for(var selector in rules) {
+		var props = rules[selector],
+			propStr = '';
+		for(var propName in props) {
+			var propVal = props[propName],
+				propImportant = '';
+			if(propVal[1] === true) {
+				// propVal is an array of value/important, rather than a string.
+				propVal = propVal[0];
+				propImportant = ' !important';
 			}
-			s.insertRule(selector + '{' + propStr + '}', s.cssRules.length);
+			propStr += propName + ':' + propVal + propImportant + ';\n';
 		}
+		sheet.insertRule(selector + '{' + propStr + '}', sheet.cssRules.length);
 	}
 
-	// Create and attach the style block
-	var sheet = (function() {
-
-		var style = document.createElement('style');
-
-		style.setAttribute('id', 'CMStyles');
-		style.appendChild(document.createTextNode(''));
-		document.head.appendChild(style);
-
-		return style.sheet;
-
-	})();
-
-	// Add our style rules in JSON format
-	addStylesheetRules({
-		'#CMSettingsPanel': {
-			'position': 'absolute',
-			'z-index': '9001',
-			'bottom': '0',
-			'left': '0',
-			'width': '300px',
-			'height': '300px',
-			'background-color': 'rgba(0,0,0,0.95)',
-			'padding': '20px',
-			'color': '#FFF',
-			'border': '2px solid #555'
-		},
-		'#CMSettingsTitle': {
-			'margin': '0 0 20px',
-			'font-size': '22px',
-			'font-family': '"Kavoon", Georgia, serif'
-		}
-	}, sheet);
+	return sheet;
 
 };
 
