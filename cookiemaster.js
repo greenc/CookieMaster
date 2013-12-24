@@ -243,7 +243,7 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList');
 
 		// Build each setting item
-		$.each(settings, function() {
+		$.each(settings, function(key, value) {
 
 			var options = [],
 				control;
@@ -265,7 +265,7 @@ CM.attachSettingsPanel = function() {
 
 			}
 
-			items.push('<li class="setting ' + this + '">' + this.label + control + '</li>');
+			items.push('<li class="setting ' + key + '">' + this.label + control + '</li>');
 
 		});
 
