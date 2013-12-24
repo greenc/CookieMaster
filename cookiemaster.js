@@ -205,6 +205,8 @@ CM.cleanUI = function(state) {
  */
 CM.changeFont = function(fontSetting) {
 
+	var $body = this.config.ccBody;
+
 	$body.removeClass('serif sansserif');
 
 	if(fontSetting === 'Serif') {
