@@ -244,17 +244,28 @@ CM.attachSettingsPanel = function() {
 
 		// Build each setting item
 		$.each(settings, function() {
+
 			var options = [],
 				control;
+
 			if(typeof this.options === 'object') {
+
+				// Build a select box if a setting has multiple options
 				$.each(this.options, function() {
 					options.push('<option value="' + this + '">' + this + '</option>');
 				});
 				control = '<select>';
 				control += options.join('');
 				control += '</select>';
+
+			} else if(this.options === 'toggle') {
+
+				// Build a checkbox if it's a simple toggle
+				control = '<input type="checkbox" />'
+
 			}
-			items.push('<li class="setting">' + this.label + control + '</li>');
+
+			items.push('<li class="setting ' + this + '">' + this.label + control + '</li>');
 
 		});
 
