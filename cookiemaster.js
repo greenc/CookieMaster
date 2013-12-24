@@ -6,10 +6,6 @@
  */
 CM = {};
 
-// Expose this as a global so we can detect if another instance
-// of the script has already been loaded
-var cmIsLoaded = false;
-
 /**
  * Configuration settings for CookieMaster, the loaded version of
  * Cookie Clicker and user-specific settings.
@@ -80,7 +76,7 @@ CM.init = function() {
 		this.applyUserSettings();
 
 		// All done :)
-		cmIsLoaded = true;
+		var window.cmIsLoaded = true; // Expose as global so we can test against multiple inits
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
