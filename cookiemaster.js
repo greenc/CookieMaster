@@ -314,7 +314,7 @@ CM.userSettings = function(action) {
 
 		var serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
 		var cookieDate = new Date;
-		cookieDate.setFullYear(cookieDate.getFullYear());
+		cookieDate.setFullYear(cookieDate.getFullYear() + 1);
 		document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
 	} else if(action === 'load') {
