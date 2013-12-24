@@ -286,7 +286,7 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
-		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Save');
+		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply');
 
 		// Build each setting item
 		$.each(settings, function(key, value) {
@@ -303,7 +303,7 @@ CM.attachSettingsPanel = function() {
 					selected = (current === this.toString()) ? ' selected="selected"' : '';
 					options.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
 				});
-				control = '<select>';
+				control = '<select name="' + key + '">';
 				control += options.join('');
 				control += '</select>';
 
@@ -316,7 +316,7 @@ CM.attachSettingsPanel = function() {
 
 				// Build a checkbox if it's a simple toggle
 				selected = (current === 'on') ? ' checked="checked"' : '';
-				control = '<input type="checkbox"' + selected + ' />'
+				control = '<input type="checkbox" name="' + key + '"' + selected + ' />'
 
 				// Add event listener for change event
 				$cmSettingsList.on('change', '.setting-' + key + ' input', function() {
@@ -326,7 +326,7 @@ CM.attachSettingsPanel = function() {
 			}
 
 			// Build the list of items
-			items.push('<li class="cf setting setting-' + key + '" title="' + this.desc + '"">' + this.label + control + '</li>');
+			items.push('<li class="cf setting setting-' + key + '" title="' + this.desc + '""><label for="' + key + '">' + this.label + control + '</label></li>');
 
 		});
 
