@@ -187,7 +187,7 @@ CM.cleanUI = function(state) {
 		Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
 	}
 
-	setTimeout(recalculateCanvasDimensions, 300);
+	setTimeout(recalculateCanvasDimensions, 1000);
 
 };
 
