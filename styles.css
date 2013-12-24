@@ -71,7 +71,7 @@
 
 /* Feature: cleanUI */
 .cleanUI #topBar,
-#support { display: none; }
+.cleanUI #support { display: none; }
 .cleanUI #versionNumber { z-index: 20; }
 
 .cleanUI #game {
