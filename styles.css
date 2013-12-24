@@ -70,7 +70,10 @@
 /* End CM UI styles */
 
 /* Feature: cleanUI */
-.cleanUI #topBar { display: none; }
+.cleanUI #topBar,
+#supportComment,
+ins.adsbygoogle,
+a.ad { display: none; }
 .cleanUI #versionNumber { z-index: 20; }
 
 .cleanUI #game {
