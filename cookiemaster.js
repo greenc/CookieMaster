@@ -1,24 +1,28 @@
 /**
  * We will expose all methods and properties of CookieMaster
- * through the parent object
+ * through the parent object, for easy extendability
+ *
  * @type {Object}
  */
 CM = {};
 
 /**
- * Configuration settings
+ * Configuration settings for CookieMaster, the loaded version of
+ * Cookie Clicker and user-specific settings.
+ *
  * @type {Object}
  */
 CM.config = {
 
-	cmVersion: '0.1',									// CM version
-	cmIsLoaded: false,									// CM loaded flag
-	cmDecimalSeparator: '.',							// CM . or , separator
+	cmVersion: '0.1',
+	cmIsLoaded: false,
+	cmDecimalSeparator: '.',
 
-	ccTargetVersion: '1.0402',							// CC supported version
-	ccURL: 'http://orteil.dashnet.org/cookieclicker/',	// CC URL
-	ccVersion: '',										// CC reported verison
-	ccGame: {},											// CC game wrapper
+	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
+	ccVersion: '',
+	ccCompatibleVersions: ['1.0402', '1.0403'],
+
+	ccGame: $('#game'),
 
 	// TO DO: Make these actually do something :)
 	settings: {
@@ -42,17 +46,21 @@ CM.config = {
 };
 
 /**
- * Initialization method
+ * Initialization method. This is the first thing that gets called
+ * when the script runs, and all methods that need to be invoked on
+ * startup should get called from here in the order needed.
  */
 CM.init = function() {
 
 	var self = this;
 
+	/**
+	 * Perform a quick check to make sure CM can run correctly
+	 */
 	if(this.integrityCheck()) {
 
-		this.attachStyleSheet();
+		this.attachStyles();
 		this.attachSettingsPanel();
-		this.attachEventListeners();
 		this.cleanUI();
 
 		// All done :)
@@ -69,40 +77,54 @@ CM.init = function() {
 };
 
 /**
- * Check that CookieMaster can run correctly
+ * Checks that CookieMaster can run correctly and informs the
+ * user if anything is wrong
+ *
  * @return {boolean}
  */
 CM.integrityCheck = function() {
 
-	var error = null;
+	var ccVersion = Game.version.toString() || '';
+		message = false,
+		error = false,
+		i;
 
 	if(this.config.cmIsLoaded) {
 		// Already loaded
-		error = 'CookieMaster is already running!';
+		message = 'Error: CookieMaster is already running!';
+		error = true;
 	} else if(document.location.href.indexOf(this.config.ccURL) === -1) {
 		// Wrong URL
-		error = 'This isn\'t the Cookie Clicker URL';
+		message = 'Error: This isn\'t the Cookie Clicker URL';
+		error = true;
 	} else if(!window.jQuery) {
 		// jQuery isn't loaded
-		error = 'jQuery is not loaded';
+		message = 'Error: jQuery is not loaded';
+		error = true;
 	} else if(!Game) {
 		// Game class doesn't exist
-		error = 'Cookie Clicker Game() does not appear to be initialized';
-	} else if(Game.version.toString() !== this.config.ccTargetVersion) {
-		// Wrong version
-		error = 'This version of Cookie Clicker is not supported. Expecting version ' + this.config.ccTargetVersion;
+		message = 'Error: Cookie Clicker does not appear to be initialized';
+		error = true;
+	}
+
+	// Warn against potential incompatibility
+	if(this.compatibilityCheck(ccVersion) === -1) {
+		message = 'Warning: This version of Cookie Clicker may not be fully supported!';
+	}
+
+	// Alert user to any issues
+	if(message) {
+		this.alertMessage(message);
 	}
 
 	if(error) {
 
-		// Alert user to the error and quit
-		this.alertError('Error: ' + error);
 		return false;
 
 	} else {
 
-		// Set the CC version and game wrapper in our global config
-		this.config.ccVersion = Game.version.toString();
+		// Set some useful config options for later use
+		this.config.ccVersion = ccVersion;
 		this.config.ccGame = $('#game');
 
 		return true;
@@ -111,7 +133,32 @@ CM.integrityCheck = function() {
 };
 
 /**
- * Clean up the game interface a little
+ * Checks the loaded version of CC against a list of
+ * known compatible versions
+ *
+ * @param  {string} version The version of CC we are running on
+ *
+ * @return {integer}         Return index of matched version
+ */
+CM.compatibilityCheck = function(version) {
+
+	var compVersions = this.config.ccCompatibleVersions,
+		ccVersion = version || '',
+		i;
+
+	for(i = 0; i < compVersions.length; i++) {
+		if(compVersions[j].match(ccVersion)) {
+			return i;
+		}
+	}
+
+	return -1;
+
+}
+
+/**
+ * Clean up the game interface a little. Most of these are borrowed
+ * from Cookie Monster :)
  */
 CM.cleanUI = function() {
 
@@ -141,9 +188,13 @@ CM.cleanUI = function() {
 };
 
 /**
- * format very large numbers with their appropriate suffix
+ * Formats very large numbers with their appropriate suffix, also adds
+ * thousands and decimal separators and performs correct rounding for
+ * smaller numbers
+ *
  * @param  {integer} num The number to be formatted
  * @param  {integer} floats Amount of decimal places required
+ *
  * @return {string}     Formatted number (as string) with suffix
  */
 CM.largeNumFormat = function(num, floats, decSep) {
@@ -219,25 +270,30 @@ CM.attachSettingsPanel = function() {
 };
 
 /**
- * Dynamically attach a stylesheet to the DOM
+ * Dynamically add CSS styles to the page
  */
-CM.attachStyleSheet = function() {
+CM.attachStyles = function(url) {
 
-	var ss = document.createElement('link');
-	ss.type = 'text/css';
-	ss.rel = 'stylesheet';
-	ss.href = 'https://raw.github.com/greenc/CookieMaster/master/styles.css';
-	document.getElementsByTagName('head')[0].appendChild(ss);
+	var $styleElement = $('<style />'),
+		styles = "\
+		#CMSettingsPanel {\
+			position: absolute;\
+			z-index: 9001;\
+			bottom: 0;\
+			left: 0;\
+			width: 500px;\
+			height: 600px;\
+			background-color: #FFF;\
+			padding: 20px;\
+		}\
+	";
 
-};
+	$styleElement.attr({
+		'type': 'text/css',
+		'id': 'CMStyles'
+	}).html(styles);
+	$('head').append($styleElement);
 
-/**
- * Attach general event listners here
- */
-CM.attachEventListeners = function() {
-	$('body').click(function() {
-		$('#CMSettingsPanel').fadeIn();
-	});
 };
 
 /**
@@ -249,10 +305,11 @@ CM.suicide = function() {
 };
 
 /**
- * Alert user to errors (expand later)
- * @param  {string} msg The error message
+ * Alert user to messages (expand later)
+ *
+ * @param  {string} msg The message
  */
-CM.alertError = function(msg) {
+CM.alertMessage = function(msg) {
 	alert(msg);
 };
 
@@ -260,14 +317,17 @@ CM.alertError = function(msg) {
 CM.init();
 
 
-/*  ===========================================
-		COOKIE CLICKER FUNCTION OVERRIDES
-	=========================================== */
+/* ===========================================
+	COOKIE CLICKER FUNCTION OVERRIDES
+=========================================== */
 
 /**
- * Override for default CC number formatting
+ * Hijacks the original Beautify method to use our own formatting function
+ *
  * @param {integer} what   The number to beautify
  * @param {integer} floats Number of decimal places desired :/
+ *
+ * @return {string}    Nicely formatted number as a string
  */
 function Beautify(what, floats) {
 
@@ -276,6 +336,6 @@ function Beautify(what, floats) {
 	return CM.largeNumFormat(what, floats, CM.config.cmDecimalSeparator);
 
 }
-/*  ===========================================
-		END COOKIE CLICKER FUNCTION OVERRIDES
-	=========================================== */
+/* ===========================================
+	END COOKIE CLICKER FUNCTION OVERRIDES
+=========================================== */
