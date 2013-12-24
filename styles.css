@@ -30,6 +30,8 @@
 	color: #DDD;
 }
 
+#CMSettingsList label { display: block; }
+
 #CMSettingsList input,
 #CMSettingsList select {
 	float: right;
@@ -97,15 +99,15 @@
 /* Feature: changeFont */
 .serif .title,
 .serif .section,
-#CMSettingsTitle,
-#CMSettingsSave {
+.serif #CMSettingsTitle,
+.serif #CMSettingsSave {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
 
 .sansserif .title,
 .sansserif .section,
-#CMSettingsTitle,
-#CMSettingsSave {
+.sansserif #CMSettingsTitle,
+.sansserif #CMSettingsSave {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */
