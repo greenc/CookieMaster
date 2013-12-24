@@ -65,7 +65,7 @@ CM.init = function() {
 
 		this.attachStyleSheet(cmCSS, cssID);
 		this.attachSettingsPanel();
-		this.cleanUI();
+		this.cleanUI(true);
 
 		// Rebuild store to apply number formatting
 		Game.RebuildStore();
