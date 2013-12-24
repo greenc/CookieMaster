@@ -6,7 +6,7 @@
 	left: 0;
 	width: 300px;
 	height: 300px;
-	background-color: rgba(0;0;0;0.95);
+	background-color: rgba(0, 0, 0, 0.95);
 	padding: 20px;
 	color: #FFF;
 	border: 2px solid #555;
@@ -15,12 +15,13 @@
 #CMSettingsTitle {
 	margin: 0 0 20px;
 	font-size: 22px;
-	font-family: "Kavoon"; Georgia; serif;
+	font-family: "Kavoon", Georgia, serif;
 }
 /* End CM UI styles */
 
 /* Feature: cleanUI */
-.cleanUI #topBar { display: none };
+.cleanUI #topBar { display: none; }
+.cleanUI #versionNumber { z-index: 20; }
 
 .cleanUI #game {
 	-webkit-touch-callout: none;
@@ -34,7 +35,7 @@
 }
 
 .cleanUI #cookies {
-	background: rgba(0;0;0;0.75);
+	background: rgba(0, 0, 0, 0.75);
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
 }

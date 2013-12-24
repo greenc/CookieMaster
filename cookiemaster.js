@@ -31,17 +31,20 @@ CM.config = {
 		cleanUI: {
 			label: 'Clean UI',
 			desc: 'Hide the top bar, and make other small graphical enhancements to the game interface',
-			options: true
+			options: 'toggle',
+			current: true
 		},
 		numFormat: {
 			label: 'Decimal Separator',
 			desc: 'Display numbers in US or European format',
-			options: ['us', 'eu']
+			options: ['us', 'eu'],
+			current: 'us'
 		},
 		shortNums: {
 			label: 'Short Numbers',
 			desc: 'Shorten large numbers with suffixes',
-			options: true
+			options: 'toggle',
+			current: true
 		}
 	},
 
@@ -161,8 +164,7 @@ CM.compatibilityCheck = function(version) {
 }
 
 /**
- * Clean up the game interface a little. Most of the styles are
- * borrowed from Cookie Monster :)
+ * Clean up the game interface a little.
  */
 CM.cleanUI = function(state) {
 
@@ -242,7 +244,17 @@ CM.attachSettingsPanel = function() {
 
 		// Build each setting item
 		$.each(settings, function() {
-			items.push('<li class="setting">' + this.label + '</li>');
+			var option = [],
+				control;
+			if(typeof this.options === 'object') {
+				$.each(this.options, function() {
+					options.push('<option value="' + this + '">' + this + '</option>');
+				});
+				control = '<select>';
+				control += options.join(''));
+				control += '</select>';
+			}
+			items.push('<li class="setting">' + this.label + control + '</li>');
 
 		});
 
