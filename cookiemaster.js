@@ -82,7 +82,7 @@ CM.init = function() {
 				'font-size': '22px',
 				'font-family': '"Kavoon", Georgia, serif'
 			}
-		}, document.selectElementById('CMStyles'));
+		}, document.getElementById('CMStyles'));
 
 		// All done :)
 		this.config.cmIsLoaded = true;
