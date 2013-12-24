@@ -168,8 +168,7 @@ CM.compatibilityCheck = function(version) {
  */
 CM.cleanUI = function(state) {
 
-	var state = state || true,
-		cssClass = 'cleanUI',
+	var cssClass = 'cleanUI',
 		$body = this.config.ccBody;
 
 	if(state) {
