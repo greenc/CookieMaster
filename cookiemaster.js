@@ -18,7 +18,7 @@ CM.config = {
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
 	cmStyleID: 'cmStyles',
-	cmStyleEl = {},
+	cmStyleEl: {},
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
