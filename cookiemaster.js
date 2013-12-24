@@ -36,10 +36,10 @@ CM.config = {
 			current: true
 		},
 		numFormat: {
-			label: 'Decimal Separator',
-			desc: 'Display numbers in US or European format',
-			options: ['us', 'eu'],
-			current: 'us'
+			label: 'Number Formatting',
+			desc: 'Display numbers in US (123,456,789.0) or European (123.456.789,0) format',
+			options: ['US', 'European'],
+			current: 'US'
 		},
 		shortNums: {
 			label: 'Short Numbers',
@@ -240,6 +240,8 @@ CM.attachSettingsPanel = function() {
 		items = [],
 		options = [],
 		control = [],
+		current = '',
+		selected = '',
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
@@ -250,14 +252,17 @@ CM.attachSettingsPanel = function() {
 		// Build each setting item
 		$.each(settings, function(key, value) {
 
+			// Reset these for each loop
 			options = [];
 			control = [];
+			current = this.current;
 
 			if(typeof this.options === 'object') {
 
 				// Build a select box if a setting has multiple options
 				$.each(this.options, function() {
-					options.push('<option value="' + this + '">' + this + '</option>');
+					selected = (current === this) ? ' selected="selected"' : '';
+					options.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
 				});
 				control = '<select>';
 				control += options.join('');
@@ -284,7 +289,26 @@ CM.attachSettingsPanel = function() {
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
 
-		// Set event listeners
+		/**
+		 *	Set event listeners
+		 */
+
+		// cleanUI toggle
+		$cmSettingsList.find('.setting-cleanUI input').change(function() {
+			settings.cleanUI.current = $(this).prop('checked') ? true : false;
+		});
+
+		//  numFormat change
+		$cmSettingsList.find('.setting-numFormat select').change(function() {
+			settings.numFormat.current = $(this).find(":selected").val();
+		});
+
+		//  shortNums toggle
+		$cmSettingsList.find('.setting-shortNums input').change(function() {
+			settings.shortNums.current = $(this).prop('checked') ? true : false;
+		});
+
+		// Save button
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();
 		});
