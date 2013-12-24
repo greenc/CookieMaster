@@ -203,13 +203,13 @@ CM.cleanUI = function(state) {
  *
  * @param  {boolean} state Turn on or off
  */
-CM.changeFont = function(font) {
+CM.changeFont = function(fontSetting) {
 
 	$body.removeClass('serif sansserif');
 
-	if(font === 'Serif') {
+	if(fontSetting === 'Serif') {
 		$body.addClass('serif');
-	} else if(font === 'Sans Serif') {
+	} else if(fontSetting === 'Sans Serif') {
 		$body.addClass('sansserif');
 	}
 
@@ -379,6 +379,7 @@ CM.applyUserSettings = function() {
 	var settings = this.config.settings;
 
 	settings.cleanUI.current === 'on' ? this.cleanUI(true) : this.cleanUI(false);
+	this.changeFont(settings.changeFont.current);
 	Game.RebuildStore();
 
 };
