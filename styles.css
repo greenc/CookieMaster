@@ -17,6 +17,27 @@
 	font-size: 22px;
 	font-family: "Kavoon", Georgia, serif;
 }
+
+#CMSettingsList .setting {
+	border-bottom: 1px dashed #222;
+	padding: 5px 0;
+}
+
+#CMSettingsList input,
+#CMSettingsList select {
+	float: right;
+	margin-left: 5px;
+}
+
+.cf:before,
+.cf:after {
+	content: " ";
+	display: table;
+}
+
+.cf:after {
+	clear: both;
+}
 /* End CM UI styles */
 
 /* Feature: cleanUI */
