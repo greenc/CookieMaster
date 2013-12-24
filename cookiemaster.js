@@ -312,12 +312,10 @@ CM.userSettings = function(action) {
 			settingsStates[key] =  this.current;
 		});
 
-		settingsStates = $.param(settingsStates);
-		settingsStates = settingsStates.replace(/=/g, ':').replace(/&/g, '|');
-
-		console.log(settingsStates);
-
-		document.cookie = 'CMSettings=' + settingsStates;
+		var serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
+		var cookieDate = new Date;
+		cookieDate.setFullYear(cookieDate.getFullYear());
+		document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
 	} else if(action === 'load') {
 
