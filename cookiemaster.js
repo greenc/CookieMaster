@@ -288,7 +288,7 @@ CM.attachCSS = function() {
 	})();
 
 	// Add our style rules
-	sheet.addRule("#CMSettingsPanel", "	position: absolute;z-index: 9001;bottom: 0;left: 0;width: 350px;height: 400px;background-color: #FFF;padding: 20px;", 1);
+	sheet.addRule("#CMSettingsPanel", "	position: absolute;z-index: 9001;bottom: 0;left: 0;width: 350px;height: 400px;background-color: #FFF;padding: 20px;", 0);
 
 };
 
