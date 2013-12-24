@@ -21,6 +21,8 @@ Not a lot yet, as it's very early in development. Here's the checklist so far:
 
  - Long number shortening. (convert 1,234,567,890 to 1.235 billion)
  - Number localization (numbers formatted to 123,456,789.0 or 123.456.789,0 depending on your preference)
+ - Clean up the game window (remove ads, top bar, etc.)
+ - Change game font
 
 And when it's done?
 -----------
@@ -30,7 +32,6 @@ And when it's done?
  - Display visual/audio timers and aids for Golden/Wrath cookies, Reindeer and other seasonal popups
  - Display visual timers and aids for Frenzies, Click frenzies, Clots and other buffs
  - Calculate and display information regarding banked cookies for maximum buff payouts and other items
- - Tweaks and enhancements to the gamre interface to make it more appealing/easy to use
  - Pause button
  - Multiple save slots and easy save import/export functionality
  - Higher attainable FPS for more accurate timers without crippling your system!
