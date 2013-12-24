@@ -95,16 +95,14 @@ CM.config = {
 /**
  * Initialization method. This is the first thing that gets called
  * when the script runs, and all methods that need to be invoked on
- * startup should get called from here in the order needed.
+ * startup should be called from here in the order needed.
  */
 CM.init = function() {
 
 	var mainCSS = this.config.css.main,
 		styleID = this.config.cmStyleID;
 
-	/**
-	 * Perform a quick check to make sure CM can run correctly
-	 */
+	//Perform a quick check to make sure CM can run correctly
 	if(this.integrityCheck()) {
 
 		// Attach CM CSS styles
@@ -252,12 +250,7 @@ CM.largeNumFormat = function(num, floats, decSep) {
 
 		if(num >= ranges[i].divider) {
 			num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
-			// Apply localization if necessary
-			if(decSep === ',') {
-				return num.replace('.', ',');
-			} else {
-				return num;
-			}
+			return num.replace('.', decimal);
 		}
 
 	}
@@ -268,6 +261,7 @@ CM.largeNumFormat = function(num, floats, decSep) {
 	// Prettify and localize the remaining "smaller" numbers
 	parts = num.toString().split('.');
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
+
 	return parts.join(decimal);
 
 };
@@ -313,6 +307,7 @@ CM.attachStyleElement = function(id) {
 		id = id || '';
 
 	styleEl.setAttribute('id', id);
+	styleEl.setAttribute('type', 'text/css');
 	styleEl.appendChild(document.createTextNode(''));
 	document.head.appendChild(styleEl);
 
