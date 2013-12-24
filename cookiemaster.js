@@ -33,7 +33,7 @@ CM.config = {
 			label: 'Clean UI',
 			desc: 'Hide the top bar, and make other small graphical enhancements to the game interface',
 			options: 'toggle',
-			current: true
+			current: 'on'
 		},
 		numFormat: {
 			label: 'Number Formatting',
@@ -45,7 +45,7 @@ CM.config = {
 			label: 'Short Numbers',
 			desc: 'Shorten large numbers with suffixes',
 			options: 'toggle',
-			current: true
+			current: 'on'
 		}
 	},
 
@@ -271,7 +271,7 @@ CM.attachSettingsPanel = function() {
 			} else if(this.options === 'toggle') {
 
 				// Build a checkbox if it's a simple toggle
-				selected = current ? ' checked="checked"' : '';
+				selected = (current === 'on') ? ' checked="checked"' : '';
 				control = '<input type="checkbox"' + selected + ' />'
 
 			}
