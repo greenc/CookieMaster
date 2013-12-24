@@ -66,7 +66,7 @@ CM.config = {
 				'font-family': '"Kavoon", Georgia, serif'
 			}
 		},
-		cleanUI {
+		cleanUI: {
 			'#topBar': {'display': 'none'},
 			'#game': {
 				'-webkit-touch-callout': 'none',
