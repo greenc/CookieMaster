@@ -76,7 +76,7 @@ CM.init = function() {
 		this.applyUserSettings();
 
 		// All done :)
-		var window.cmIsLoaded = true; // Expose as global so we can test against multiple inits
+		cmIsLoaded = true; // Implicitly create this as global so we can test against multiple inits
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
@@ -101,7 +101,7 @@ CM.integrityCheck = function() {
 		error = false,
 		i;
 
-	if(cmIsLoaded) {
+	if(window.cmIsLoaded) {
 		// Already loaded
 		message = 'Error: CookieMaster is already running!';
 		error = true;
