@@ -82,7 +82,7 @@ CM.init = function() {
 				'font-size': '22px',
 				'font-family': '"Kavoon", Georgia, serif'
 			}
-		}, document.getElementById('CMStyles').sheet);
+		}, document.getElementById('CMStyles'));
 
 		// All done :)
 		this.config.cmIsLoaded = true;
@@ -318,7 +318,9 @@ CM.attachStyleElement = function(id) {
  *
  * @return {object}    The style element
  */
-CM.addStyles = function(rules, sheet) {
+CM.addStyles = function(rules, el) {
+
+	var sheet = el.sheet;
 
 	for(var selector in rules) {
 		var props = rules[selector],
@@ -336,7 +338,7 @@ CM.addStyles = function(rules, sheet) {
 		sheet.insertRule(selector + '{' + propStr + '}', sheet.cssRules.length);
 	}
 
-	return sheet;
+	return el;
 
 };
 
