@@ -261,7 +261,9 @@ CM.attachSettingsPanel = function() {
 
 				// Build a select box if a setting has multiple options
 				$.each(this.options, function() {
-					selected = (current === this) ? ' selected="selected"' : '';
+					console.log(current);
+					console.log(this);
+					selected = (current == this) ? ' selected="selected"' : '';
 					options.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
 				});
 				control = '<select>';
