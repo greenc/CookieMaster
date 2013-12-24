@@ -85,9 +85,12 @@ CM.init = function() {
 	 */
 	if(this.integrityCheck()) {
 
+		// Attach CM CSS styles
+		this.attachStyleElement(styleID);
+		this.addStyles(mainCSS, $('#' + styleID)[0]);
+
 		this.attachSettingsPanel();
 		this.cleanUI();
-		this.attachStyleElement(styleID).addStyles(mainCSS, $('#' + styleID));
 
 		// All done :)
 		this.config.cmIsLoaded = true;
