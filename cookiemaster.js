@@ -64,6 +64,7 @@ CM.init = function() {
 	//Perform a quick check to make sure CM can run correctly
 	if(this.integrityCheck()) {
 
+		this.loadUserSettings();
 		this.attachStyleSheet(cmCSS, cssID);
 		this.attachSettingsPanel();
 		this.cleanUI(true);
@@ -235,14 +236,16 @@ CM.largeNumFormat = function(num, floats, decSep) {
  */
 CM.attachSettingsPanel = function() {
 
-	var items = [],
+	var self = this,
+		items = [],
 		options = [],
 		control = [],
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
-		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList');
+		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
+		$cmSettingsSaveButon = $('<button />').attr('id', 'CMSettingsSave').text('Save');
 
 		// Build each setting item
 		$.each(settings, function(key, value) {
@@ -276,9 +279,15 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsList.append(items.join(''));
 		$cmSettingsPanel.append($cmSettingsTitle);
 		$cmSettingsPanel.append($cmSettingsList);
+		$cmSettingsPanel.append($cmSettingsSaveButon);
 
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
+
+		// Set event listeners
+		$cmSettingsSaveButon.click(function() {
+			self.saveUserSettings();
+		});
 
 };
 
@@ -305,6 +314,9 @@ CM.attachStyleSheet = function(url, id) {
 
 };
 
+/**
+ * Save all user settings to the settings cookie
+ */
 CM.saveUserSettings = function() {
 
 	var settings = this.config.settings,
@@ -324,8 +336,13 @@ CM.saveUserSettings = function() {
 	cookieDate.setFullYear(cookieDate.getFullYear() + 1);
 	document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
+	Game.Popup('CookieMaster settings saved successfully!');
+
 };
 
+/**
+ * Attempt to load user settings from the settings cookie
+ */
 CM.loadUserSettings = function() {
 
 	var settings = this.config.settings,
