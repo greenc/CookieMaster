@@ -84,7 +84,7 @@ CM.init = function() {
  */
 CM.integrityCheck = function() {
 
-	var ccVersion = Game.version.toString() || '';
+	var ccVersion = Game.version.toString() || '',
 		message = false,
 		error = false,
 		i;
