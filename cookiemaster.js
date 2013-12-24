@@ -244,7 +244,7 @@ CM.attachSettingsPanel = function() {
 
 		// Build each setting item
 		$.each(settings, function() {
-			var option = [],
+			var options = [],
 				control;
 			if(typeof this.options === 'object') {
 				$.each(this.options, function() {
