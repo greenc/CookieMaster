@@ -92,12 +92,16 @@
 
 /* Feature: changeFont */
 .serif .title,
-.serif .section {
+.serif .section,
+#CMSettingsTitle,
+#CMSettingsSave {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
 
 .sansserif .title,
-.sansserif .section {
+.sansserif .section,
+#CMSettingsTitle,
+#CMSettingsSave {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */
