@@ -274,6 +274,25 @@ CM.attachSettingsPanel = function() {
  */
 CM.attachCSS = function() {
 
+	function addStylesheetRules(rules, sheet) {
+		var s = sheet;
+		for(var selector in rules) {
+			var props = rules[selector],
+				propStr = '';
+			for(var propName in props) {
+				var propVal = props[propName],
+					propImportant = '';
+				if(propVal[1] === true) {
+					// propVal is an array of value/important, rather than a string.
+					propVal = propVal[0];
+					propImportant = ' !important';
+				}
+				propStr += propName + ':' + propVal + propImportant + ';\n';
+			}
+			s.insertRule(selector + '{' + propStr + '}', s.cssRules.length);
+		}
+	}
+
 	// Create and attach the style block
 	var sheet = (function() {
 
@@ -287,8 +306,26 @@ CM.attachCSS = function() {
 
 	})();
 
-	// Add our style rules
-	sheet.addRule("#CMSettingsPanel", "	position: absolute;z-index: 9001;bottom: 0;left: 0;width: 350px;height: 400px;background-color: #FFF;padding: 20px;", 0);
+	// Add our style rules in JSON format
+	addStylesheetRules({
+		'#CMSettingsPanel': {
+			'position': 'absolute',
+			'z-index': '9001',
+			'bottom': '0',
+			'left': '0',
+			'width': '300px',
+			'height': '300px',
+			'background-color': 'rgba(0,0,0,0.95)',
+			'padding': '20px',
+			'color': '#FFF',
+			'border': '2px solid #555'
+		},
+		'#CMSettingsTitle': {
+			'margin': '0 0 20px',
+			'font-size': '22px',
+			'font-family': '"Kavoon", Georgia, serif'
+		}
+	}, sheet);
 
 };
 
