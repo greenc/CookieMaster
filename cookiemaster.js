@@ -271,7 +271,7 @@ CM.attachSettingsPanel = function() {
 			}
 
 			// Build the list of items
-			items.push('<li class="cf setting setting-' + key + '">' + this.label + control + '</li>');
+			items.push('<li class="cf setting setting-' + key + '" title="' + this.desc + '"">' + this.label + control + '</li>');
 
 		});
 
