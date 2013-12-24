@@ -348,7 +348,7 @@ CM.attachStyleSheet = function(url, id) {
  */
 CM.applyUserSettings = function() {
 
-	var settings = settings.this.config.settings;
+	var settings = this.config.settings;
 
 	settings.cleanUI.current === 'on' ? this.cleanUI(true) : this.cleanUI(false);
 	Game.RebuildStore();
