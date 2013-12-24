@@ -306,8 +306,8 @@ CM.attachSettingsPanel = function() {
 				control += '</select>';
 
 				// Add event listener for change even
-				$cmSettingsList.on('change', '.setting-' + this + ' select', function() {
-					settings[this].current = $(this).find(":selected").val();
+				$cmSettingsList.on('change', '.setting-' + key + ' select', function() {
+					settings[key].current = $(this).find(":selected").val();
 				});
 
 			} else if(this.options === 'toggle') {
