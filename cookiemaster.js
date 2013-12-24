@@ -16,7 +16,6 @@ CM.config = {
 
 	cmVersion: '0.1',
 	cmIsLoaded: false,
-	cmDecimalSeparator: '.',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
@@ -67,10 +66,9 @@ CM.init = function() {
 		this.loadUserSettings();
 		this.attachStyleSheet(cmCSS, cssID);
 		this.attachSettingsPanel();
-		this.cleanUI(true);
 
-		// Rebuild store to apply number formatting
-		Game.RebuildStore();
+		// Apply the current user settings after we've done everything else
+		this.applyUserSettings();
 
 		// All done :)
 		this.config.cmIsLoaded = true;
@@ -167,6 +165,8 @@ CM.compatibilityCheck = function(version) {
 
 /**
  * Clean up the game interface a little.
+ *
+ * @param  {boolean} state Turn on or off
  */
 CM.cleanUI = function(state) {
 
@@ -191,9 +191,10 @@ CM.cleanUI = function(state) {
  *
  * @return {string}     Formatted number (as string) with suffix
  */
-CM.largeNumFormat = function(num, floats, decSep) {
+CM.largeNumFormat = function(num, floats) {
 
-	var decSep = decSep || this.config.cmDecimalSeparator,
+	var useShortNums = this.config.settings.shortNums.current === 'on' ? true : false,
+		decSep = this.config.settings.numFormat.current === 'US' ? '.' : ',',
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
 		floats = floats || 0,
@@ -211,13 +212,15 @@ CM.largeNumFormat = function(num, floats, decSep) {
 			{divider: 1e6, suffix: 'M'}
 		];
 
-	for(var i = 0; i < ranges.length; i++) {
+	if(useShortNums) {
+		for(var i = 0; i < ranges.length; i++) {
 
-		if(num >= ranges[i].divider) {
-			num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
-			return num.replace('.', decimal);
+			if(num >= ranges[i].divider) {
+				num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
+				return num.replace('.', decimal);
+			}
+
 		}
-
 	}
 
 	// Apply rounding, if any
@@ -312,6 +315,7 @@ CM.attachSettingsPanel = function() {
 		// Save button
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();
+			self.applyUserSettings();
 		});
 
 };
@@ -336,6 +340,18 @@ CM.attachStyleSheet = function(url, id) {
 	});
 
 	$('head').append($stylesheet);
+
+};
+
+/**
+ * Apply the current user settings to the game
+ */
+CM.applyUserSettings = function() {
+
+	var settings.this.config.settings;
+
+	settings.cleanUI.current === 'on' ? this.cleanUI(true) : this.cleanUI(false);
+	Game.RebuildStore();
 
 };
 
@@ -431,7 +447,7 @@ function Beautify(what, floats) {
 
 	var floats = floats || 0;
 
-	return CM.largeNumFormat(what, floats, CM.config.cmDecimalSeparator);
+	return CM.largeNumFormat(what, floats);
 
 }
 /* ===========================================
