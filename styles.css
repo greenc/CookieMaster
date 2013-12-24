@@ -89,3 +89,15 @@
 	pointer-events: none;
 }
 /* End Feature: cleanUI */
+
+/* Feature: changeFont */
+.serif .title,
+.serif .section {
+	font-family: Georgia, Times, "Times New Roman", serif;
+}
+
+.sansserif .title,
+.sansserif .section {
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+/* End Feature: Font */

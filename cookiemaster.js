@@ -45,6 +45,12 @@ CM.config = {
 			desc: 'Shorten large numbers with suffixes',
 			options: 'toggle',
 			current: 'on'
+		},
+		changeFont: {
+			label: 'Font',
+			desc: 'Set the highlight font',
+			options: ['Default', 'Serif', 'Sans Serif'],
+			current: 'Default'
 		}
 	},
 
@@ -187,7 +193,25 @@ CM.cleanUI = function(state) {
 		Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
 	}
 
+	// We need to delay this in case the UI styles haven not yet been parsed
 	setTimeout(recalculateCanvasDimensions, 1000);
+
+};
+
+/**
+ * Change the font of highlight and title text
+ *
+ * @param  {boolean} state Turn on or off
+ */
+CM.changeFont = function(font) {
+
+	$body.removeClass('serif sansserif');
+
+	if(font === 'Serif') {
+		$body.addClass('serif');
+	} else if(font === 'Sans Serif') {
+		$body.addClass('sansserif');
+	}
 
 };
 
@@ -281,11 +305,21 @@ CM.attachSettingsPanel = function() {
 				control += options.join('');
 				control += '</select>';
 
+				// Add event listener for change even
+				$cmSettingsList.on('change', '.setting-' + this + ' select', function() {
+					settings[this].current = $(this).find(":selected").val();
+				});
+
 			} else if(this.options === 'toggle') {
 
 				// Build a checkbox if it's a simple toggle
 				selected = (current === 'on') ? ' checked="checked"' : '';
 				control = '<input type="checkbox"' + selected + ' />'
+
+				// Add event listener for change event
+				$cmSettingsList.on('change', '.setting-' + key + ' input', function() {
+					settings[key].current = $(this).prop('checked') ? 'on' : 'off';
+				});
 
 			}
 
@@ -306,21 +340,6 @@ CM.attachSettingsPanel = function() {
 		/**
 		 *	Set event listeners
 		 */
-
-		// cleanUI toggle
-		$cmSettingsList.find('.setting-cleanUI input').change(function() {
-			settings.cleanUI.current = $(this).prop('checked') ? 'on' : 'off';
-		});
-
-		//  numFormat change
-		$cmSettingsList.find('.setting-numFormat select').change(function() {
-			settings.numFormat.current = $(this).find(":selected").val();
-		});
-
-		//  shortNums toggle
-		$cmSettingsList.find('.setting-shortNums input').change(function() {
-			settings.shortNums.current = $(this).prop('checked') ? 'on' : 'off';
-		});
 
 		// Save button
 		$cmSettingsSaveButon.click(function() {
