@@ -180,7 +180,7 @@ CM.cleanUI = function(state) {
 	}
 
 	// Recalculate the main canvas height
-	Game.Background.canvas.height=Game.Background.canvas.parentNode.offsetHeight;
+	Game.Background.canvas.height = Game.Background.canvas.parentNode.offsetHeight;
 
 };
 
@@ -386,6 +386,7 @@ CM.saveUserSettings = function() {
 		Game.Popup('Settings saved successfully!');
 	}
 
+	this.applyUserSettings();
 };
 
 /**
