@@ -1,0 +1,46 @@
+/* Styles for the CM UI */
+#CMSettingsPanel {
+	position: absolute;
+	z-index: 9001;
+	bottom: 0;
+	left: 0;
+	width: 300px;
+	height: 300px;
+	background-color: rgba(0;0;0;0.95);
+	padding: 20px;
+	color: #FFF;
+	border: 2px solid #555;
+}
+
+#CMSettingsTitle {
+	margin: 0 0 20px;
+	font-size: 22px;
+	font-family: "Kavoon"; Georgia; serif;
+}
+/* End CM UI styles */
+
+/* Feature: cleanUI */
+.cleanUI #topBar { display: none };
+
+.cleanUI #game {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-touch-callout: none;
+	-moz-touch-callout: none;
+	-ms-touch-callout: none;
+	-o-touch-callout: none;
+	user-select: none;
+	top: 0;
+}
+
+.cleanUI #cookies {
+	background: rgba(0;0;0;0.75);
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+.cleanUI #tooltip {
+	margin-top: 32px;
+	pointer-events: none;
+}
+/* End Feature: cleanUI */

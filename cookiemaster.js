@@ -17,13 +17,13 @@ CM.config = {
 	cmVersion: '0.1',
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
-	cmStyleID: 'cmStyles',
-	cmStyleEl: {},
+	cmCSS: 'http://vaskemaskine.freetzi.com/cookiemaster/css/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
+	ccBody: $('body'),
 	ccGame: $('#game'),
 
 	// TO DO: Make these actually do something :)
@@ -45,51 +45,6 @@ CM.config = {
 		}
 	},
 
-	// Sets of CSS styles to be applied
-	css: {
-		main: {
-			'#CMSettingsPanel': {
-				'position': 'absolute',
-				'z-index': '9001',
-				'bottom': '0',
-				'left': '0',
-				'width': '300px',
-				'height': '300px',
-				'background-color': 'rgba(0,0,0,0.95)',
-				'padding': '20px',
-				'color': '#FFF',
-				'border': '2px solid #555'
-			},
-			'#CMSettingsTitle': {
-				'margin': '0 0 20px',
-				'font-size': '22px',
-				'font-family': '"Kavoon", Georgia, serif'
-			}
-		},
-		cleanUI: {
-			'#topBar': {'display': 'none'},
-			'#game': {
-				'-webkit-touch-callout': 'none',
-				'-webkit-user-select': 'none',
-				'-khtml-touch-callout': 'none',
-				'-moz-touch-callout': 'none',
-				'-ms-touch-callout': 'none',
-				'-o-touch-callout': 'none',
-				'user-select': 'none',
-				'top': '0'
-			},
-			'#cookies': {
-				'background': 'rgba(0,0,0,0.75)',
-				'border-top': '1px solid black',
-				'border-bottom': '1px solid black'
-			},
-			'#tooltip': {
-				'margin-top': '32px',
-				'pointer-events': 'none'
-			}
-		}
-	}
-
 };
 
 /**
@@ -99,17 +54,13 @@ CM.config = {
  */
 CM.init = function() {
 
-	var mainCSS = this.config.css.main,
-		styleID = this.config.cmStyleID;
+	var cmCSS = this.config.cmCSS,
+		cssID = this.config.cmStyleID;
 
 	//Perform a quick check to make sure CM can run correctly
 	if(this.integrityCheck()) {
 
-		// Attach CM CSS styles
-		this.attachStyleElement(styleID);
-		this.config.cmStyleEl = document.getElementById(styleID);
-		this.addStyles(mainCSS, this.config.cmStyleEl);
-
+		this.attachStyleSheet(cmCSS, cssID);
 		this.attachSettingsPanel();
 		this.cleanUI();
 
@@ -216,15 +167,14 @@ CM.compatibilityCheck = function(version) {
 CM.cleanUI = function(state) {
 
 	var state = state || true,
-		cssEl = 'cleanUI';
+		cssClass = 'cleanUI',
+		$body = this.config.ccBody;
 
 	if(state) {
-		this.attachStyleElement(cssEl);
-		this.addStyles(this.config.css.cleanUI, document.getElementById(cssEl));
+		$body.addClass(cssClass);
 	} else {
-		$('#' + cssEl).remove();
+		$body.removeClass(cssClass);
 	}
-
 
 };
 
@@ -307,55 +257,25 @@ CM.attachSettingsPanel = function() {
 };
 
 /**
- * Append a style element to document head for adding CSS styles
+ * Attach an external stylesheet to the DOM
  *
- * @param  {string} Desired element ID
- *
- * @return {object}    This
+ * @param  {string} url The URL of the stylesheet to load
+ * @param  {string} id  an ID to give the stylesheet
  */
-CM.attachStyleElement = function(id) {
+CM.attachStyleSheet = function(url, id) {
 
-	var styleEl = document.createElement('style'),
-		id = id || '';
+	var $stylesheet = $('<link>'),
+		id = id || '',
+		url = url || '';
 
-	styleEl.setAttribute('id', id);
-	styleEl.setAttribute('type', 'text/css');
-	styleEl.appendChild(document.createTextNode(''));
-	document.head.appendChild(styleEl);
+	$stylesheet.attr({
+		'type': 'text/css',
+		'rel': 'stylesheet',
+		'href': url,
+		'id': id
+	});
 
-	return this;
-
-};
-
-/**
- * Adds CSS rules to the specified style element
- *
- * @param {object} rules List of rules in JSON format
- * @param {object} sheet The style element to apply the rules to
- *
- * @return {object}    This
- */
-CM.addStyles = function(rules, el) {
-
-	var sheet = el.sheet;
-
-	for(var selector in rules) {
-		var props = rules[selector],
-			propStr = '';
-		for(var propName in props) {
-			var propVal = props[propName],
-				propImportant = '';
-			if(propVal[1] === true) {
-				// propVal is an array of value/important, rather than a string.
-				propVal = propVal[0];
-				propImportant = ' !important';
-			}
-			propStr += propName + ':' + propVal + propImportant + ';\n';
-		}
-		sheet.insertRule(selector + '{' + propStr + '}', sheet.cssRules.length);
-	}
-
-	return this;
+	$('head').append($stylesheet);
 
 };
 
