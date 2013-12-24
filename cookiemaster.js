@@ -299,7 +299,7 @@ CM.attachSettingsPanel = function() {
 
 		// cleanUI toggle
 		$cmSettingsList.find('.setting-cleanUI input').change(function() {
-			settings.cleanUI.current = $(this).prop('checked') ? true : false;
+			settings.cleanUI.current = $(this).prop('checked') ? 'on' : 'off';
 		});
 
 		//  numFormat change
@@ -309,7 +309,7 @@ CM.attachSettingsPanel = function() {
 
 		//  shortNums toggle
 		$cmSettingsList.find('.setting-shortNums input').change(function() {
-			settings.shortNums.current = $(this).prop('checked') ? true : false;
+			settings.shortNums.current = $(this).prop('checked') ? 'on' : 'off;
 		});
 
 		// Save button
