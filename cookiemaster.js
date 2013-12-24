@@ -312,7 +312,12 @@ CM.userSettings = function(action) {
 			settingsStates[key] =  this.current;
 		});
 
+		settingsStates = $.param(settingsStates);
+		settingsStates = settingsStates.replace(/=/g, ':').replace(/&/g, '|');
+
 		console.log(settingsStates);
+
+		document.cookie = 'CMSettings=' + settingsStates;
 
 	} else if(action === 'load') {
 
