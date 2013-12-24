@@ -275,26 +275,17 @@ CM.attachSettingsPanel = function() {
  */
 CM.attachStyleSheet = function(url) {
 
-	var $styleSheet = $('<link />'),
-		sheets,
-		i;
+	var $styleSheet = $('<link>'),
+		$insertedSheet;
 
-	$styleSheet.attr({
+	$('head').append($styleSheet);
+	$insertedSheet = $("head").children(":last");
+	$insertedSheet.attr({
 		'type': 'text/css',
 		'rel': 'sylesheet',
 		'href': url,
 		'id': 'CMStyles'
 	});
-
-	$('head').append($styleSheet);
-
-	// Hack to cause the stylesheet to be applied to document
-	sheets = document.styleSheets;
-	for(i = 0; i < sheets.length; i++) {
-		if(sheets[i].href === url) {
-			sheets[i].insertRule("#fakeElement { display: none; }", 1);
-		}
-	}
 
 };
 
