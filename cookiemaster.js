@@ -113,9 +113,12 @@ CM.init = function() {
 		this.attachSettingsPanel();
 		this.cleanUI();
 
+		// Rebuild store to apply number formatting
+		Game.RebuildStore();
+
 		// All done :)
 		this.config.cmIsLoaded = true;
-		Game.Popup('CookieMaster version ' + this.config.cmVersion + ' loaded successfully!');
+		Game.Popup('CookieMaster v' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
 
