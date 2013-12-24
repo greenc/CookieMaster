@@ -118,7 +118,7 @@ CM.init = function() {
 
 		// All done :)
 		this.config.cmIsLoaded = true;
-		Game.Popup('CookieMaster v' + this.config.cmVersion + ' loaded successfully!');
+		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
 
@@ -213,9 +213,18 @@ CM.compatibilityCheck = function(version) {
  * Clean up the game interface a little. Most of the styles are
  * borrowed from Cookie Monster :)
  */
-CM.cleanUI = function() {
+CM.cleanUI = function(state) {
 
-	this.addStyles(this.config.css.cleanUI, this.config.cmStyleEl);
+	var state = state || true,
+		cssEl = 'cleanUI';
+
+	if(state) {
+		this.attachStyleElement(cssEl);
+		this.addStyles(this.config.css.cleanUI, document.getElementById(cssEl));
+	} else {
+		$('#' + cssEl).remove();
+	}
+
 
 };
 
