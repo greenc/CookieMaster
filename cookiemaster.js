@@ -17,6 +17,7 @@ CM.config = {
 	cmVersion: '0.1',
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
+	cmCSS: 'https://raw.github.com/greenc/CookieMaster/master/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -59,7 +60,7 @@ CM.init = function() {
 	 */
 	if(this.integrityCheck()) {
 
-		this.attachStyles();
+		this.attachStyleSheet(this.config.ccURL);
 		this.attachSettingsPanel();
 		this.cleanUI();
 
@@ -250,7 +251,7 @@ CM.attachSettingsPanel = function() {
 		items = [],
 		$wrapper = $('#wrapper'),
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('CookieMaster Settings');
+		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('CookieMaster Settings'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList');
 
 		// Build each setting item
@@ -270,29 +271,30 @@ CM.attachSettingsPanel = function() {
 };
 
 /**
- * Dynamically add CSS styles to the page
+ * Dynamically attach a stylesheet to the DOM
  */
-CM.attachStyles = function(url) {
+CM.attachStyleSheet = function(url) {
 
-	var $styleElement = $('<style />'),
-		styles = "\
-		#CMSettingsPanel {\
-			position: absolute;\
-			z-index: 9001;\
-			bottom: 0;\
-			left: 0;\
-			width: 500px;\
-			height: 600px;\
-			background-color: #FFF;\
-			padding: 20px;\
-		}\
-	";
+	var $styleSheet = $('<link />'),
+		sheets,
+		i;
 
-	$styleElement.attr({
+	$styleSheet.attr({
 		'type': 'text/css',
+		'rel': 'sylesheet',
+		'href': url,
 		'id': 'CMStyles'
-	}).html(styles);
-	$('head').append($styleElement);
+	});
+
+	$('head').append($styleSheet);
+
+	// Hack to cause the stylesheet to be applied to document
+	sheets = document.styleSheets;
+	for(i = 0; i < sheets.length; i++) {
+		if(sheets[i].href === url) {
+			sheets[i].insertRule("#fakeElement { display: none; }", 1);
+		}
+	}
 
 };
 
