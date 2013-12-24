@@ -17,7 +17,7 @@ CM.config = {
 	cmVersion: '0.1',
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
-	cmCSS: 'http://vaskemaskine.freetzi.com/cookiemaster/css/styles.css',
+	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
