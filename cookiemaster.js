@@ -309,7 +309,7 @@ CM.attachSettingsPanel = function() {
 
 		//  shortNums toggle
 		$cmSettingsList.find('.setting-shortNums input').change(function() {
-			settings.shortNums.current = $(this).prop('checked') ? 'on' : 'off;
+			settings.shortNums.current = $(this).prop('checked') ? 'on' : 'off';
 		});
 
 		// Save button
