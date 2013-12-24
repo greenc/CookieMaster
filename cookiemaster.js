@@ -179,6 +179,9 @@ CM.cleanUI = function(state) {
 		$body.removeClass(cssClass);
 	}
 
+	// Recalculate the main canvas height
+	Game.Background.canvas.height=Game.Background.canvas.parentNode.offsetHeight;
+
 };
 
 /**
