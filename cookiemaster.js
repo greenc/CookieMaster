@@ -17,7 +17,6 @@ CM.config = {
 	cmVersion: '0.1',
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
-	cmCSS: 'https://raw.github.com/greenc/CookieMaster/master/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -60,7 +59,7 @@ CM.init = function() {
 	 */
 	if(this.integrityCheck()) {
 
-		this.attachStyleSheet(this.config.cmCSS);
+		this.attachCSS();
 		this.attachSettingsPanel();
 		this.cleanUI();
 
@@ -271,21 +270,25 @@ CM.attachSettingsPanel = function() {
 };
 
 /**
- * Dynamically attach a stylesheet to the DOM
+ * Dynamically attach a style element and add CSS styles
  */
-CM.attachStyleSheet = function(url) {
+CM.attachCSS = function() {
 
-	var $styleSheet = $('<link>'),
-		$insertedSheet;
+	// Create and attach the style block
+	var sheet = (function() {
 
-	$('head').append($styleSheet);
-	$insertedSheet = $("head").children(":last");
-	$insertedSheet.attr({
-		'type': 'text/css',
-		'rel': 'sylesheet',
-		'href': url,
-		'id': 'CMStyles'
-	});
+		var style = document.createElement('style');
+
+		style.setAttribute('id', 'CMStyles');
+		style.appendChild(document.createTextNode(''));
+		document.head.appendChild(style);
+
+		return style.sheet;
+
+	})();
+
+	// Add our style rules
+	sheet.addRule("#CMSettingsPanel", "	position: absolute;z-index: 9001;bottom: 0;left: 0;width: 350px;height: 400px;background-color: #FFF;padding: 20px;", 1);
 
 };
 
