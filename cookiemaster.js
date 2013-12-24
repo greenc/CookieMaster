@@ -238,7 +238,7 @@ CM.attachSettingsPanel = function() {
 		items = [],
 		$wrapper = $('#wrapper'),
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('CookieMaster Settings'),
+		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList');
 
 		// Build each setting item
@@ -298,6 +298,25 @@ CM.attachStyleSheet = function(url, id) {
 	});
 
 	$('head').append($stylesheet);
+
+};
+
+CM.userSettings = function(action) {
+
+	var settings = this.config.settings,
+		settingsStates = {};
+
+	if(action === 'save') {
+
+		$.each(settings, function(key, value) {
+			settingsStates[key] =  this.current;
+		});
+
+		console.log(settingsStates);
+
+	} else if(action === 'load') {
+
+	}
 
 };
 
