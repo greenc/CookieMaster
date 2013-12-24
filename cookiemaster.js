@@ -251,7 +251,7 @@ CM.attachSettingsPanel = function() {
 					options.push('<option value="' + this + '">' + this + '</option>');
 				});
 				control = '<select>';
-				control += options.join(''));
+				control += options.join('');
 				control += '</select>';
 			}
 			items.push('<li class="setting">' + this.label + control + '</li>');
