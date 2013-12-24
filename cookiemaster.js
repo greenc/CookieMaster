@@ -304,20 +304,43 @@ CM.attachStyleSheet = function(url, id) {
 CM.userSettings = function(action) {
 
 	var settings = this.config.settings,
-		settingsStates = {};
+		settingsStates = {},
+		self = this;
 
 	if(action === 'save') {
 
+		// Grab the current value of each user setting
 		$.each(settings, function(key, value) {
 			settingsStates[key] =  this.current;
 		});
 
+		// Serialize the settings for cookie use
 		var serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
 		var cookieDate = new Date;
+
+		// Create and set the settings cookie
 		cookieDate.setFullYear(cookieDate.getFullYear() + 1);
 		document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
 	} else if(action === 'load') {
+
+		// Retrieve the cookie
+		var cookie = document.cookie.replace(/(?:(?:^|.*;\s*)CMSettings\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+		if(cookie) {
+
+			var settingsPairs = cookie.split('|');
+
+			// Split apart and update each setting's current value
+			$.each(settingsPairs, function(key, value) {
+				var keyVals = this.split(':');
+				// If we can't find a setting, skip it
+				if(settings.hasOwnProperty(keyVals[0])) {
+					settings[keyVals[0]].current = keyVals[1];
+				}
+			});
+
+		}
 
 	}
 
