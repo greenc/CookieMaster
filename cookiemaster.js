@@ -147,7 +147,7 @@ CM.compatibilityCheck = function(version) {
 		i;
 
 	for(i = 0; i < compVersions.length; i++) {
-		if(compVersions[j].match(ccVersion)) {
+		if(compVersions[i].match(ccVersion)) {
 			return i;
 		}
 	}
