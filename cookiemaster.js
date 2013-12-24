@@ -60,7 +60,7 @@ CM.init = function() {
 	 */
 	if(this.integrityCheck()) {
 
-		this.attachStyleSheet(this.config.ccURL);
+		this.attachStyleSheet(this.config.cmCSS);
 		this.attachSettingsPanel();
 		this.cleanUI();
 
