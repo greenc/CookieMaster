@@ -315,7 +315,6 @@ CM.attachSettingsPanel = function() {
 		// Save button
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();
-			self.applyUserSettings();
 		});
 
 };
@@ -377,7 +376,12 @@ CM.saveUserSettings = function() {
 	cookieDate.setFullYear(cookieDate.getFullYear() + 1);
 	document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
-	Game.Popup('CookieMaster settings saved successfully!');
+	// Did we save the cookie successfully?
+	if (document.cookie.indexOf('CMSettings') === -1) {
+		Game.Popup('Error: Could not save settings!');
+	} else {
+		Game.Popup('Settings saved successfully!');
+	}
 
 };
 
@@ -407,6 +411,8 @@ CM.loadUserSettings = function() {
 		});
 
 	}
+
+	this.applyUserSettings();
 
 };
 
