@@ -44,27 +44,9 @@ CM.config = {
 		}
 	},
 
-};
-
-/**
- * Initialization method. This is the first thing that gets called
- * when the script runs, and all methods that need to be invoked on
- * startup should get called from here in the order needed.
- */
-CM.init = function() {
-
-	var self = this;
-
-	/**
-	 * Perform a quick check to make sure CM can run correctly
-	 */
-	if(this.integrityCheck()) {
-
-		this.attachSettingsPanel();
-		this.cleanUI();
-
-		this.attachStyleElement(this.config.cmStyleID);
-		this.addStyles({
+	// Sets of CSS styles to be applied
+	css: {
+		main: {
 			'#CMSettingsPanel': {
 				'position': 'absolute',
 				'z-index': '9001',
@@ -82,7 +64,31 @@ CM.init = function() {
 				'font-size': '22px',
 				'font-family': '"Kavoon", Georgia, serif'
 			}
-		}, document.getElementById(this.config.cmStyleID));
+		}
+	}
+
+};
+
+/**
+ * Initialization method. This is the first thing that gets called
+ * when the script runs, and all methods that need to be invoked on
+ * startup should get called from here in the order needed.
+ */
+CM.init = function() {
+
+	var self = this,
+		mainCSS = this.config.css.main,
+		styleID = this.config.cmStyleID;
+
+	/**
+	 * Perform a quick check to make sure CM can run correctly
+	 */
+	if(this.integrityCheck()) {
+
+		this.attachSettingsPanel();
+		this.cleanUI();
+
+		this.attachStyleElement(styleID).addStyles(mainCSS, document.getElementById(this.config.cmStyleID));
 
 		// All done :)
 		this.config.cmIsLoaded = true;
@@ -295,7 +301,7 @@ CM.attachSettingsPanel = function() {
  *
  * @param  {string} Desired element ID
  *
- * @return {object}    The inserted style element
+ * @return {object}    This
  */
 CM.attachStyleElement = function(id) {
 
@@ -306,7 +312,7 @@ CM.attachStyleElement = function(id) {
 	styleEl.appendChild(document.createTextNode(''));
 	document.head.appendChild(styleEl);
 
-	return styleEl;
+	return this;
 
 };
 
@@ -316,7 +322,7 @@ CM.attachStyleElement = function(id) {
  * @param {object} rules List of rules in JSON format
  * @param {object} sheet The style element to apply the rules to
  *
- * @return {object}    The style element
+ * @return {object}    This
  */
 CM.addStyles = function(rules, el) {
 
@@ -338,7 +344,7 @@ CM.addStyles = function(rules, el) {
 		sheet.insertRule(selector + '{' + propStr + '}', sheet.cssRules.length);
 	}
 
-	return el;
+	return this;
 
 };
 
