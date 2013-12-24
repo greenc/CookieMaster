@@ -15,7 +15,7 @@ CM = {};
 CM.config = {
 
 	cmVersion: '0.1',
-	cmIsLoaded: false,
+	cmIsLoaded: false, // TO DO: Expose this as global so we can prevent CM from being initialized multiple times
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
