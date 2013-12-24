@@ -261,9 +261,7 @@ CM.attachSettingsPanel = function() {
 
 				// Build a select box if a setting has multiple options
 				$.each(this.options, function() {
-					console.log(current);
-					console.log(this);
-					selected = (current == this) ? ' selected="selected"' : '';
+					selected = (current === this.toString()) ? ' selected="selected"' : '';
 					options.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
 				});
 				control = '<select>';
@@ -273,7 +271,8 @@ CM.attachSettingsPanel = function() {
 			} else if(this.options === 'toggle') {
 
 				// Build a checkbox if it's a simple toggle
-				control = '<input type="checkbox" />'
+				selected = current ? ' checked="checked"' : '';
+				control = '<input type="checkbox"' + selected + ' />'
 
 			}
 
