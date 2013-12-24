@@ -34,6 +34,23 @@
 	margin-left: 5px;
 }
 
+#CMSettingsSave {
+	cursor: pointer;
+	border: 1px solid #6CA01E;
+	background-color: #588811;
+	color: #FFF;
+	padding: 3px 15px;
+	margin: 10px 0 0;
+	border-radius: 2px;
+	font-family: "Kavoon", Georgia, serif;
+	font-size: 16px;
+	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+}
+
+#CMSettingsSave:hover {
+	background-color: #6AA01A;
+}
+
 .cf:before,
 .cf:after {
 	content: " ";

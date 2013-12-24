@@ -245,7 +245,7 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
-		$cmSettingsSaveButon = $('<button />').attr('id', 'CMSettingsSave').text('Save');
+		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Save');
 
 		// Build each setting item
 		$.each(settings, function(key, value) {
