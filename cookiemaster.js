@@ -18,6 +18,7 @@ CM.config = {
 	cmIsLoaded: false,
 	cmDecimalSeparator: '.',
 	cmStyleID: 'cmStyles',
+	cmStyleEl = {},
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -64,6 +65,28 @@ CM.config = {
 				'font-size': '22px',
 				'font-family': '"Kavoon", Georgia, serif'
 			}
+		},
+		cleanUI {
+			'#topBar': {'display': 'none'},
+			'#game': {
+				'-webkit-touch-callout': 'none',
+				'-webkit-user-select': 'none',
+				'-khtml-touch-callout': 'none',
+				'-moz-touch-callout': 'none',
+				'-ms-touch-callout': 'none',
+				'-o-touch-callout': 'none',
+				'user-select': 'none',
+				'top': '0'
+			},
+			'#cookies': {
+				'background': 'rgba(0,0,0,0.75)',
+				'border-top': '1px solid black',
+				'border-bottom': '1px solid black'
+			},
+			'#tooltip': {
+				'margin-top': '32px',
+				'pointer-events': 'none'
+			}
 		}
 	}
 
@@ -76,8 +99,7 @@ CM.config = {
  */
 CM.init = function() {
 
-	var self = this,
-		mainCSS = this.config.css.main,
+	var mainCSS = this.config.css.main,
 		styleID = this.config.cmStyleID;
 
 	/**
@@ -87,7 +109,8 @@ CM.init = function() {
 
 		// Attach CM CSS styles
 		this.attachStyleElement(styleID);
-		this.addStyles(mainCSS, $('#' + styleID)[0]);
+		this.config.cmStyleEl = document.getElementById(styleID);
+		this.addStyles(mainCSS, this.config.cmStyleEl);
 
 		this.attachSettingsPanel();
 		this.cleanUI();
@@ -186,33 +209,12 @@ CM.compatibilityCheck = function(version) {
 }
 
 /**
- * Clean up the game interface a little. Most of these are borrowed
- * from Cookie Monster :)
+ * Clean up the game interface a little. Most of the styles are
+ * borrowed from Cookie Monster :)
  */
 CM.cleanUI = function() {
 
-	var $game = this.config.ccGame,
-		gameFixes =
-		'-webkit-touch-callout: none;' +
-		'-webkit-user-select: none;' +
-		'-khtml-user-select: none;' +
-		'-moz-user-select: none;' +
-		'-ms-user-select: none;' +
-		'-o-user-select: none;' +
-		'user-select: none;' +
-		'top: 0;';
-
-	$('#topBar').css('display', 'none');
-	$game.css('cssText', gameFixes);
-	$game.find('#cookies').css({
-		'background': 'rgba(0,0,0,0.75)',
-		'border-top': '1px solid black',
-		'border-bottom': '1px solid black'
-	});
-	$game.find('#tooltip').css({
-		'margin-top': '32px',
-		'pointer-events': 'none'
-	});
+	this.addStyles(this.config.css.cleanUI, this.config.cmStyleEl);
 
 };
 
