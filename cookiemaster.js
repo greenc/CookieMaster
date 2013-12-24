@@ -6,6 +6,10 @@
  */
 CM = {};
 
+// Expose this as a global so we can detect if another instance
+// of the script has already been loaded
+var cmIsLoaded = false;
+
 /**
  * Configuration settings for CookieMaster, the loaded version of
  * Cookie Clicker and user-specific settings.
@@ -15,7 +19,6 @@ CM = {};
 CM.config = {
 
 	cmVersion: '0.1',
-	cmIsLoaded: false, // TO DO: Expose this as global so we can prevent CM from being initialized multiple times
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
@@ -77,7 +80,7 @@ CM.init = function() {
 		this.applyUserSettings();
 
 		// All done :)
-		this.config.cmIsLoaded = true;
+		cmIsLoaded = true;
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
@@ -102,7 +105,7 @@ CM.integrityCheck = function() {
 		error = false,
 		i;
 
-	if(this.config.cmIsLoaded) {
+	if(cmIsLoaded) {
 		// Already loaded
 		message = 'Error: CookieMaster is already running!';
 		error = true;
@@ -193,7 +196,7 @@ CM.cleanUI = function(state) {
 		Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
 	}
 
-	// We need to delay this in case the UI styles haven not yet been parsed
+	// We need to delay this in case the UI styles have not yet been parsed :(
 	setTimeout(recalculateCanvasDimensions, 1000);
 
 };
@@ -201,7 +204,7 @@ CM.cleanUI = function(state) {
 /**
  * Change the font of highlight and title text
  *
- * @param  {boolean} state Turn on or off
+ * @param  {string} fontSetting The selected font setting
  */
 CM.changeFont = function(fontSetting) {
 
@@ -281,6 +284,7 @@ CM.attachSettingsPanel = function() {
 		control = [],
 		current = '',
 		selected = '',
+		html = '',
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
@@ -293,7 +297,6 @@ CM.attachSettingsPanel = function() {
 
 			// Reset these for each loop
 			options = [];
-			control = [];
 			current = this.current;
 
 			if(typeof this.options === 'object') {
@@ -303,11 +306,11 @@ CM.attachSettingsPanel = function() {
 					selected = (current === this.toString()) ? ' selected="selected"' : '';
 					options.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
 				});
-				control = '<select id="CMsetting-' + key + '">';
+				control =  '<select id="CMsetting-' + key + '">';
 				control += options.join('');
 				control += '</select>';
 
-				// Add event listener for change even
+				// Add event listener for change event
 				$cmSettingsList.on('change', '.setting-' + key + ' select', function() {
 					settings[key].current = $(this).find(":selected").val();
 				});
@@ -326,7 +329,11 @@ CM.attachSettingsPanel = function() {
 			}
 
 			// Build the list of items
-			items.push('<li class="cf setting setting-' + key + '" title="' + this.desc + '""><label for="CMsetting' + key + '">' + this.label + control + '</label></li>');
+			html =  '<li class="cf setting setting-' + key + '" title="' + this.desc + '"">';
+			html +=     '<label for="CMsetting' + key + '">'  + this.label + control + '</label>';
+			html += '</li>';
+
+			items.push(html);
 
 		});
 
@@ -358,7 +365,7 @@ CM.attachSettingsPanel = function() {
  */
 CM.attachStyleSheet = function(url, id) {
 
-	var $stylesheet = $('<link>'),
+	var $stylesheet = $('<link />'),
 		id = id || '',
 		url = url || '';
 
