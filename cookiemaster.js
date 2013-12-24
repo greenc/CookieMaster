@@ -24,9 +24,10 @@ CM.config = {
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
 	ccBody: $('body'),
+	ccWrapper: $('#wrapper'),
 	ccGame: $('#game'),
 
-	// TO DO: Make these actually do something :)
+	// User configurable settings
 	settings: {
 		cleanUI: {
 			label: 'Clean UI',
@@ -234,9 +235,11 @@ CM.largeNumFormat = function(num, floats, decSep) {
  */
 CM.attachSettingsPanel = function() {
 
-	var settings = this.config.settings,
-		items = [],
-		$wrapper = $('#wrapper'),
+	var items = [],
+		options = [],
+		control = [],
+		settings = this.config.settings,
+		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList');
@@ -244,8 +247,8 @@ CM.attachSettingsPanel = function() {
 		// Build each setting item
 		$.each(settings, function(key, value) {
 
-			var options = [],
-				control;
+			options = [];
+			control = [];
 
 			if(typeof this.options === 'object') {
 
@@ -264,6 +267,7 @@ CM.attachSettingsPanel = function() {
 
 			}
 
+			// Build the list of items
 			items.push('<li class="cf setting setting-' + key + '">' + this.label + control + '</li>');
 
 		});
@@ -301,46 +305,48 @@ CM.attachStyleSheet = function(url, id) {
 
 };
 
-CM.userSettings = function(action) {
+CM.saveUserSettings = function() {
 
 	var settings = this.config.settings,
-		settingsStates = {},
+		settingsStates = {}
+		serializedSettings = '',
+		cookieDate = new Date();
+
+	// Grab the current value of each user setting
+	$.each(settings, function(key, value) {
+		settingsStates[key] =  this.current;
+	});
+
+	// Serialize the settings for cookie use
+	serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
+
+	// Create and set the settings cookie
+	cookieDate.setFullYear(cookieDate.getFullYear() + 1);
+	document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
+
+};
+
+CM.loadUserSettings = function() {
+
+	var settings = this.config.settings,
+		cookie = document.cookie.replace(/(?:(?:^|.*;\s*)CMSettings\s*\=\s*([^;]*).*$)|^.*$/, "$1"),
+		settingsPairs = [],
+		keyVals = [],
 		self = this;
 
-	if(action === 'save') {
+	if(cookie) {
 
-		// Grab the current value of each user setting
-		$.each(settings, function(key, value) {
-			settingsStates[key] =  this.current;
+		// Split apart and update each setting's current value
+		settingsPairs = cookie.split('|');
+		$.each(settingsPairs, function(key, value) {
+
+			keyVals = this.split(':');
+			// If we can't find a setting, skip it
+			if(settings.hasOwnProperty(keyVals[0])) {
+				settings[keyVals[0]].current = keyVals[1];
+			}
+
 		});
-
-		// Serialize the settings for cookie use
-		var serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
-		var cookieDate = new Date;
-
-		// Create and set the settings cookie
-		cookieDate.setFullYear(cookieDate.getFullYear() + 1);
-		document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
-
-	} else if(action === 'load') {
-
-		// Retrieve the cookie
-		var cookie = document.cookie.replace(/(?:(?:^|.*;\s*)CMSettings\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-
-		if(cookie) {
-
-			var settingsPairs = cookie.split('|');
-
-			// Split apart and update each setting's current value
-			$.each(settingsPairs, function(key, value) {
-				var keyVals = this.split(':');
-				// If we can't find a setting, skip it
-				if(settings.hasOwnProperty(keyVals[0])) {
-					settings[keyVals[0]].current = keyVals[1];
-				}
-			});
-
-		}
 
 	}
 
