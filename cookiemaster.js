@@ -180,8 +180,14 @@ CM.cleanUI = function(state) {
 	}
 
 	// Recalculate the background canvas heights
-	Game.Background.canvas.height = Game.Background.canvas.parentNode.offsetHeight;
-	Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
+	function recalculateCanvasDimensions() {
+		Game.Background.canvas.width = Game.Background.canvas.parentNode.offsetWidth;
+		Game.Background.canvas.height = Game.Background.canvas.parentNode.offsetHeight;
+		Game.LeftBackground.canvas.width = Game.LeftBackground.canvas.parentNode.offsetWidth;
+		Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
+	}
+
+	setTimeout(recalculateCanvasDimensions, 300);
 
 };
 
