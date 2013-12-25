@@ -397,7 +397,7 @@ CM.Timer = function(type, label) {
 
 	this.hide = function() {
 
-		this.container.fadeOut(500);
+		this.container.fadeOut(200);
 
 	},
 
@@ -519,12 +519,12 @@ CM.timerPanel = function(state) {
 		clotTimer = new CM.Timer('clot', 'Clot:');
 
 		// Attach them
-		$cmTimerPanel.prepend(gcTimer.create());
-		$cmTimerPanel.prepend(reindeerTimer.create());
-		$cmTimerPanel.prepend(frenzyTimer.create());
-		$cmTimerPanel.prepend(clickFrenzyTimer.create());
-		$cmTimerPanel.prepend(bloodFrenzyTimer.create());
-		$cmTimerPanel.prepend(clotTimer.create());
+		$cmTimerPanel.append(gcTimer.create());
+		$cmTimerPanel.append(reindeerTimer.create());
+		$cmTimerPanel.append(frenzyTimer.create());
+		$cmTimerPanel.append(bloodFrenzyTimer.create());
+		$cmTimerPanel.append(clotTimer.create());
+		$cmTimerPanel.append(clickFrenzyTimer.create());
 
 
 		// Set an execution loop for active timers
