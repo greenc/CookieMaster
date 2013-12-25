@@ -92,6 +92,7 @@
 }
 
 .cmTimerContainer {
+	display: none;
 	margin: 5px 10px;
 }
 
