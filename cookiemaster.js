@@ -496,15 +496,17 @@ CM.timerPanel = function(state) {
 
 	} else {
 
-		// Stop the execution loop
-		clearInterval(timerLoop);
+		if($('#CMTimerPanel')) {
+			// Stop the execution loop
+			clearInterval(timerLoop);
 
-		// Remove references to all timers
-		gcTimer = null;
-		reindeerTimer = null;
+			// Remove references to all timers
+			gcTimer = null;
+			reindeerTimer = null;
 
-		// Remove the timer panel
-		$cmTimerPanel.remove();
+			// Remove the timer panel 
+			$cmTimerPanel.remove();
+		}
 
 	}
 
