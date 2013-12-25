@@ -36,6 +36,12 @@ CM.config = {
 			options: 'toggle',
 			current: 'on'
 		},
+		showTimers: {
+			label: 'Show Timers',
+			desc: 'Display countdown timers for game events',
+			options: 'toggle',
+			current: 'on'
+		},
 		numFormat: {
 			label: 'Number Formatting',
 			desc: 'Display numbers in US (123,456,789.0) or European (123.456.789,0) format',
@@ -77,6 +83,8 @@ CM.init = function() {
 
 		// Apply the current user settings after we've done everything else
 		this.applyUserSettings();
+
+
 
 		// All done :)
 		cmIsLoaded = true; // Implicitly create this as global so we can test against multiple inits
@@ -272,82 +280,91 @@ CM.largeNumFormat = function(num, floats) {
 
 };
 
-CM.Timer = {
+/**
+ * Class for dealing with game event timers
+ */
+CM.Timer = function(type, label) {
 
-	create: function(type, label, params) {
+	this.type = type;
+	this.label = label;
+	this.container = $('<div />');
+	this.id = 'CMTimer-' + this.type;
 
-		var $container = $('<div />').addClass('cmTimerContainer cf'),
+	this.create = function() {
+
+		var timings = this.getTimings(),
+			this.container.attr({'class': 'cmTimerContainer cf', 'id': this.id}),
 			$barOuter = $('<div />').addClass('cmTimer ' + type),
 			$barInner = $('<div />'),
-			$label = $('<div />').addClass('cmTimerLabel').text(label),
-			$counter = $('<div />').addClass('cmTimerCounter').text(params.max),
-			width,
+			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
+			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
+			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
-		width = params.minCurrent / params.max * 100;
-
-		if(params.min > 0) {
-			hardMin = params.min / params.max * 100;
-			$barOuter.append('<span />').css('left', hardMin + 'px');
+		// Add a min time indicator if necessary
+		if(timings.hasOwnProperty('min') && timings.min > 0) {
+			hardMin = timings.min / timings.max * 100;
+			var $limiter = $('<span />').css('left', hardMin + '%')
+			$barOuter.append($limiter);
 		}
 
 		$barInner.css('width', width + '%');
 
 		$barOuter.append($barInner);
-		$container.append($label);
-		$container.append($barOuter);
-		$container.append($counter);
+		this.container.append($label);
+		this.container.append($barOuter);
+		this.container.append($counter);
 
-		return $container;
+		return this.container;
 
 	},
 
-	destroy: function(type) {
+	remove: function() {
 
 		return true;
 
 	},
 
-	update: function(type) {
+	update: function() {
 
-		return true;
+		var $limiter = this.container.find('span'),
+			$counter = this.container.find('.cmTimerLabel'),
+			$barInner = this.container.find('.cmTimer div'),
+			timings = this.getTimings(this.type),
+			width = timings.minCurrent / timings.max * 100,
+			hardMin;
+
+		$barInner.css('width', width + '%');
+		$counter.text(Math.round(timings.minCurrent));
+
+	},
+
+	getTimings: function() {
+
+		var timings = {};
+
+		if(this.type === 'nextReindeer') {
+			timings.min = Game.seasonPopup.minTime / Game.fps;
+			timings.minCurrent = (Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps;
+			timings.max = Game.seasonPopup.maxTime / Game.fps;
+		} else if(this.type === 'goldenCookie') {
+			timings.min = Game.goldenCookie.minTime / Game.fps;
+			timings.minCurrent = (Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps;
+			timings.max = Game.goldenCookie.maxTime / Game.fps;
+		} else if(this.type === 'frenzy') {
+			timings.minCurrent = Game.frenzy / Game.fps;
+			timings.max = 77 + 77 * Game.Has('Get lucky');
+		} else if(this.type === 'clickFrenzy') {
+			timings.minCurrent = Game.clickFrenzy / Game.fps;
+			timings.max = 13 + 13 * Game.Has('Get lucky');
+		} else if(this.type === 'bloodFrenzy') {
+			timings.minCurrent = Game.clickFrenzy / Game.fps;
+			timings.max = 6 + 6 * Game.Has('Get lucky');;
+		}
+
+		return timings;
 
 	}
-
-};
-
-/**
- * Get the max, min and time remaining in seconds for all timed game events,
- * rounded to 2 decimal places
- *
- * @param  {string} event Name of the event we want to get the time values for
- *
- * @return {object}       {minCurrent, min, max}
- */
-CM.calculateTimeRemaining = function(event) {
-
-	var timeRemaining = {};
-
-	if(event === 'nextReindeer') {
-		timeRemaining.minCurrent = (Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps;
-		timeRemaining.min = Game.seasonPopup.minTime / Game.fps;
-		timeRemaining.max = Game.seasonPopup.maxTime / Game.fps;
-	} else if(event === 'nextGoldenCookie') {
-		timeRemaining.minCurrent = (Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps;
-		timeRemaining.min = Game.goldenCookie.minTime / Game.fps;
-		timeRemaining.max = Game.goldenCookie.maxTime / Game.fps;
-	} else if(event === 'frenzy') {
-		timeRemaining[2] = Math.round((Game.frenzy / Game.fps) * 100) / 100;
-		timeRemaining[3] = 77 + 77 * Game.Has('Get lucky');
-	} else if(event === 'clickFrenzy') {
-		timeRemaining[2] = Math.round((Game.clickFrenzy / Game.fps) * 100) / 100;
-		timeRemaining[3] = 13 + 13 * Game.Has('Get lucky');
-	} else if(event === 'bloodFrenzy') {
-		timeRemaining[2] = Math.round((Game.clickFrenzy / Game.fps) * 100) / 100;
-		timeRemaining[3] = 6 + 6 * Game.Has('Get lucky');;
-	}
-
-	return timeRemaining;
 
 };
 
@@ -432,12 +449,63 @@ CM.attachSettingsPanel = function() {
 
 };
 
-CM.attachTimerPanel = function() {
+/**
+ * Configure the panel for showing game timers and populate
+ */
+CM.timerPanel = function(state) {
 
 	var $sectionLeft = this.config.ccSectionLeft,
-		$cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel');
+		timerLoop = setInterval(manageTimers, 2000);
 
-	$sectionLeft.append($cmTimerPanel);
+	if(state) {
+
+		var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel');
+
+		$sectionLeft.append($cmTimerPanel);
+
+		// Set an execution loop for active timers
+		function manageTimers() {
+
+			// Golden Cookie timer
+			if($cmTimerPanel.find('#CMTimer-goldenCookie').length === 0) {
+				if($("#goldenCookie:hidden")) {
+					var gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
+					$cmTimerPanel.prepend(gcTimer.create());
+				}
+			} else {
+				gcTimer.update();
+			}
+
+			// Reindeer timer
+			if($cmTimerPanel.find('#CMTimer-reindeer').length === 0) {
+				if($("#seasonPopup:hidden")) {
+					var reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
+					$cmTimerPanel.prepend(reindeerTimer.create());
+				}
+			} else {
+				reindeerTimer.update();
+			}
+
+			// Frenzy timer
+			if(Game.frenzy > 0 && $cmTimerPanel.find('#CMTimer-frenzy').length === 0) {
+				//var frenzyTimer = new CM.Timer('frenzy', 'Frenzy');
+			}
+
+		}
+
+	} else {
+
+		// Stop the execution loop
+		clearInterval(timerLoop);
+
+		// Remove references to all timers
+		gcTimer = null;
+		reindeerTimer = null;
+
+		// Remove the timer panel
+		$cmTimerPanel.remove();
+
+	}
 
 };
 
@@ -472,6 +540,7 @@ CM.applyUserSettings = function() {
 	var settings = this.config.settings;
 
 	settings.cleanUI.current === 'on' ? this.cleanUI(true) : this.cleanUI(false);
+	settings.showTimers.current === 'on' ? this.timerPanel(true) : this.timerPanel(false);
 	this.changeFont(settings.changeFont.current);
 	Game.RebuildStore();
 
