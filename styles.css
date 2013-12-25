@@ -80,6 +80,39 @@
 	background-color: #6AA01A;
 }
 
+#CMTImerPanel {
+	padding: 10px 20px;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+	background-color: rgba(0, 0, 0, 0.75);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 20;
+}
+
+.cmTimerContainer {
+	margin: 0 0 5px;
+}
+
+.cmTimerLabel {
+	float: left;
+	width: 25%;
+}
+
+.cmTimer {
+	float: left;
+	width: 75%;
+	height: 12px;
+	background-color: #222;
+}
+
+.cmTimer div {
+	height: 12px;
+	background-color: red;
+}
+
 .cf:before,
 .cf:after {
 	content: " ";

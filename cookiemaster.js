@@ -272,17 +272,57 @@ CM.largeNumFormat = function(num, floats) {
 
 };
 
+CM.Timer = {
+
+	create: function(type, label, params) {
+
+		var $container = $('<div />').addClass('cmTimerContainer cf'),
+			$barOuter = $('<div />').addClass('cmTimer ' + type),
+			$barInner = $('<div />'),
+			$label = $('<div />').addClass('cmTimerLabel').text(label),
+			width;
+
+		if(params[0] !== null && params[1] !== null) {
+			width = params[0] / params[1] * 100;
+		} else {
+			width = params[2] / params[3] * 100
+		}
+
+		$barInner.css('width', width + '%');
+
+		$barOuter.append($barInner);
+		$container.append($label);
+		$container.append($barOuter);
+
+		return $container;
+
+	},
+
+	destroy: function(type) {
+
+		return true;
+
+	},
+
+	update: function(type) {
+
+		return true;
+
+	}
+
+};
+
 /**
  * Get the max, min and time remaining in seconds for all timed game events,
  * rounded to 2 decimal places
  *
  * @param  {string} event Name of the event we want to get the time values for
  *
- * @return {array}       [minTime, maxTime, timeRemaining]
+ * @return {array}       [minTime, maxTime, timeRemaining, totalTime]
  */
 CM.calculateTimeRemaining = function(event) {
 
-	var timeRemaining = [0, 0, 0]; // min, max, time
+	var timeRemaining = [null, null, null, null]; // min, max, time, total
 
 	if(event === 'nextReindeer') {
 		timeRemaining[0] = Math.round((Game.seasonPopup.minTime / Game.fps) * 100) / 100;
@@ -292,8 +332,13 @@ CM.calculateTimeRemaining = function(event) {
 		timeRemaining[1] = Math.round(((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps) * 100) / 100;
 	} else if(event === 'frenzy') {
 		timeRemaining[2] = Math.round((Game.frenzy / Game.fps) * 100) / 100;
+		timeRemaining[3] = 77 + 77 * Game.Has('Get lucky');
 	} else if(event === 'clickFrenzy') {
 		timeRemaining[2] = Math.round((Game.clickFrenzy / Game.fps) * 100) / 100;
+		timeRemaining[3] = 13 + 13 * Game.Has('Get lucky');
+	} else if(event === 'bloodFrenzy') {
+		timeRemaining[2] = Math.round((Game.clickFrenzy / Game.fps) * 100) / 100;
+		timeRemaining[3] = 6 + 6 * Game.Has('Get lucky');;
 	}
 
 	return timeRemaining;
@@ -386,7 +431,7 @@ CM.attachTimerPanel = function() {
 	var $sectionLeft = this.config.ccSectionLeft,
 		$cmTimerPanel = $('<div />').attr('id', 'CMTImerPanel');
 
-		$sectionLeft.append($cmTimerPanel);
+	$sectionLeft.append($cmTimerPanel);
 
 };
 
