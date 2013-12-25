@@ -468,8 +468,8 @@ CM.attachSettingsPanel = function() {
  */
 CM.timerPanel = function(state) {
 
-	var timerRes = this.config.cmTimerResolution;
-	$sectionLeft = this.config.ccSectionLeft,
+	var timerRes = this.config.cmTimerResolution,
+		$sectionLeft = this.config.ccSectionLeft,
 		gcTimer,
 		reindeerTimer;
 
