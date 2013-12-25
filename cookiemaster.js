@@ -16,6 +16,7 @@ CM.config = {
 
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
+	cmTimerResolution: 33,
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -467,7 +468,8 @@ CM.attachSettingsPanel = function() {
  */
 CM.timerPanel = function(state) {
 
-	var $sectionLeft = this.config.ccSectionLeft,
+	var timerRes = this.config.cmTimerResolution;
+	$sectionLeft = this.config.ccSectionLeft,
 		gcTimer,
 		reindeerTimer;
 
@@ -490,7 +492,7 @@ CM.timerPanel = function(state) {
 		function manageTimers() {
 
 			// Golden Cookie timer
-			if($("#goldenCookie:hidden")) {
+			if($('#goldenCookie').is(':hidden')) {
 				gcTimer.update();
 				gcTimer.show();
 			} else {
@@ -498,7 +500,7 @@ CM.timerPanel = function(state) {
 			}
 
 			// Reindeer timer
-			if($("#seasonPopup:hidden")) {
+			if($('#seasonPopup').is(':hidden')) {
 				reindeerTimer.update();
 				reindeerTimer.show();
 			} else {
@@ -511,7 +513,7 @@ CM.timerPanel = function(state) {
 			}
 
 		}
-		timerLoop = setInterval(manageTimers, 1000);
+		timerLoop = setInterval(manageTimers, timerRes);
 
 	} else {
 
