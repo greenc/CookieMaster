@@ -348,7 +348,7 @@ CM.Timer = function(type, label) {
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 
 			hardMin = timings.min / timings.max * 100;
-			this.limiter = $('<span />').css('right', hardMin + '%');
+			this.limiter.css('right', hardMin + '%');
 
 			if(width < 100 - hardMin) {
 				if(!this.container.hasClass('cmEmphasize')) {
