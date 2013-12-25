@@ -86,7 +86,6 @@ CM.init = function() {
 		this.applyUserSettings();
 
 
-
 		// All done :)
 		cmIsLoaded = true; // Implicitly create this as global so we can test against multiple inits
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
@@ -297,7 +296,7 @@ CM.Timer = function(type, label) {
 
 	this.create = function() {
 
-		this.container.attr({'class': 'cmTimerContainer cf cmTimer-' + this.id, 'id': this.id});
+		this.container.attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id});
 
 		var timings = this.getTimings(),
 			$barOuter = $('<div />').addClass('cmTimer'),
@@ -537,6 +536,7 @@ CM.timerPanel = function(state) {
 			}
 
 		}
+
 		timerLoop = setInterval(manageTimers, timerRes);
 
 	} else {
