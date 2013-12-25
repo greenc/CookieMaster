@@ -320,6 +320,18 @@ CM.Timer = function(type, label) {
 
 	},
 
+	this.hide = function() {
+
+		this.container.fadeOut(500);
+
+	},
+
+	this.show = function() {
+
+		this.container.fadeIn(200);
+
+	},
+
 	this.remove = function() {
 
 		return true;
@@ -455,7 +467,9 @@ CM.attachSettingsPanel = function() {
  */
 CM.timerPanel = function(state) {
 
-	var $sectionLeft = this.config.ccSectionLeft;
+	var $sectionLeft = this.config.ccSectionLeft,
+		gcTimer,
+		reindeerTimer;
 
 	if(state) {
 
@@ -469,7 +483,7 @@ CM.timerPanel = function(state) {
 			// Golden Cookie timer
 			if($cmTimerPanel.find('#CMTimer-goldenCookie').length === 0) {
 				if($("#goldenCookie:hidden")) {
-					var gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
+					gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
 					$cmTimerPanel.prepend(gcTimer.create());
 				}
 			} else {
@@ -479,7 +493,7 @@ CM.timerPanel = function(state) {
 			// Reindeer timer
 			if($cmTimerPanel.find('#CMTimer-reindeer').length === 0) {
 				if($("#seasonPopup:hidden")) {
-					var reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
+					reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
 					$cmTimerPanel.prepend(reindeerTimer.create());
 				}
 			} else {
