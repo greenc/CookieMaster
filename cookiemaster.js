@@ -320,13 +320,13 @@ CM.Timer = function(type, label) {
 
 	},
 
-	remove: function() {
+	remove = function() {
 
 		return true;
 
 	},
 
-	update: function() {
+	update = function() {
 
 		var $limiter = this.container.find('span'),
 			$counter = this.container.find('.cmTimerLabel'),
@@ -340,7 +340,7 @@ CM.Timer = function(type, label) {
 
 	},
 
-	getTimings: function() {
+	getTimings = function() {
 
 		var timings = {};
 
