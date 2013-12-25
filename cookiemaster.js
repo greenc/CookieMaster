@@ -285,6 +285,8 @@ CM.largeNumFormat = function(num, floats) {
  */
 CM.Timer = function(type, label) {
 
+	var self = this;
+
 	this.type = type;
 	this.label = label;
 	this.container = $('<div />');
@@ -294,10 +296,10 @@ CM.Timer = function(type, label) {
 
 		this.container.attr({'class': 'cmTimerContainer cf', 'id': this.id});
 
-		var timings = this.getTimings(),
+		var timings = self.getTimings(),
 			$barOuter = $('<div />').addClass('cmTimer ' + type),
 			$barInner = $('<div />'),
-			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
+			$label = $('<div />').addClass('cmTimerLabel').text(self.label),
 			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
@@ -305,7 +307,7 @@ CM.Timer = function(type, label) {
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 			hardMin = timings.min / timings.max * 100;
-			var $limiter = $('<span />').css('left', hardMin + '%')
+			var $limiter = $('<span />').css('left', hardMin + '%');
 			$barOuter.append($limiter);
 		}
 
@@ -328,10 +330,10 @@ CM.Timer = function(type, label) {
 
 	update = function() {
 
-		var $limiter = this.container.find('span'),
-			$counter = this.container.find('.cmTimerLabel'),
-			$barInner = this.container.find('.cmTimer div'),
-			timings = this.getTimings(this.type),
+		var $limiter = self.container.find('span'),
+			$counter = self.container.find('.cmTimerLabel'),
+			$barInner = self.container.find('.cmTimer div'),
+			timings = self.getTimings(this.type),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
@@ -344,21 +346,21 @@ CM.Timer = function(type, label) {
 
 		var timings = {};
 
-		if(this.type === 'nextReindeer') {
+		if(self.type === 'nextReindeer') {
 			timings.min = Game.seasonPopup.minTime / Game.fps;
 			timings.minCurrent = (Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps;
 			timings.max = Game.seasonPopup.maxTime / Game.fps;
-		} else if(this.type === 'goldenCookie') {
+		} else if(self.type === 'goldenCookie') {
 			timings.min = Game.goldenCookie.minTime / Game.fps;
 			timings.minCurrent = (Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps;
 			timings.max = Game.goldenCookie.maxTime / Game.fps;
-		} else if(this.type === 'frenzy') {
+		} else if(self.type === 'frenzy') {
 			timings.minCurrent = Game.frenzy / Game.fps;
 			timings.max = 77 + 77 * Game.Has('Get lucky');
-		} else if(this.type === 'clickFrenzy') {
+		} else if(self.type === 'clickFrenzy') {
 			timings.minCurrent = Game.clickFrenzy / Game.fps;
 			timings.max = 13 + 13 * Game.Has('Get lucky');
-		} else if(this.type === 'bloodFrenzy') {
+		} else if(self.type === 'bloodFrenzy') {
 			timings.minCurrent = Game.clickFrenzy / Game.fps;
 			timings.max = 6 + 6 * Game.Has('Get lucky');;
 		}
@@ -504,7 +506,7 @@ CM.timerPanel = function(state) {
 			gcTimer = null;
 			reindeerTimer = null;
 
-			// Remove the timer panel 
+			// Remove the timer panel
 			$cmTimerPanel.remove();
 		}
 
