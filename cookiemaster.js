@@ -364,7 +364,7 @@ CM.attachSettingsPanel = function() {
 
 		// Glue it together
 		$cmSettingsList.append(items.join(''));
-		$cmSettingsPanel.append($CMSettingsPanelClose);
+		$cmSettingsPanel.append($cmSettingsClose);
 		$cmSettingsPanel.append($cmSettingsTitle);
 		$cmSettingsPanel.append($cmSettingsList);
 		$cmSettingsPanel.append($cmSettingsSaveButon);
@@ -382,7 +382,7 @@ CM.attachSettingsPanel = function() {
 		});
 
 		// Close button
-		$CMSettingsPanelClose.click(function() {
+		$cmSettingsClose.click(function() {
 			$cmSettingsPanel.fadeOut(200);
 		});
 
