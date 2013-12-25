@@ -496,7 +496,7 @@ CM.timerPanel = function(state) {
 
 	} else {
 
-		if($('#CMTimerPanel')) {
+		if($('#CMTimerPanel').length !== 0) {
 			// Stop the execution loop
 			clearInterval(timerLoop);
 
