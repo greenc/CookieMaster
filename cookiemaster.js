@@ -16,7 +16,7 @@ CM.config = {
 
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
-	cmTimerResolution: 33,
+	cmTimerResolution: 500,
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -289,6 +289,10 @@ CM.Timer = function(type, label) {
 	this.type = type;
 	this.label = label;
 	this.container = $('<div />');
+	this.barOuter = {};
+	this.barInner = {};
+	this.limiter = {};
+	this.counter = {};
 	this.id = 'CMTimer-' + this.type;
 
 	this.create = function() {
@@ -306,11 +310,20 @@ CM.Timer = function(type, label) {
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 			hardMin = timings.min / timings.max * 100;
+			if(width > hardMin) {
+				$barOuter.addClass('faded');
+			}
 			var $limiter = $('<span />').css('left', hardMin + '%');
 			$barOuter.append($limiter);
 		}
 
 		$barInner.css('width', width + '%');
+
+		// Set selector references for faster access on update
+		this.barOuter = $barOuter;
+		this.barInner = $barInner;
+		this.limiter = $limiter;
+		this.counter = $counter;
 
 		$barOuter.append($barInner);
 		this.container.append($label);
@@ -341,15 +354,18 @@ CM.Timer = function(type, label) {
 
 	this.update = function() {
 
-		var $limiter = this.container.find('span'),
-			$counter = this.container.find('.cmTimerCounter'),
-			$barInner = this.container.find('.cmTimer div'),
-			timings = this.getTimings(),
+		var timings = this.getTimings(),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
-		$barInner.css('width', width + '%');
-		$counter.text(Math.round(timings.minCurrent));
+		if(width > hardMin && !this.barOuter.hasClass('faded')) {
+			this.barOuter.addClass('faded');
+		} else {
+			this.barOuter.removeClass('faded');
+		}
+
+		this.barInner.css('width', width + '%');
+		this.counter.text(Math.round(timings.minCurrent));
 
 	},
 
