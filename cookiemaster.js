@@ -344,8 +344,10 @@ CM.Timer = function(type, label) {
 
 			hardMin = timings.min / timings.max * 100;
 
-			if(width < hardMin && !this.container.hasClass('cmEmphasize')) {
-				this.container.addClass('cmEmphasize');
+			if(width < hardMin) {
+				if(!this.container.hasClass('cmEmphasize')) {
+					this.container.addClass('cmEmphasize');
+				}
 			} else {
 				this.container.removeClass('cmEmphasize');
 			}

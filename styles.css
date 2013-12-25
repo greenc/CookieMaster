@@ -102,7 +102,7 @@
 
 .cmTimer {
 	float: left;
-	width: 63%;
+	width: 65%;
 	height: 14px;
 	background-color: #494949;
 	position: relative;
@@ -125,19 +125,19 @@
 
 .cmTimerCounter {
 	float: left;
-	width: 5%;
+	width: 10%;
 	color: #FFF;
 	text-align: center;
 
 }
 
-.cmTimerContainer.emphasize .cmTimerCounter {
+.cmTimerContainer.cmEmphasize .cmTimerCounter {
 	color: #70FF00;
 	text-shadow: 0 0 10px rgba(132, 255, 0, 0.85);
 }
 
-.cmTimer-goldenCookie.emphasize .cmTimer div { background-color: #FF00FF;}
-.cmTimer-reindeer.emphasize .cmTimer div { background-color: #FF8500;}
+.cmTimer-goldenCookie.cmEmphasize .cmTimer div { background-color: #FF00FF;}
+.cmTimer-reindeer.cmEmphasize .cmTimer div { background-color: #FF8500;}
 
 .cf:before,
 .cf:after {
