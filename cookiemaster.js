@@ -280,6 +280,7 @@ CM.Timer = {
 			$barOuter = $('<div />').addClass('cmTimer ' + type),
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(label),
+			$counter = $('<div />').addClass('cmTimerCounter').text(params[1]),
 			width;
 
 		if(params[0] !== null && params[1] !== null) {
@@ -293,6 +294,7 @@ CM.Timer = {
 		$barOuter.append($barInner);
 		$container.append($label);
 		$container.append($barOuter);
+		$container.append($counter);
 
 		return $container;
 
@@ -325,11 +327,11 @@ CM.calculateTimeRemaining = function(event) {
 	var timeRemaining = [null, null, null, null]; // min, max, time, total
 
 	if(event === 'nextReindeer') {
-		timeRemaining[0] = Math.round((Game.seasonPopup.minTime / Game.fps) * 100) / 100;
-		timeRemaining[1] = Math.round(((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps) * 100) / 100;
+		timeRemaining[0] = (Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps;
+		timeRemaining[1] = Game.seasonPopup.minTime / Game.fps;
 	} else if(event === 'nextGoldenCookie') {
-		timeRemaining[0] = Math.round((Game.goldenCookie.minTime / Game.fps) * 100) / 100;
-		timeRemaining[1] = Math.round(((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps) * 100) / 100;
+		timeRemaining[0] = (Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps;
+		timeRemaining[1] = Game.goldenCookie.minTime / Game.fps;
 	} else if(event === 'frenzy') {
 		timeRemaining[2] = Math.round((Game.frenzy / Game.fps) * 100) / 100;
 		timeRemaining[3] = 77 + 77 * Game.Has('Get lucky');

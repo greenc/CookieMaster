@@ -98,7 +98,7 @@
 
 .cmTimerLabel {
 	float: left;
-	width: 25%;
+	width: 20%;
 }
 
 .cmTimer {
@@ -106,6 +106,13 @@
 	width: 75%;
 	height: 12px;
 	background-color: #222;
+}
+
+.cmTimerCounter {
+	float: left;
+	width: 5%;
+	color: #FFF;
+
 }
 
 .cmTimer div {
