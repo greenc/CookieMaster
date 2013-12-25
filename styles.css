@@ -115,13 +115,16 @@
 	height: 14px;
 	background-color: rgba(0, 0, 0, 0.7);
 	top: 0;
-	left: 0;
+	right: 0;
 }
 
 .cmTimer div {
 	height: 14px;
 	background-color: #B3B3B3;
 }
+.cmTimer-goldenCookie .cmTimer div { background-color: #FF00FF;}
+.cmTimer-reindeer .cmTimer div { background-color: #FF8500;}
+
 
 .cmTimerCounter {
 	float: left;
@@ -135,9 +138,6 @@
 	color: #70FF00;
 	text-shadow: 0 0 10px rgba(132, 255, 0, 0.85);
 }
-
-.cmTimer-goldenCookie.cmEmphasize .cmTimer div { background-color: #FF00FF;}
-.cmTimer-reindeer.cmEmphasize .cmTimer div { background-color: #FF8500;}
 
 .cf:before,
 .cf:after {

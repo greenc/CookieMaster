@@ -312,7 +312,7 @@ CM.Timer = function(type, label) {
 			if(width < hardMin) {
 				this.container.addClass('cmEmphasize');
 			}
-			var $limiter = $('<span />').css('left', hardMin + '%');
+			var $limiter = $('<span />').css('right', hardMin + '%');
 			$barOuter.append($limiter);
 		}
 
@@ -360,7 +360,8 @@ CM.Timer = function(type, label) {
 
 	this.getTimings = function() {
 
-		var timings = {};
+		var timings = {},
+			lucky = Game.Has("Get lucky");
 
 		if(this.type === 'reindeer') {
 			timings.min = Game.seasonPopup.minTime / Game.fps;
@@ -372,13 +373,16 @@ CM.Timer = function(type, label) {
 			timings.max = Game.goldenCookie.maxTime / Game.fps;
 		} else if(this.type === 'frenzy') {
 			timings.minCurrent = Game.frenzy / Game.fps;
-			timings.max = 77 + 77 * Game.Has('Get lucky');
+			timings.max = 77 + 77 * lucky;
 		} else if(this.type === 'clickFrenzy') {
 			timings.minCurrent = Game.clickFrenzy / Game.fps;
-			timings.max = 13 + 13 * Game.Has('Get lucky');
+			timings.max = 13 + 13 * lucky;
 		} else if(this.type === 'bloodFrenzy') {
 			timings.minCurrent = Game.clickFrenzy / Game.fps;
-			timings.max = 6 + 6 * Game.Has('Get lucky');;
+			timings.max = 6 + 6 * lucky;
+		} else if(this.type === 'clot') {
+			timings.minCurrent = Game.clickFrenzy / Game.fps;
+			timings.max = 66 + 66 * lucky;
 		}
 
 		return timings;
@@ -494,7 +498,11 @@ CM.timerPanel = function(state) {
 	var timerRes = this.config.cmTimerResolution,
 		$sectionLeft = this.config.ccSectionLeft,
 		gcTimer,
-		reindeerTimer;
+		reindeerTimer,
+		frenzyTimer,
+		clickFrenzyTimer,
+		bloodFrenzyTimer,
+		clotTimer;
 
 	if(state) {
 
@@ -505,10 +513,18 @@ CM.timerPanel = function(state) {
 		// Initialize all timers
 		gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
 		reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
+		frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
+		clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
+		bloodFrenzyTimer = new CM.Timer('bloodFrenzy', 'Click Frenzy:');
+		clotTimer = new CM.Timer('clot', 'Clot:');
 
 		// Attach them
 		$cmTimerPanel.prepend(gcTimer.create());
 		$cmTimerPanel.prepend(reindeerTimer.create());
+		$cmTimerPanel.prepend(frenzyTimer.create());
+		$cmTimerPanel.prepend(clickFrenzyTimer.create());
+		$cmTimerPanel.prepend(bloodFrenzyTimer.create());
+		$cmTimerPanel.prepend(clotTimer.create());
 
 
 		// Set an execution loop for active timers
@@ -531,8 +547,41 @@ CM.timerPanel = function(state) {
 			}
 
 			// Frenzy timer
-			if(Game.frenzy > 0 && $cmTimerPanel.find('#CMTimer-frenzy').length === 0) {
-				//var frenzyTimer = new CM.Timer('frenzy', 'Frenzy');
+			if(Game.frenzy > 0 && Game.frenzyPower === 7) {
+				frenzyTimer.update();
+				frenzyTimer.show();
+				bloodFrenzyTimer.hide();
+				clotTimer.hide();
+			} else {
+				frenzyTimer.hide();
+			}
+
+			// Click frenzy timer
+			if(Game.clickFrenzy > 0) {
+				clickFrenzyTimer.update();
+				clickFrenzyTimer.show();
+			} else {
+				clickFrenzyTimer.hide();
+			}
+
+			// Blood frenzy timer
+			if(Game.Frenzy > 0 && Game.frenzyPower === 666) {
+				bloodFrenzyTimer.update();
+				bloodFrenzyTimer.show();
+				clickFrenzyTimer.hide();
+				clotTimer.hide();
+			} else {
+				bloodFrenzyTimer.hide();
+			}
+
+			// Clot timer
+			if(Game.Frenzy > 0 && Game.frenzyPower === 0.5) {
+				clotTimer.update();
+				clotTimer.show();
+				clickFrenzyTimer.hide();
+				bloodFrenzyTimer.hide();
+			} else {
+				clotTimer.hide();
 			}
 
 		}
