@@ -343,7 +343,7 @@ CM.Timer = function(type, label) {
 		var $limiter = this.container.find('span'),
 			$counter = this.container.find('.cmTimerCounter'),
 			$barInner = this.container.find('.cmTimer div'),
-			timings = this.getTimings(this.type),
+			timings = this.getTimings(),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
@@ -356,7 +356,7 @@ CM.Timer = function(type, label) {
 
 		var timings = {};
 
-		if(this.type === 'nextReindeer') {
+		if(this.type === 'reindeer') {
 			timings.min = Game.seasonPopup.minTime / Game.fps;
 			timings.minCurrent = (Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps;
 			timings.max = Game.seasonPopup.maxTime / Game.fps;
