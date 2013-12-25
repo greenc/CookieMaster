@@ -308,6 +308,7 @@ CM.Timer = function(type, label) {
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
 			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
+			$limiter = {},
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
@@ -317,7 +318,7 @@ CM.Timer = function(type, label) {
 			if(width < 100 - hardMin) {
 				this.container.addClass('cmEmphasize');
 			}
-			var $limiter = $('<span />').css('right', hardMin + '%');
+			$limiter = $('<span />').css('right', hardMin + '%');
 			$barOuter.append($limiter);
 		}
 
@@ -347,6 +348,7 @@ CM.Timer = function(type, label) {
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 
 			hardMin = timings.min / timings.max * 100;
+			this.limiter = $('<span />').css('right', hardMin + '%');
 
 			if(width < 100 - hardMin) {
 				if(!this.container.hasClass('cmEmphasize')) {
