@@ -12,6 +12,17 @@
 	border: 2px solid #555;
 }
 
+#CMSettingsPanelClose {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 25px;
+	width: 25px;
+	background-color: #000;
+	text-align: center;
+	color: #AAA;
+}
+
 #CMSettingsTitle {
 	margin: 0 0 10px;
 	font-size: 22px;

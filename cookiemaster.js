@@ -269,16 +269,28 @@ CM.largeNumFormat = function(num, floats) {
 
 };
 
+/**
+ * Get the max, min and time remaining in seconds for all timed game events,
+ * rounded to 2 decimal places
+ *
+ * @param  {string} event Name of the event we want to get the time values for
+ *
+ * @return {array}       [minTime, maxTime, timeRemaining]
+ */
 CM.calculateTimeRemaining = function(event) {
 
-	var timeRemaining = []; // min, max, time
+	var timeRemaining = [0, 0, 0]; // min, max, time
 
-	if(event == 'nextReindeer') {
-		timeRemaining[0] = Math.round(Game.seasonPopup.minTime / Game.fps);
-		maxTimeRemaining[1] = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps);
-	} else if(event == 'nextGoldenCookie') {
-		minTimeRemaining[0] = Math.round(Game.goldenCookie.minTime / Game.fps);
-		maxTimeRemaining[1] = Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps);
+	if(event === 'nextReindeer') {
+		timeRemaining[0] = Math.round((Game.seasonPopup.minTime / Game.fps) * 100) / 100;
+		timeRemaining[1] = Math.round(((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps) * 100) / 100;
+	} else if(event === 'nextGoldenCookie') {
+		timeRemaining[0] = Math.round((Game.goldenCookie.minTime / Game.fps) * 100) / 100;
+		timeRemaining[1] = Math.round(((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps) * 100) / 100;
+	} else if(event === 'frenzy') {
+		timeRemaining[2] = Math.round((Game.frenzy / Game.fps) * 100) / 100;
+	} else if(event === 'clickFrenzy') {
+		timeRemaining[2] = Math.round((Game.clickFrenzy / Game.fps) * 100) / 100;
 	}
 
 	return timeRemaining;
@@ -300,6 +312,7 @@ CM.attachSettingsPanel = function() {
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
+		$cmSettingsClose = $('<div />').attr('id', 'CMSettingsPanelClose').text('X'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
 		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply');
@@ -351,6 +364,7 @@ CM.attachSettingsPanel = function() {
 
 		// Glue it together
 		$cmSettingsList.append(items.join(''));
+		$cmSettingsPanel.append($CMSettingsPanelClose);
 		$cmSettingsPanel.append($cmSettingsTitle);
 		$cmSettingsPanel.append($cmSettingsList);
 		$cmSettingsPanel.append($cmSettingsSaveButon);
@@ -365,6 +379,11 @@ CM.attachSettingsPanel = function() {
 		// Save button
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();
+		});
+
+		// Close button
+		$CMSettingsPanelClose.click(function() {
+			$cmSettingsPanel.fadeOut(200);
 		});
 
 };
