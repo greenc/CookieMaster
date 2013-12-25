@@ -16,7 +16,7 @@ CM.config = {
 
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
-	cmTimerResolution: 500,
+	cmTimerResolution: 1000,
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
 	ccVersion: '',
@@ -297,7 +297,7 @@ CM.Timer = function(type, label) {
 
 	this.create = function() {
 
-		this.container.attr({'class': 'cmTimerContainer cf', 'id': this.id});
+		this.container.attr({'class': 'cmTimerContainer cf cmTimer-' + this.id, 'id': this.id});
 
 		var timings = this.getTimings(),
 			$barOuter = $('<div />').addClass('cmTimer'),
@@ -310,8 +310,8 @@ CM.Timer = function(type, label) {
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 			hardMin = timings.min / timings.max * 100;
-			if(width > hardMin) {
-				$barOuter.addClass('faded');
+			if(width < hardMin) {
+				this.container.addClass('cmEmphasize');
 			}
 			var $limiter = $('<span />').css('left', hardMin + '%');
 			$barOuter.append($limiter);
@@ -334,34 +334,22 @@ CM.Timer = function(type, label) {
 
 	},
 
-	this.hide = function() {
-
-		this.container.fadeOut(500);
-
-	},
-
-	this.show = function() {
-
-		this.container.fadeIn(200);
-
-	},
-
-	this.remove = function() {
-
-		return true;
-
-	},
-
 	this.update = function() {
 
 		var timings = this.getTimings(),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
-		if(width > hardMin && !this.barOuter.hasClass('faded')) {
-			this.barOuter.addClass('faded');
-		} else {
-			this.barOuter.removeClass('faded');
+		if(timings.hasOwnProperty('min') && timings.min > 0) {
+
+			hardMin = timings.min / timings.max * 100;
+
+			if(width < hardMin && !this.container.hasClass('cmEmphasize')) {
+				this.container.addClass('cmEmphasize');
+			} else {
+				this.container.removeClass('cmEmphasize');
+			}
+
 		}
 
 		this.barInner.css('width', width + '%');
@@ -395,6 +383,24 @@ CM.Timer = function(type, label) {
 		return timings;
 
 	}
+
+	this.show = function() {
+
+		this.container.fadeIn(200);
+
+	},
+
+	this.hide = function() {
+
+		this.container.fadeOut(500);
+
+	},
+
+	this.remove = function() {
+
+		return true;
+
+	},
 
 };
 
