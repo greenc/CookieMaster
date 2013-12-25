@@ -14,13 +14,24 @@
 
 #CMSettingsPanelClose {
 	position: absolute;
-	top: 0;
-	right: 0;
-	height: 25px;
-	width: 25px;
-	background-color: #000;
+	top: -11px;
+	right: -11px;
+	height: 22px;
+	width: 22px;
+	background-color: #111111;
 	text-align: center;
-	color: #AAA;
+	color: #B80000;
+	line-height: 22px;
+	font-weight: bold;
+	border: 2px solid #555;
+	font-size: 14px;
+	border-radius: 30px;
+	cursor: pointer;
+}
+
+#CMSettingsPanelClose:hover {
+	color: #E20000;
+	border: 2px solid #6F6F6F;
 }
 
 #CMSettingsTitle {

@@ -24,6 +24,9 @@ CM.config = {
 	ccBody: $('body'),
 	ccWrapper: $('#wrapper'),
 	ccGame: $('#game'),
+	ccSectionLeft: $('#sectionLeft'),
+	ccSectionMiddle: $('#sectionMiddle'),
+	ccSectionRight: $('#sectionRight'),
 
 	// User configurable settings
 	settings: {
@@ -372,19 +375,18 @@ CM.attachSettingsPanel = function() {
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
 
-		/**
-		 *	Set event listeners
-		 */
+		// Set event listeners
+		$cmSettingsSaveButon.click(function() { self.saveUserSettings() });
+		$cmSettingsClose.click(function() { $cmSettingsPanel.fadeOut(200) });
 
-		// Save button
-		$cmSettingsSaveButon.click(function() {
-			self.saveUserSettings();
-		});
+};
 
-		// Close button
-		$cmSettingsClose.click(function() {
-			$cmSettingsPanel.fadeOut(200);
-		});
+CM.attachTimerPanel = function() {
+
+	var $sectionLeft = this.config.ccSectionLeft,
+		$cmTimerPanel = $('<div />').attr('id', 'CMTImerPanel');
+
+		$sectionLeft.append($cmTimerPanel);
 
 };
 
