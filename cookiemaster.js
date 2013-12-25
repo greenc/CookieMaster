@@ -309,7 +309,7 @@ CM.Timer = function(type, label) {
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 			hardMin = timings.min / timings.max * 100;
-			if(width < hardMin) {
+			if(width < 100 - hardMin) {
 				this.container.addClass('cmEmphasize');
 			}
 			var $limiter = $('<span />').css('right', hardMin + '%');
@@ -343,7 +343,7 @@ CM.Timer = function(type, label) {
 
 			hardMin = timings.min / timings.max * 100;
 
-			if(width < hardMin) {
+			if(width < 100 - hardMin) {
 				if(!this.container.hasClass('cmEmphasize')) {
 					this.container.addClass('cmEmphasize');
 				}
@@ -511,11 +511,11 @@ CM.timerPanel = function(state) {
 		$sectionLeft.append($cmTimerPanel);
 
 		// Initialize all timers
-		gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
-		reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
+		gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
+		reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
 		frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
 		clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
-		bloodFrenzyTimer = new CM.Timer('bloodFrenzy', 'Click Frenzy:');
+		bloodFrenzyTimer = new CM.Timer('bloodFrenzy', 'Blood Frenzy:');
 		clotTimer = new CM.Timer('clot', 'Clot:');
 
 		// Attach them
@@ -565,7 +565,7 @@ CM.timerPanel = function(state) {
 			}
 
 			// Blood frenzy timer
-			if(Game.Frenzy > 0 && Game.frenzyPower === 666) {
+			if(Game.frenzy > 0 && Game.frenzyPower === 666) {
 				bloodFrenzyTimer.update();
 				bloodFrenzyTimer.show();
 				clickFrenzyTimer.hide();
@@ -575,7 +575,7 @@ CM.timerPanel = function(state) {
 			}
 
 			// Clot timer
-			if(Game.Frenzy > 0 && Game.frenzyPower === 0.5) {
+			if(Game.frenzy > 0 && Game.frenzyPower === 0.5) {
 				clotTimer.update();
 				clotTimer.show();
 				clickFrenzyTimer.hide();
