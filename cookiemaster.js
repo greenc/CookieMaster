@@ -382,7 +382,7 @@ CM.Timer = function(type, label) {
 
 		return timings;
 
-	}
+	},
 
 	this.show = function() {
 
@@ -400,7 +400,7 @@ CM.Timer = function(type, label) {
 
 		return true;
 
-	},
+	}
 
 };
 
