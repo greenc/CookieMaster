@@ -307,7 +307,7 @@ CM.Timer = function(type, label) {
 			$barOuter = $('<div />').addClass('cmTimer'),
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
-			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
+			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent) + 's'),
 			$limiter = {},
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
@@ -361,7 +361,7 @@ CM.Timer = function(type, label) {
 		}
 
 		this.barInner.css('width', width + '%');
-		this.counter.text(Math.round(timings.minCurrent));
+		this.counter.text(Math.round(timings.minCurrent) + 's');
 
 	},
 
@@ -604,9 +604,13 @@ CM.timerPanel = function(state) {
 			// Remove references to all timers
 			gcTimer = null;
 			reindeerTimer = null;
+			frenzyTimer = null;
+			clickFrenzyTimer = null;
+			bloodFrenzyTimer = null;
+			clotTimer = null;
 
 			// Remove the timer panel
-			$cmTimerPanel.remove();
+			$('#CMTimerPanel').remove();
 		}
 
 	}
