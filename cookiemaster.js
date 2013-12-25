@@ -341,7 +341,7 @@ CM.Timer = function(type, label) {
 	this.update = function() {
 
 		var $limiter = this.container.find('span'),
-			$counter = this.container.find('.cmTimerLabel'),
+			$counter = this.container.find('.cmTimerCounter'),
 			$barInner = this.container.find('.cmTimer div'),
 			timings = this.getTimings(this.type),
 			width = timings.minCurrent / timings.max * 100,
