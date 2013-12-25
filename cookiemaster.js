@@ -295,7 +295,7 @@ CM.Timer = function(type, label) {
 		this.container.attr({'class': 'cmTimerContainer cf', 'id': this.id});
 
 		var timings = this.getTimings(),
-			$barOuter = $('<div />').addClass('cmTimer ' + type),
+			$barOuter = $('<div />').addClass('cmTimer'),
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
 			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
