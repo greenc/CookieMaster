@@ -135,6 +135,11 @@ CM.integrityCheck = function() {
 		message = 'Warning: This version of Cookie Clicker may not be fully supported!';
 	}
 
+	// Warn about golden cookie and season popup bug
+	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
+		message = 'Warning: Golden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker. This is a bug in the game, not CookieMaster ;)';
+	}
+
 	// Alert user to any issues
 	if(message) {
 		this.alertMessage(message);
