@@ -378,10 +378,10 @@ CM.Timer = function(type, label) {
 			timings.minCurrent = Game.clickFrenzy / Game.fps;
 			timings.max = 13 + 13 * lucky;
 		} else if(this.type === 'bloodFrenzy') {
-			timings.minCurrent = Game.clickFrenzy / Game.fps;
+			timings.minCurrent = Game.frenzy / Game.fps;
 			timings.max = 6 + 6 * lucky;
 		} else if(this.type === 'clot') {
-			timings.minCurrent = Game.clickFrenzy / Game.fps;
+			timings.minCurrent = Game.frenzy / Game.fps;
 			timings.max = 66 + 66 * lucky;
 		}
 
