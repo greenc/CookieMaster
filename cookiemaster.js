@@ -455,8 +455,7 @@ CM.attachSettingsPanel = function() {
  */
 CM.timerPanel = function(state) {
 
-	var $sectionLeft = this.config.ccSectionLeft,
-		timerLoop = setInterval(manageTimers, 2000);
+	var $sectionLeft = this.config.ccSectionLeft;
 
 	if(state) {
 
@@ -493,6 +492,7 @@ CM.timerPanel = function(state) {
 			}
 
 		}
+		timerLoop = setInterval(manageTimers, 1000);
 
 	} else {
 
