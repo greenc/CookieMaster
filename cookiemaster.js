@@ -477,27 +477,32 @@ CM.timerPanel = function(state) {
 
 		$sectionLeft.append($cmTimerPanel);
 
+		// Initialize all timers
+		gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
+		reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
+
+		// Attach them
+		$cmTimerPanel.prepend(gcTimer.create());
+		$cmTimerPanel.prepend(reindeerTimer.create());
+
+
 		// Set an execution loop for active timers
 		function manageTimers() {
 
 			// Golden Cookie timer
-			if($cmTimerPanel.find('#CMTimer-goldenCookie').length === 0) {
-				if($("#goldenCookie:hidden")) {
-					gcTimer = new CM.Timer('goldenCookie', 'Next cookie:');
-					$cmTimerPanel.prepend(gcTimer.create());
-				}
-			} else {
+			if($("#goldenCookie:hidden")) {
 				gcTimer.update();
+				gcTimer.show();
+			} else {
+				gcTimer.hide();
 			}
 
 			// Reindeer timer
-			if($cmTimerPanel.find('#CMTimer-reindeer').length === 0) {
-				if($("#seasonPopup:hidden")) {
-					reindeerTimer = new CM.Timer('reindeer', 'Next reindeer:');
-					$cmTimerPanel.prepend(reindeerTimer.create());
-				}
-			} else {
+			if($("#seasonPopup:hidden")) {
 				reindeerTimer.update();
+				reindeerTimer.show();
+			} else {
+				reindeerTimer.hide();
 			}
 
 			// Frenzy timer
@@ -518,7 +523,7 @@ CM.timerPanel = function(state) {
 			gcTimer = null;
 			reindeerTimer = null;
 
-			// Remove the timer panel 
+			// Remove the timer panel
 			$cmTimerPanel.remove();
 		}
 
