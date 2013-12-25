@@ -269,6 +269,22 @@ CM.largeNumFormat = function(num, floats) {
 
 };
 
+CM.calculateTimeRemaining = function(event) {
+
+	var timeRemaining = []; // min, max, time
+
+	if(event == 'nextReindeer') {
+		timeRemaining[0] = Math.round(Game.seasonPopup.minTime / Game.fps);
+		maxTimeRemaining[1] = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps);
+	} else if(event == 'nextGoldenCookie') {
+		minTimeRemaining[0] = Math.round(Game.goldenCookie.minTime / Game.fps);
+		maxTimeRemaining[1] = Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps);
+	}
+
+	return timeRemaining;
+
+};
+
 /**
  * Build and attach the settings panel to the DOM
  */
@@ -451,6 +467,14 @@ CM.loadUserSettings = function() {
 	this.applyUserSettings();
 
 };
+
+/**
+ * Generate a 4 character alphanumeric hash
+ * @return {string} The generated hash
+ */
+CM.makeRandomShortHash = function() {
+	return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).substr(-4);
+}
 
 /**
  * Remove all traces of CookieMaster
