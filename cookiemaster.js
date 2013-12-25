@@ -702,8 +702,6 @@ CM.loadUserSettings = function() {
 
 	}
 
-	this.applyUserSettings();
-
 };
 
 /**
