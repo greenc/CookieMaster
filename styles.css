@@ -80,7 +80,7 @@
 	background-color: #6AA01A;
 }
 
-#CMTImerPanel {
+#CMTimerPanel {
 	padding: 10px 20px;
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
@@ -106,6 +106,17 @@
 	width: 75%;
 	height: 12px;
 	background-color: #222;
+	position: relative;
+}
+
+.cmTimer span {
+	display: block;
+	position: absolute;
+	width: 1px;
+	height: 12px;
+	background-color: #000;
+	top: 0;
+	left: 0;
 }
 
 .cmTimerCounter {
