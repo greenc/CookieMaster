@@ -20,9 +20,9 @@
 /**
  * Check that CookieMaster is not already loaded
  */
-if(typeof CM === 'object') {
+if(CM) {
 	alert('Error: CookieMaster is already loaded!');
-	return false;
+	CM.suicide();
 }
 
 /**
@@ -278,7 +278,7 @@ CM.Timer = function(type, label) {
 			if(width < 100 - hardMin) {
 				this.container.addClass('cmEmphasize');
 			}
-			$limiter = $('<span />').css('right', hardMin + '%');
+			$limiter = $('<span />').css('width', hardMin + '%');
 			$barOuter.append($limiter);
 		}
 
@@ -312,13 +312,15 @@ CM.Timer = function(type, label) {
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 
 			hardMin = timings.min / timings.max * 100;
-			this.limiter.css('right', hardMin + '%');
+			this.limiter.css('width', hardMin + '%');
 
 			if(width < 100 - hardMin) {
+				this.limiter.fadeOut(500);
 				if(!this.container.hasClass('cmEmphasize')) {
 					this.container.addClass('cmEmphasize');
 				}
 			} else {
+				this.limiter.show();
 				this.container.removeClass('cmEmphasize');
 			}
 
@@ -690,8 +692,8 @@ CM.applyUserSettings = function() {
 
 	var settings = this.config.settings;
 
-	settings.cleanUI.current === 'on' ? this.cleanUI(true) : this.cleanUI(false);
-	settings.showTimers.current === 'on' ? this.timerPanel(true) : this.timerPanel(false);
+	this.cleanUI(settings.cleanUI.current === 'on');
+	this.timerPanel(settings.showTimers.current === 'on');
 	this.changeFont(settings.changeFont.current);
 	Game.RebuildStore();
 

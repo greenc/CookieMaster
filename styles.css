@@ -132,9 +132,8 @@
 .cmTimer span {
 	display: block;
 	position: absolute;
-	width: 2px;
 	height: 14px;
-	background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.5);
 	top: 0;
 	right: 0;
 }
@@ -162,8 +161,6 @@
 	color: #70FF00;
 	text-shadow: 0 0 10px rgba(132, 255, 0, 0.85);
 }
-
-.cmTimerContainer.cmEmphasize .cmTimer span { background-color: #70FF00; }
 
 .cf:before,
 .cf:after {
