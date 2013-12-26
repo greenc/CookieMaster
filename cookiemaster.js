@@ -395,8 +395,10 @@ CM.Timer = function(type, label) {
 
 		if(this.container.is(':visible')) {
 
+			var $container = this.container;
+
 			this.container.children().animate({'opacity': 0}, 300, function() {
-				$(this.container).slideUp(300);
+				$container.slideUp(300);
 			});
 
 		}
