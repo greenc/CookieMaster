@@ -147,7 +147,7 @@
 .cmTimer-frenzy .cmTimer div { background-color: #D6D612;}
 .cmTimer-clickFrenzy .cmTimer div { background-color: #288BBE;}
 .cmTimer-bloodFrenzy .cmTimer div { background-color: #1FC41F;}
-.cmTimer-clot .cmTimer div { background-color: #B80303;}
+.cmTimer-clot .cmTimer div { background-color: #E90000;}
 
 .cmTimerCounter {
 	float: left;
@@ -155,11 +155,6 @@
 	color: #FFF;
 	text-align: center;
 
-}
-
-.cmTimerContainer.cmEmphasize .cmTimerCounter {
-	color: #70FF00;
-	text-shadow: 0 0 10px rgba(132, 255, 0, 0.85);
 }
 
 .cf:before,

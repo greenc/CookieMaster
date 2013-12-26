@@ -248,12 +248,12 @@ CM.Timer = function(type, label) {
 
 	this.type = type;
 	this.label = label;
-	this.container = $('<div />');
+	this.id = 'CMTimer-' + this.type;
+	this.container = {};
 	this.barOuter = {};
 	this.barInner = {};
 	this.limiter = {};
 	this.counter = {};
-	this.id = 'CMTimer-' + this.type;
 
 	/**
 	 * Create a new timer object
@@ -261,9 +261,8 @@ CM.Timer = function(type, label) {
 	 */
 	this.create = function() {
 
-		this.container.attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id});
-
 		var timings = this.getTimings(),
+			$container = $('<div />').attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id}),
 			$barOuter = $('<div />').addClass('cmTimer'),
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
@@ -284,18 +283,17 @@ CM.Timer = function(type, label) {
 
 		$barInner.css('width', width + '%');
 
-		// Set selector references for faster access on update
+		$barOuter.append($barInner);
+		$container.append($label, $barOuter, $counter);
+
+		// Set parent object properties for easier retrieval later
+		this.container = $container;
 		this.barOuter = $barOuter;
 		this.barInner = $barInner;
 		this.limiter = $limiter;
 		this.counter = $counter;
 
-		$barOuter.append($barInner);
-		this.container.append($label);
-		this.container.append($barOuter);
-		this.container.append($counter);
-
-		return this.container;
+		return $container;
 
 	};
 
@@ -374,7 +372,17 @@ CM.Timer = function(type, label) {
 	 */
 	this.show = function() {
 
-		this.container.fadeIn(200);
+		if(this.container.is(':hidden')) {
+
+			var $content = this.container.children();
+
+			$content.css('opacity', 0);
+			this.container.slideDown(300, function() {
+				$content.animate({'opacity': 1}, 300);
+			});
+
+		}
+
 		return this;
 
 	};
@@ -385,7 +393,14 @@ CM.Timer = function(type, label) {
 	 */
 	this.hide = function() {
 
-		this.container.fadeOut(200);
+		if(this.container.is(':visible')) {
+
+			this.container.children().animate({'opacity': 0}, 300, function() {
+				$(this.container).slideUp(300);
+			});
+
+		}
+
 		return this;
 
 	};
@@ -478,10 +493,12 @@ CM.attachSettingsPanel = function() {
 
 		// Glue it together
 		$cmSettingsList.append(items.join(''));
-		$cmSettingsPanel.append($cmSettingsClose);
-		$cmSettingsPanel.append($cmSettingsTitle);
-		$cmSettingsPanel.append($cmSettingsList);
-		$cmSettingsPanel.append($cmSettingsSaveButon);
+		$cmSettingsPanel.append(
+			$cmSettingsClose,
+			$cmSettingsTitle,
+			$cmSettingsList,
+			$cmSettingsSaveButon
+		);
 
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
@@ -501,7 +518,8 @@ CM.attachSettingsPanel = function() {
  */
 CM.timerPanel = function(state) {
 
-	var timerRes = this.config.cmTimerResolution,
+	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
+		timerRes = this.config.cmTimerResolution,
 		$sectionLeft = this.config.ccSectionLeft,
 		gcTimer,
 		reindeerTimer,
@@ -571,10 +589,6 @@ CM.timerPanel = function(state) {
 
 	if(state) {
 
-		var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel');
-
-		$sectionLeft.append($cmTimerPanel);
-
 		// Initialize all timers
 		gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
 		reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
@@ -583,14 +597,18 @@ CM.timerPanel = function(state) {
 		bloodFrenzyTimer = new CM.Timer('bloodFrenzy', 'Blood Frenzy:');
 		clotTimer = new CM.Timer('clot', 'Clot:');
 
-		// Attach them
-		$cmTimerPanel.append(gcTimer.create());
-		$cmTimerPanel.append(reindeerTimer.create());
-		$cmTimerPanel.append(frenzyTimer.create());
-		$cmTimerPanel.append(bloodFrenzyTimer.create());
-		$cmTimerPanel.append(clotTimer.create());
-		$cmTimerPanel.append(clickFrenzyTimer.create());
+		// Create timers and attach everyting to DOM
+		$cmTimerPanel.append(
+			gcTimer.create(),
+			reindeerTimer.create(),
+			frenzyTimer.create(),
+			bloodFrenzyTimer.create(),
+			clotTimer.create(),
+			clickFrenzyTimer.create()
+		);
+		$sectionLeft.append($cmTimerPanel);
 
+		// Invoke our loop to reevaluate timers
 		timerLoop = setInterval(manageTimers, timerRes);
 
 	} else {
