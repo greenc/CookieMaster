@@ -65,12 +65,12 @@ CM.config = {
 			desc: 'Sets the desired decimal and thousands separator symbols for numbers',
 			options: [
 				{
-					label: '1.234,56',
-					value: 'eu'
-				},
-				{
 					label: '1,234.56',
 					value: 'us'
+				},
+				{
+					label: '1.234,56',
+					value: 'eu'
 				}
 			],
 			current: 'us'
@@ -458,7 +458,7 @@ CM.attachSettingsPanel = function() {
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsClose = $('<div />').attr('id', 'CMSettingsPanelClose').text('X'),
+		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('Settings'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
 		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply');
@@ -511,7 +511,7 @@ CM.attachSettingsPanel = function() {
 		// Glue it together
 		$cmSettingsList.append(items.join(''));
 		$cmSettingsPanel.append(
-			$cmSettingsClose,
+			$cmSettingsHandle,
 			$cmSettingsTitle,
 			$cmSettingsList,
 			$cmSettingsSaveButon
@@ -521,7 +521,9 @@ CM.attachSettingsPanel = function() {
 		$wrapper.append($cmSettingsPanel);
 
 		// Set event listeners
-		$cmSettingsClose.click(function() { $cmSettingsPanel.fadeOut(200); });
+		$cmSettingsHandle.click(function() {
+			$cmSettingsPanel.slideToggle({'direction': 'up'}, 300);
+		});
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();
 			self.applyUserSettings();
