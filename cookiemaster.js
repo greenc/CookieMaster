@@ -18,14 +18,6 @@
 ================================================ */
 
 /**
- * Check that CookieMaster is not already loaded
- */
-if(typeof CM === 'object') {
-	alert('Error: CookieMaster is already loaded!');
-	CM.suicide();
-}
-
-/**
  * We will expose all methods and properties of CookieMaster
  * through the parent object, for easy extendability
  */
@@ -261,13 +253,13 @@ CM.Timer = function(type, label) {
 	 */
 	this.create = function() {
 
-		var $container = $('<div />').attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id}),
+		var timings = this.getTimings(),
+			$container = $('<div />').attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id}),
 			$barOuter = $('<div />').addClass('cmTimer'),
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
 			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent) + 's'),
 			$limiter = {}, // Not always needed, so we create it further down
-			timings = this.getTimings(),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
@@ -510,7 +502,7 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsClose.click(function() { $cmSettingsPanel.fadeOut(200); });
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();
-			this.applyUserSettings();
+			self.applyUserSettings();
 		});
 
 };
