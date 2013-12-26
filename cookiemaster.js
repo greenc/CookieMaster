@@ -523,7 +523,7 @@ CM.attachSettingsPanel = function() {
 		// Set event handlers
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
-				$cmSettingsPanel.animate({'margin-bottom': '-342px'}, function() {
+				$cmSettingsPanel.animate({'margin-bottom': '-232px'}, function() {
 					$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
 				});
 			} else {
@@ -640,6 +640,12 @@ CM.createTimerPanel = function(state) {
 		);
 		$sectionLeft.append($cmTimerPanel);
 
+		// Attach golden cookie display timer and handler
+		this.displayGCTimer();
+		this.config.cmGCOverlay.click(function() {
+			Game.goldenCookie.click();
+		});
+
 		// Invoke our loop to continually evaluate timers
 		timerLoop = setInterval(manageTimers, timerRes);
 
@@ -683,7 +689,8 @@ CM.displayGCTimer = function() {
 
 		$overlay.css({
 			'top': $gc.css('top'),
-			'left': $gc.css('left')
+			'left': $gc.css('left'),
+			'opacity': $gc.css('opacity')
 		}).text(timeLeft).show();
 
 	} else {

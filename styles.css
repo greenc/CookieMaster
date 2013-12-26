@@ -20,7 +20,7 @@
 /* Styles for the CM UI */
 #CMSettingsPanel {
 	position: fixed;
-	z-index: 200;
+	z-index: 1000001;
 	bottom: 0;
 	left: 50%;
 	width: 300px;
@@ -159,7 +159,7 @@
 #CMGCOverlay {
 	position: absolute;
 	font-family: "Kavoon", Georgia, serif;
-	font-size:40px;
+	font-size:32px;
 	text-shadow: 0 0 6px rgba(0, 0, 0, 1);
 	line-height: 96px;
 	text-align: center;
