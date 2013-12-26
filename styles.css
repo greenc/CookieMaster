@@ -146,7 +146,7 @@
 .cmTimer-reindeer .cmTimer div { background-color: #FF8500;}
 .cmTimer-frenzy .cmTimer div { background-color: #D6D612;}
 .cmTimer-clickFrenzy .cmTimer div { background-color: #288BBE;}
-.cmTimer-bloodFrenzy .cmTimer div { background-color: #1FC41F;}
+.cmTimer-elderFrenzy .cmTimer div { background-color: #1FC41F;}
 .cmTimer-clot .cmTimer div { background-color: #E90000;}
 
 .cmTimerCounter {
@@ -200,14 +200,16 @@
 .serif .title,
 .serif .section,
 .serif #CMSettingsTitle,
-.serif #CMSettingsSave {
+.serif #CMSettingsSave,
+.serif #CMTimerPanel {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
 
 .sansserif .title,
 .sansserif .section,
 .sansserif #CMSettingsTitle,
-.sansserif #CMSettingsSave {
+.sansserif #CMSettingsSave,
+.sansserif #CMTimerPanel {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */

@@ -261,13 +261,13 @@ CM.Timer = function(type, label) {
 	 */
 	this.create = function() {
 
-		var timings = this.getTimings(),
-			$container = $('<div />').attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id}),
+		var $container = $('<div />').attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id}),
 			$barOuter = $('<div />').addClass('cmTimer'),
 			$barInner = $('<div />'),
 			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
 			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent) + 's'),
-			$limiter = {},
+			$limiter = {}, // Not always needed, so we create it further down
+			timings = this.getTimings(),
 			width = timings.minCurrent / timings.max * 100,
 			hardMin;
 
@@ -388,7 +388,7 @@ CM.Timer = function(type, label) {
 	};
 
 	/**
-	 * Hides timer is visible
+	 * Hides timer if visible
 	 * @return {object} this
 	 */
 	this.hide = function() {
@@ -413,6 +413,7 @@ CM.Timer = function(type, label) {
 	 */
 	this.remove = function() {
 
+		// TO DO: Make this?
 		return true;
 
 	};
@@ -530,6 +531,7 @@ CM.timerPanel = function(state) {
 		elderFrenzyTimer,
 		clotTimer;
 
+	// TO DO: DRY this up
 	// Set up an execution loop for active timers
 	function manageTimers() {
 
@@ -591,7 +593,7 @@ CM.timerPanel = function(state) {
 
 	if(state) {
 
-		// Initialize all timers
+		// Initialize timer objects
 		gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
 		reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
 		frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
@@ -599,7 +601,7 @@ CM.timerPanel = function(state) {
 		elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
 		clotTimer = new CM.Timer('clot', 'Clot:');
 
-		// Create timers and attach everyting to DOM
+		// Create the HTML and attach everyting to DOM
 		$cmTimerPanel.append(
 			gcTimer.create(),
 			reindeerTimer.create(),
@@ -610,7 +612,7 @@ CM.timerPanel = function(state) {
 		);
 		$sectionLeft.append($cmTimerPanel);
 
-		// Invoke our loop to reevaluate timers
+		// Invoke our loop to continually evaluate timers
 		timerLoop = setInterval(manageTimers, timerRes);
 
 	} else {
