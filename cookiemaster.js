@@ -241,7 +241,7 @@ CM.largeNumFormat = function(num, floats) {
  * Class for handling game event timers, e.g. Golden Cookie, Frenzies, etc.
  *
  * @param {string} type  reindeer, goldenCookie, frenzy, clickFrenzy,
- *                       bloodFrenzy, clot
+ *                       elderFrenzy, clot
  * @param {string} label Display label for the timer
  */
 CM.Timer = function(type, label) {
@@ -354,7 +354,7 @@ CM.Timer = function(type, label) {
 		} else if(this.type === 'clickFrenzy') {
 			timings.minCurrent = Game.clickFrenzy / Game.fps;
 			timings.max = 13 + 13 * lucky;
-		} else if(this.type === 'bloodFrenzy') {
+		} else if(this.type === 'elderFrenzy') {
 			timings.minCurrent = Game.frenzy / Game.fps;
 			timings.max = 6 + 6 * lucky;
 		} else if(this.type === 'clot') {
@@ -377,8 +377,8 @@ CM.Timer = function(type, label) {
 			var $content = this.container.children();
 
 			$content.css('opacity', 0);
-			this.container.slideDown(300, function() {
-				$content.animate({'opacity': 1}, 300);
+			this.container.slideDown(200, function() {
+				$content.animate({'opacity': 1}, 200);
 			});
 
 		}
@@ -397,8 +397,8 @@ CM.Timer = function(type, label) {
 
 			var $container = this.container;
 
-			this.container.children().animate({'opacity': 0}, 300, function() {
-				$container.slideUp(300);
+			this.container.children().animate({'opacity': 0}, 200, function() {
+				$container.slideUp(200);
 			});
 
 		}
@@ -527,7 +527,7 @@ CM.timerPanel = function(state) {
 		reindeerTimer,
 		frenzyTimer,
 		clickFrenzyTimer,
-		bloodFrenzyTimer,
+		elderFrenzyTimer,
 		clotTimer;
 
 	// Set up an execution loop for active timers
@@ -553,7 +553,7 @@ CM.timerPanel = function(state) {
 		if(Game.frenzy > 0 && Game.frenzyPower === 7) {
 			frenzyTimer.update();
 			frenzyTimer.show();
-			bloodFrenzyTimer.hide();
+			elderFrenzyTimer.hide();
 			clotTimer.hide();
 		} else {
 			frenzyTimer.hide();
@@ -567,22 +567,22 @@ CM.timerPanel = function(state) {
 			clickFrenzyTimer.hide();
 		}
 
-		// Blood frenzy timer
+		// Elder frenzy timer
 		if(Game.frenzy > 0 && Game.frenzyPower === 666) {
-			bloodFrenzyTimer.update();
-			bloodFrenzyTimer.show();
-			clickFrenzyTimer.hide();
+			elderFrenzyTimer.update();
+			elderFrenzyTimer.show();
+			frenzyTimer.hide();
 			clotTimer.hide();
 		} else {
-			bloodFrenzyTimer.hide();
+			elderFrenzyTimer.hide();
 		}
 
 		// Clot timer
 		if(Game.frenzy > 0 && Game.frenzyPower === 0.5) {
 			clotTimer.update();
 			clotTimer.show();
-			clickFrenzyTimer.hide();
-			bloodFrenzyTimer.hide();
+			frenzyTimer.hide();
+			elderFrenzyTimer.hide();
 		} else {
 			clotTimer.hide();
 		}
@@ -596,7 +596,7 @@ CM.timerPanel = function(state) {
 		reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
 		frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
 		clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
-		bloodFrenzyTimer = new CM.Timer('bloodFrenzy', 'Blood Frenzy:');
+		elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
 		clotTimer = new CM.Timer('clot', 'Clot:');
 
 		// Create timers and attach everyting to DOM
@@ -604,7 +604,7 @@ CM.timerPanel = function(state) {
 			gcTimer.create(),
 			reindeerTimer.create(),
 			frenzyTimer.create(),
-			bloodFrenzyTimer.create(),
+			elderFrenzyTimer.create(),
 			clotTimer.create(),
 			clickFrenzyTimer.create()
 		);
@@ -624,7 +624,7 @@ CM.timerPanel = function(state) {
 			reindeerTimer = null;
 			frenzyTimer = null;
 			clickFrenzyTimer = null;
-			bloodFrenzyTimer = null;
+			elderFrenzyTimer = null;
 			clotTimer = null;
 
 			// Remove the timer panel
