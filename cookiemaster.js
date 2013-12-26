@@ -20,7 +20,7 @@
 /**
  * Check that CookieMaster is not already loaded
  */
-if(CM) {
+if(typeof CM === 'object') {
 	alert('Error: CookieMaster is already loaded!');
 	CM.suicide();
 }
