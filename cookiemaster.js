@@ -34,9 +34,10 @@ CM.config = {
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 	cmTimerResolution: 1000,
+	cmGCOverlay: null, // Set only when needed
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
-	ccVersion: '', // Set during integrity check
+	ccVersion: null, // Set during integrity check
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
 	ccBody: $('body'),
@@ -45,6 +46,7 @@ CM.config = {
 	ccSectionLeft: $('#sectionLeft'),
 	ccSectionMiddle: $('#sectionMiddle'),
 	ccSectionRight: $('#sectionRight'),
+	ccGoldenCookie: $('#goldenCookie'),
 
 	// User configurable settings
 	settings: {
@@ -518,7 +520,7 @@ CM.attachSettingsPanel = function() {
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
 
-		// Set event listeners
+		// Set event handlers
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
 				$cmSettingsPanel.animate({'margin-bottom': '-342px'}, function() {
@@ -546,6 +548,7 @@ CM.createTimerPanel = function(state) {
 	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
 		timerRes = this.config.cmTimerResolution,
 		$sectionLeft = this.config.ccSectionLeft,
+		self = this,
 		gcTimer,
 		reindeerTimer,
 		frenzyTimer,
@@ -556,6 +559,9 @@ CM.createTimerPanel = function(state) {
 	// TO DO: DRY this up
 	// Set up an execution loop for active timers
 	function manageTimers() {
+
+		// Golden cookie display timer
+		self.displayGCTimer();
 
 		// Golden Cookie timer
 		if($('#goldenCookie').is(':hidden')) {
@@ -651,9 +657,38 @@ CM.createTimerPanel = function(state) {
 			elderFrenzyTimer = null;
 			clotTimer = null;
 
+			// Remove golden cookie display timer
+			this.config.cmGCOverlay.remove();
+
 			// Remove the timer panel
 			$('#CMTimerPanel').remove();
 		}
+
+	}
+
+};
+
+/**
+ * Display a countdown on the golden cookie
+ */
+CM.displayGCTimer = function() {
+
+	var $gc = this.config.ccGoldenCookie,
+		$overlay = this.config.cmGCOverlay || $('<div />').attr('id', 'CMGCOverlay').appendTo(this.config.ccGame),
+		timeLeft = Math.round(Game.goldenCookie.life / Game.fps);
+
+	this.config.cmGCOverlay = $overlay;
+
+	if($gc.is(':visible')) {
+
+		$overlay.css({
+			'top': $gc.css('top'),
+			'left': $gc.css('left')
+		}).text(timeLeft).show();
+
+	} else {
+
+		$overlay.hide();
 
 	}
 

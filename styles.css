@@ -24,11 +24,11 @@
 	bottom: 0;
 	left: 50%;
 	width: 300px;
-	height: 300px;
+	height: 210px;
 	margin-left: -171px;
-	margin-bottom: -342px;
+	margin-bottom: -232px;
 	background-color: rgba(0, 0, 0, 0.9);
-	padding: 20px;
+	padding: 10px 20px;
 	color: #FFF;
 	border: 1px solid #555;
 	border-bottom: none;
@@ -55,15 +55,6 @@
 	border-bottom: none;
 	font-family: "Kavoon", Georgia, serif;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-	opacity: 0.65;
-	transition: opacity .25s ease-in-out;
-	-moz-transition: opacity .25s ease-in-out;
-	-webkit-transition: opacity .25s ease-in-out;
-}
-
-#CMSettingsPanelHandle.open,
-#CMSettingsPanelHandle:hover {
-	opacity: 1;
 }
 
 #CMSettingsList {
@@ -163,6 +154,17 @@
 	color: #FFF;
 	text-align: center;
 
+}
+
+#CMGCOverlay {
+	font-family: "Kavoon", Georgia, serif;
+	font-size:32px;
+	text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+	line-height: 96px;
+	text-align: center;
+	height: 96px;
+	width: 96px;
+	z-index: 10000000001;
 }
 
 .cf:before,
