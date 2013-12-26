@@ -56,15 +56,24 @@ CM.config = {
 		},
 		showTimers: {
 			label: 'Show Timers',
-			desc: 'Display countdown timers for game events',
+			desc: 'Display countdown timers for golden cookies and buffs',
 			options: 'toggle',
 			current: 'on'
 		},
 		numFormat: {
 			label: 'Number Formatting',
-			desc: 'Display numbers in US (123,456,789.0) or European (123.456.789,0) format',
-			options: ['US', 'European'],
-			current: 'US'
+			desc: 'Sets the desired decimal and thousands separator symbols for numbers',
+			options: [
+				{
+					label: '1.234,56',
+					value: 'eu'
+				},
+				{
+					label: '1,234.56',
+					value: 'us'
+				}
+			],
+			current: 'us'
 		},
 		shortNums: {
 			label: 'Short Numbers',
@@ -75,8 +84,21 @@ CM.config = {
 		changeFont: {
 			label: 'Font',
 			desc: 'Set the highlight font',
-			options: ['Default', 'Serif', 'Sans Serif'],
-			current: 'Default'
+			options: [
+				{
+					label: 'Kavoon (default)',
+					value: 'default'
+				},
+				{
+					label: 'Serif',
+					value: 'serif'
+				},
+				{
+					label: 'Sans Serif',
+					value: 'sansserif'
+				}
+			],
+			current: 'default'
 		}
 	},
 
@@ -191,7 +213,7 @@ CM.compatibilityCheck = function(version) {
 CM.largeNumFormat = function(num, floats) {
 
 	var useShortNums = this.config.settings.shortNums.current === 'on' ? true : false,
-		decSep = this.config.settings.numFormat.current === 'US' ? '.' : ',',
+		decSep = this.config.settings.numFormat.current === 'us' ? '.' : ',',
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
 		floats = floats || 0,
@@ -453,7 +475,7 @@ CM.attachSettingsPanel = function() {
 				// Build a select box if a setting has multiple options
 				$.each(this.options, function() {
 					selected = (current === this.toString()) ? ' selected="selected"' : '';
-					options.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
+					options.push('<option value="' + this.value + '"' + selected + '>' + this.label + '</option>');
 				});
 				control =  '<select id="CMsetting-' + key + '">';
 				control += options.join('');
@@ -511,7 +533,7 @@ CM.attachSettingsPanel = function() {
  * Configure & populate the panel for showing game timers
  * @param  {boolean} state Active or inactive
  */
-CM.timerPanel = function(state) {
+CM.createTimerPanel = function(state) {
 
 	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
 		timerRes = this.config.cmTimerResolution,
@@ -668,12 +690,8 @@ CM.changeFont = function(font) {
 	var $body = this.config.ccBody;
 
 	$body.removeClass('serif sansserif');
-
-	// TO DO: Make this an array and asign class with single statement
-	if(font === 'Serif') {
-		$body.addClass('serif');
-	} else if(font === 'Sans Serif') {
-		$body.addClass('sansserif');
+	if(font !== 'default') {
+		$body.addClass(font);
 	}
 
 };
@@ -707,14 +725,16 @@ CM.applyUserSettings = function() {
 	var settings = this.config.settings;
 
 	this.cleanUI(settings.cleanUI.current === 'on');
-	this.timerPanel(settings.showTimers.current === 'on');
 	this.changeFont(settings.changeFont.current);
+	if($('#CMTimerPanel').length === 0) {
+		this.createTimerPanel(settings.showTimers.current === 'on');
+	}
 	Game.RebuildStore();
 
 };
 
 /**
- * Save all user settings to the settings cookie
+ * Save all user settings (cookie-based)
  */
 CM.saveUserSettings = function() {
 
@@ -745,7 +765,7 @@ CM.saveUserSettings = function() {
 };
 
 /**
- * Load user settings from the settings cookie
+ * Load user settings (cookie-based)
  */
 CM.loadUserSettings = function() {
 

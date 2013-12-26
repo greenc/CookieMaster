@@ -17,12 +17,13 @@ How to use
 What can CookieMaster do?
 ---------------------------
 
-Not a lot yet, as it's very early in development. Here's the checklist so far:
+Not a whole lot yet, as it's very early in development. Here's the checklist so far:
 
  - Long number shortening. (convert 1,234,567,890 to 1.235 billion)
  - Number localization (numbers formatted to 123,456,789.0 or 123.456.789,0 depending on your preference)
  - Clean up the game window (remove ads, top bar, etc.)
  - Change game font
+ - Display accurate countdown timers for game events, e.g. Next golden cookie, remaining time for buffs
 
 And when it's done?
 -----------
