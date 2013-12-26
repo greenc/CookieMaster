@@ -794,7 +794,7 @@ CM.suicide = function() {
  *
  * @param  {string} msg The message
  */
-CM.Message = function(msg) {
+CM.alertMessage = function(msg) {
 
 	alert(msg);
 
