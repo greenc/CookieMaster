@@ -522,10 +522,10 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
 				$cmSettingsPanel.animate({'margin-bottom': '-342px'});
-				$(this).removeClass('cmOpen');
+				$(this).removeClass('cmOpen').text('CookieMaster Settings');
 			} else {
 				$cmSettingsPanel.animate({'margin-bottom': '0'});
-				$(this).addClass('cmOpen');
+				$(this).addClass('cmOpen').text('Close Settings');
 			}
 		});
 		$cmSettingsSaveButon.click(function() {

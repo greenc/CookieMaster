@@ -19,8 +19,8 @@
 
 /* Styles for the CM UI */
 #CMSettingsPanel {
-	position: absolute;
-	z-index: 100000;
+	position: fixed;
+	z-index: 200;
 	bottom: 0;
 	left: 50%;
 	width: 300px;
@@ -31,33 +31,34 @@
 	padding: 20px;
 	color: #FFF;
 	border: 1px solid #555;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 	border-bottom: none;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
 #CMSettingsPanelHandle {
+	position: absolute;
+	top: -27px;
+	left: 50%;
+	margin-left: -110px;
 	height: 26px;
-	width: 150px;
-	margin: 0 auto;
+	width: 220px;
 	background-color: rgba(0, 0, 0, 0.9);
 	text-align: center;
-	color: #FFFFFF;
+	color: #FFCC00;
 	line-height: 26px;
 	font-weight: normal;
 	border: 1px solid #555;
 	font-size: 16px;
 	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
 	cursor: pointer;
 	border-bottom: none;
-	border-top-right-radius: 3px;
 	font-family: "Kavoon", Georgia, serif;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
-#CMSettingsTitle {
-	margin: 0 0 10px;
-	font-size: 22px;
-	font-family: "Kavoon", Georgia, serif;
+#CMSettingsPanelHandle:hover {
+	color: #FFF;
 }
 
 #CMSettingsList {
@@ -84,15 +85,16 @@
 }
 
 #CMSettingsSave {
+	display: block;
 	cursor: pointer;
 	border: 1px solid #6CA01E;
 	background-color: #588811;
 	color: #FFF;
-	padding: 3px 15px;
-	margin: 0;
+	padding: 3px 25px;
+	margin: 0 auto;
 	border-radius: 2px;
 	font-family: "Kavoon", Georgia, serif;
-	font-size: 16px;
+	font-size: 18px;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 }
 
@@ -200,7 +202,6 @@
 /* Feature: changeFont */
 .serif .title,
 .serif .section,
-.serif #CMSettingsTitle,
 .serif #CMSettingsSave,
 .serif #CMTimerPanel,
 .serif #CMSettingsPanelHandle {
@@ -209,7 +210,6 @@
 
 .sansserif .title,
 .sansserif .section,
-.sansserif #CMSettingsTitle,
 .sansserif #CMSettingsSave,
 .sansserif #CMTimerPanel,
 .sansserif #CMSettingsPanelHandle {
