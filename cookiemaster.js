@@ -458,7 +458,7 @@ CM.attachSettingsPanel = function() {
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('Settings'),
+		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('CookieMaster Settings'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
 		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply');
 
@@ -521,11 +521,13 @@ CM.attachSettingsPanel = function() {
 		// Set event listeners
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
-				$cmSettingsPanel.animate({'margin-bottom': '-342px'});
-				$(this).removeClass('cmOpen').text('CookieMaster Settings');
+				$cmSettingsPanel.animate({'margin-bottom': '-342px'}, function() {
+					$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
+				});
 			} else {
-				$cmSettingsPanel.animate({'margin-bottom': '0'});
-				$(this).addClass('cmOpen').text('Close Settings');
+				$cmSettingsPanel.animate({'margin-bottom': '0'}, function() {
+					$cmSettingsHandle.addClass('cmOpen').text('Close Settings');
+				});
 			}
 		});
 		$cmSettingsSaveButon.click(function() {

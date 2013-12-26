@@ -44,7 +44,7 @@
 	width: 220px;
 	background-color: rgba(0, 0, 0, 0.9);
 	text-align: center;
-	color: #FFCC00;
+	color: #B8B8B8;
 	line-height: 26px;
 	font-weight: normal;
 	border: 1px solid #555;
@@ -55,10 +55,15 @@
 	border-bottom: none;
 	font-family: "Kavoon", Georgia, serif;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+	opacity: 0.65;
+	transition: opacity .25s ease-in-out;
+	-moz-transition: opacity .25s ease-in-out;
+	-webkit-transition: opacity .25s ease-in-out;
 }
 
+#CMSettingsPanelHandle.open,
 #CMSettingsPanelHandle:hover {
-	color: #FFF;
+	opacity: 1;
 }
 
 #CMSettingsList {
