@@ -157,9 +157,10 @@
 }
 
 #CMGCOverlay {
+	position: absolute;
 	font-family: "Kavoon", Georgia, serif;
-	font-size:32px;
-	text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+	font-size:40px;
+	text-shadow: 0 0 6px rgba(0, 0, 0, 1);
 	line-height: 96px;
 	text-align: center;
 	height: 96px;
