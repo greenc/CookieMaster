@@ -457,7 +457,7 @@ CM.attachSettingsPanel = function() {
 		html = '',
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
-		$CMSettingsPanelWrapper = $('<div />').attr('id', 'CMSettingsPanelWrapper'),
+		$cmSettingsPanelWrapper = $('<div />').attr('id', 'CMSettingsPanelWrapper'),
 		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('Settings'),
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
@@ -516,7 +516,7 @@ CM.attachSettingsPanel = function() {
 			$cmSettingsList,
 			$cmSettingsSaveButon
 		);
-		$CMSettingsPanelWrapper.append($cmSettingsHandle, $cmSettingsPanel);
+		$cmSettingsPanelWrapper.append($cmSettingsHandle, $cmSettingsPanel);
 
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanelWrapper);
