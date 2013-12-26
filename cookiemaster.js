@@ -644,7 +644,7 @@ CM.createTimerPanel = function(state) {
 		this.displayGCTimer();
 		this.config.cmGCOverlay.click(function() {
 			Game.goldenCookie.click();
-			thic.config.cmGCOverlay.hide();
+			$('#CMGCOverlay').hide();
 		});
 
 		// Invoke our loop to continually evaluate timers
