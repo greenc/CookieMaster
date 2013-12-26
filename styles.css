@@ -165,7 +165,7 @@
 	text-align: center;
 	height: 96px;
 	width: 96px;
-	z-index: 10000000001;
+	z-index: 10000000000;
 	cursor: pointer;
 }
 

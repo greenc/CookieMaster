@@ -543,7 +543,7 @@ CM.attachSettingsPanel = function() {
  * Configure & populate the panel for showing game timers
  * @param  {boolean} state Active or inactive
  */
-CM.createTimerPanel = function(state) {
+CM.timerPanel = function(state) {
 
 	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
 		timerRes = this.config.cmTimerResolution,
@@ -619,7 +619,7 @@ CM.createTimerPanel = function(state) {
 
 	}
 
-	if(state) {
+	if(state && $('#CMTimerPanel').length === 0) {
 
 		// Initialize timer objects
 		gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
@@ -666,6 +666,7 @@ CM.createTimerPanel = function(state) {
 
 			// Remove golden cookie display timer
 			this.config.cmGCOverlay.remove();
+			this.config.cm
 
 			// Remove the timer panel
 			$('#CMTimerPanel').remove();
@@ -687,6 +688,11 @@ CM.displayGCTimer = function() {
 	this.config.cmGCOverlay = $overlay;
 
 	if($gc.is(':visible')) {
+
+		// Reattach if it was removed at some point
+		if($('#CMGCOverlay').length === 0) {
+			$overlay.appendTo(this.config.ccGame);
+		}
 
 		$overlay.css({
 			'top': $gc.css('top'),
@@ -777,9 +783,7 @@ CM.applyUserSettings = function() {
 
 	this.cleanUI(settings.cleanUI.current === 'on');
 	this.changeFont(settings.changeFont.current);
-	if($('#CMTimerPanel').length === 0) {
-		this.createTimerPanel(settings.showTimers.current === 'on');
-	}
+	this.timerPanel(settings.showTimers.current === 'on');
 	Game.RebuildStore();
 
 };
