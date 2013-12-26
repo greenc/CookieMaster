@@ -1,3 +1,22 @@
+/* ================================================
+
+	CookieMaster - A Cookie Clicker plugin
+
+	Version:      0.1
+	Date:         23/12/2013
+	GitHub:       https://github.com/greenc/CookieMaster
+	Dependencies: Cookie Clicker, jQuery
+	Author:       Chris Green
+	              c.robert.green@gmail.com
+
+	This code was written to be used, abused,
+	extended and improved upon. Feel free to do
+	with it as you please, with or without
+	permission from, nor credit given to the
+	original author (me).
+
+================================================ */
+
 /* Styles for the CM UI */
 #CMSettingsPanel {
 	position: absolute;
@@ -82,18 +101,19 @@
 
 #CMTimerPanel {
 	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
 	background-color: rgba(0, 0, 0, 0.75);
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 100%;
 	z-index: 20;
+	font-family: "Kavoon", Georgia, serif;
+	font-size: 15px;
 }
 
 .cmTimerContainer {
 	display: none;
-	margin: 5px 10px;
+	margin: 6px 10px;
 }
 
 .cmTimerLabel {

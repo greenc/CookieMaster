@@ -1,8 +1,33 @@
+/* ================================================
+
+	CookieMaster - A Cookie Clicker plugin
+
+	Version:      0.1
+	Date:         23/12/2013
+	GitHub:       https://github.com/greenc/CookieMaster
+	Dependencies: Cookie Clicker, jQuery
+	Author:       Chris Green
+	              c.robert.green@gmail.com
+
+	This code was written to be used, abused,
+	extended and improved upon. Feel free to do
+	with it as you please, with or without
+	permission from, nor credit given to the
+	original author (me).
+
+================================================ */
+
+/**
+ * Check that CookieMaster is not already loaded
+ */
+if(typeof CM === 'object') {
+	alert('Error: CookieMaster is already loaded!');
+	return false;
+}
+
 /**
  * We will expose all methods and properties of CookieMaster
  * through the parent object, for easy extendability
- *
- * @type {Object}
  */
 CM = {};
 
@@ -19,7 +44,7 @@ CM.config = {
 	cmTimerResolution: 1000,
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
-	ccVersion: '',
+	ccVersion: '', // Set during integrity check
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
 	ccBody: $('body'),
@@ -75,19 +100,17 @@ CM.init = function() {
 	var cmCSS = this.config.cmCSS,
 		cssID = this.config.cmStyleID;
 
-	//Perform a quick check to make sure CM can run correctly
+	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
 
 		this.loadUserSettings();
 		this.attachStyleSheet(cmCSS, cssID);
 		this.attachSettingsPanel();
 
-		// Apply the current user settings after we've done everything else
+		// Apply user settings last
 		this.applyUserSettings();
 
-
 		// All done :)
-		cmIsLoaded = true; // Implicitly create this as global so we can test against multiple inits
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
 
 	} else {
@@ -100,82 +123,61 @@ CM.init = function() {
 };
 
 /**
- * Checks that CookieMaster can run correctly and informs the
- * user if anything is wrong
+ * Returns true if CM can run correctly
+ * Also, sets warning and error messages if appropriate
  *
  * @return {boolean}
  */
 CM.integrityCheck = function() {
 
-	var ccVersion = Game.version.toString() || '',
+	var this.config.ccVersion = Game.version.toString() || '',
 		message = false,
 		error = false,
 		i;
 
-	if(window.cmIsLoaded) {
-		// Already loaded
-		message = 'Error: CookieMaster is already running!';
-		error = true;
-	} else if(document.location.href.indexOf(this.config.ccURL) === -1) {
+	if(document.location.href.indexOf(this.config.ccURL) === -1) {
 		// Wrong URL
-		message = 'Error: This isn\'t the Cookie Clicker URL';
+		message = 'Error: This isn\'t the Cookie Clicker URL!';
 		error = true;
 	} else if(!window.jQuery) {
 		// jQuery isn't loaded
-		message = 'Error: jQuery is not loaded';
+		message = 'Error: jQuery is not loaded!';
 		error = true;
 	} else if(!Game) {
 		// Game class doesn't exist
-		message = 'Error: Cookie Clicker does not appear to be initialized';
+		message = 'Error: Cookie Clicker does not appear to be initialized!';
 		error = true;
 	}
 
-	// Warn against potential incompatibility
-	if(this.compatibilityCheck(ccVersion) === -1) {
+	if(this.compatibilityCheck(this.config.ccVersion) === -1) {
 		message = 'Warning: This version of Cookie Clicker may not be fully supported!';
 	}
 
 	// Warn about golden cookie and season popup bug
 	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
-		message = 'Warning: Golden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker. This is a bug in the game, not CookieMaster ;)';
+		message = "Warning: New/unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)";
 	}
 
-	// Alert user to any issues
-	if(message) {
-		this.alertMessage(message);
-	}
+	if(message) { this.alertMessage(message) }
 
-	if(error) {
-
-		return false;
-
-	} else {
-
-		// Set some useful config options for later use
-		this.config.ccVersion = ccVersion;
-		this.config.ccGame = $('#game');
-
-		return true;
-	}
-
+	return error ? false : true;
 };
 
 /**
- * Checks the loaded version of CC against a list of
- * known compatible versions
+ * Returns index index of version number in the array of known
+ * compatible versions
  *
- * @param  {string} version The version of CC we are running on
- *
- * @return {integer}         Return index of matched version
+ * @param  {string}  version CC version
+ * @return {integer}
  */
 CM.compatibilityCheck = function(version) {
 
-	var compVersions = this.config.ccCompatibleVersions,
+	var vArray = this.config.ccCompatibleVersions,
 		ccVersion = version || '',
 		i;
 
-	for(i = 0; i < compVersions.length; i++) {
-		if(compVersions[i].match(ccVersion)) {
+	for(i = 0; i < vArray.length; i++) {
+		if(vArray[i].match(ccVersion)) {
 			return i;
 		}
 	}
@@ -185,62 +187,13 @@ CM.compatibilityCheck = function(version) {
 }
 
 /**
- * Clean up the game interface a little.
- *
- * @param  {boolean} state Turn on or off
- */
-CM.cleanUI = function(state) {
-
-	var cssClass = 'cleanUI',
-		$body = this.config.ccBody;
-
-	if(state) {
-		$body.addClass(cssClass);
-	} else {
-		$body.removeClass(cssClass);
-	}
-
-	// Recalculate the background canvas heights
-	function recalculateCanvasDimensions() {
-		Game.Background.canvas.width = Game.Background.canvas.parentNode.offsetWidth;
-		Game.Background.canvas.height = Game.Background.canvas.parentNode.offsetHeight;
-		Game.LeftBackground.canvas.width = Game.LeftBackground.canvas.parentNode.offsetWidth;
-		Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
-	}
-
-	// We need to delay this in case the UI styles have not yet been parsed :(
-	setTimeout(recalculateCanvasDimensions, 1000);
-
-};
-
-/**
- * Change the font of highlight and title text
- *
- * @param  {string} fontSetting The selected font setting
- */
-CM.changeFont = function(fontSetting) {
-
-	var $body = this.config.ccBody;
-
-	$body.removeClass('serif sansserif');
-
-	if(fontSetting === 'Serif') {
-		$body.addClass('serif');
-	} else if(fontSetting === 'Sans Serif') {
-		$body.addClass('sansserif');
-	}
-
-};
-
-/**
  * Formats very large numbers with their appropriate suffix, also adds
  * thousands and decimal separators and performs correct rounding for
  * smaller numbers
  *
- * @param  {integer} num The number to be formatted
+ * @param  {integer} num    The number to be formatted
  * @param  {integer} floats Amount of decimal places required
- *
- * @return {string}     Formatted number (as string) with suffix
+ * @return {string}
  */
 CM.largeNumFormat = function(num, floats) {
 
@@ -265,19 +218,17 @@ CM.largeNumFormat = function(num, floats) {
 
 	if(useShortNums) {
 		for(var i = 0; i < ranges.length; i++) {
-
 			if(num >= ranges[i].divider) {
 				num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
 				return num.replace('.', decimal);
 			}
-
 		}
 	}
 
-	// Apply rounding, if any
+	// Apply rounding
 	num = Math.round(num * Math.pow(10, floats)) / Math.pow(10, floats);
 
-	// Prettify and localize the remaining "smaller" numbers
+	// Localize
 	parts = num.toString().split('.');
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
 
@@ -286,7 +237,11 @@ CM.largeNumFormat = function(num, floats) {
 };
 
 /**
- * Class for dealing with game event timers
+ * Class for handling game event timers, e.g. Golden Cookie, Frenzies, etc.
+ *
+ * @param {string} type  reindeer, goldenCookie, frenzy, clickFrenzy,
+ *                       bloodFrenzy, clot
+ * @param {string} label Display label for the timer
  */
 CM.Timer = function(type, label) {
 
@@ -299,6 +254,10 @@ CM.Timer = function(type, label) {
 	this.counter = {};
 	this.id = 'CMTimer-' + this.type;
 
+	/**
+	 * Create a new timer object
+	 * @return {object} Timer HTML as jQuery object
+	 */
 	this.create = function() {
 
 		this.container.attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id});
@@ -339,6 +298,10 @@ CM.Timer = function(type, label) {
 
 	},
 
+	/**
+	 * Updates timing values of the timer
+	 * @return {object} this
+	 */
 	this.update = function() {
 
 		var timings = this.getTimings(),
@@ -363,8 +326,14 @@ CM.Timer = function(type, label) {
 		this.barInner.css('width', width + '%');
 		this.counter.text(Math.round(timings.minCurrent) + 's');
 
+		return this;
+
 	},
 
+	/**
+	 * Retrieves the current timings from the game code
+	 * @return {object} timings
+	 */
 	this.getTimings = function() {
 
 		var timings = {},
@@ -396,18 +365,32 @@ CM.Timer = function(type, label) {
 
 	},
 
+	/**
+	 * Shows timer if hidden
+	 * @return {object} this
+	 */
 	this.show = function() {
 
 		this.container.fadeIn(200);
+		return this;
 
 	},
 
+	/**
+	 * Hides timer is visible
+	 * @return {object} this
+	 */
 	this.hide = function() {
 
 		this.container.fadeOut(200);
+		return this;
 
 	},
 
+	/**
+	 * Removes timer from DOM
+	 * @return {boolean} true
+	 */
 	this.remove = function() {
 
 		return true;
@@ -415,6 +398,15 @@ CM.Timer = function(type, label) {
 	}
 
 };
+
+/* ================================================
+	NON-RETURNING METHODS
+
+	These methods mostly update the DOM and don't
+	actually return anything.
+	Separating them out helps keep the init
+	method nice and tidy :)
+================================================ */
 
 /**
  * Build and attach the settings panel to the DOM
@@ -492,13 +484,17 @@ CM.attachSettingsPanel = function() {
 		$wrapper.append($cmSettingsPanel);
 
 		// Set event listeners
-		$cmSettingsSaveButon.click(function() { self.saveUserSettings() });
 		$cmSettingsClose.click(function() { $cmSettingsPanel.fadeOut(200) });
+		$cmSettingsSaveButon.click(function() {
+			self.saveUserSettings();
+			this.applyUserSettings();
+		});
 
 };
 
 /**
- * Configure the panel for showing game timers and populate
+ * Configure & populate the panel for showing game timers
+ * @param  {boolean} state Active or inactive
  */
 CM.timerPanel = function(state) {
 
@@ -618,6 +614,55 @@ CM.timerPanel = function(state) {
 };
 
 /**
+ * Clean up the game interface a little.
+ *
+ * @param {boolean} state active/inactive
+ */
+CM.cleanUI = function(state) {
+
+	var cssClass = 'cleanUI',
+		$body = this.config.ccBody;
+
+	if(state) {
+		$body.addClass(cssClass);
+	} else {
+		$body.removeClass(cssClass);
+	}
+
+	// Recalculate the background canvas heights
+	function recalculateCanvasDimensions() {
+		Game.Background.canvas.width = Game.Background.canvas.parentNode.offsetWidth;
+		Game.Background.canvas.height = Game.Background.canvas.parentNode.offsetHeight;
+		Game.LeftBackground.canvas.width = Game.LeftBackground.canvas.parentNode.offsetWidth;
+		Game.LeftBackground.canvas.height = Game.LeftBackground.canvas.parentNode.offsetHeight;
+	}
+
+	// We need to delay this in case our CSS has not yet been parsed :(
+	setTimeout(recalculateCanvasDimensions, 1000);
+
+};
+
+/**
+ * Change the font of highlight and title text
+ *
+ * @param {string} font The selected font setting
+ */
+CM.changeFont = function(font) {
+
+	var $body = this.config.ccBody;
+
+	$body.removeClass('serif sansserif');
+
+	// TO DO: Make this an array and asign class with single statement
+	if(font === 'Serif') {
+		$body.addClass('serif');
+	} else if(font === 'Sans Serif') {
+		$body.addClass('sansserif');
+	}
+
+};
+
+/**
  * Attach an external stylesheet to the DOM
  *
  * @param  {string} url The URL of the stylesheet to load
@@ -625,9 +670,7 @@ CM.timerPanel = function(state) {
  */
 CM.attachStyleSheet = function(url, id) {
 
-	var $stylesheet = $('<link />'),
-		id = id || '',
-		url = url || '';
+	var $stylesheet = $('<link />');
 
 	$stylesheet.attr({
 		'type': 'text/css',
@@ -669,25 +712,24 @@ CM.saveUserSettings = function() {
 		settingsStates[key] =  this.current;
 	});
 
-	// Serialize the settings for cookie use
+	// Serialize the data
 	serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
 
-	// Create and set the settings cookie
+	// Create and set cookie
 	cookieDate.setFullYear(cookieDate.getFullYear() + 1);
 	document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
-	// Did we save the cookie successfully?
+	// All good?
 	if (document.cookie.indexOf('CMSettings') === -1) {
 		Game.Popup('Error: Could not save settings!');
 	} else {
 		Game.Popup('Settings saved successfully!');
 	}
 
-	this.applyUserSettings();
 };
 
 /**
- * Attempt to load user settings from the settings cookie
+ * Load user settings from the settings cookie
  */
 CM.loadUserSettings = function() {
 
@@ -716,14 +758,6 @@ CM.loadUserSettings = function() {
 };
 
 /**
- * Generate a 4 character alphanumeric hash
- * @return {string} The generated hash
- */
-CM.makeRandomShortHash = function() {
-	return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).substr(-4);
-}
-
-/**
  * Remove all traces of CookieMaster
  */
 CM.suicide = function() {
@@ -736,25 +770,28 @@ CM.suicide = function() {
  *
  * @param  {string} msg The message
  */
-CM.alertMessage = function(msg) {
+CM.Message = function(msg) {
+
 	alert(msg);
+
 };
 
-// Start it up!
-CM.init();
+/* ================================================
+	END NON-RETURNING METHODS
+================================================ */
 
-
-/* ===========================================
+/* ================================================
 	COOKIE CLICKER FUNCTION OVERRIDES
-=========================================== */
+================================================ */
 
 /**
- * Hijacks the original Beautify method to use our own formatting function
+ * Hijacks the original Beautify method to use
+ * our own formatting function
  *
- * @param {integer} what   The number to beautify
- * @param {integer} floats Number of decimal places desired :/
+ * @param {integer} what   Number to beautify
+ * @param {integer} floats Desired precision
  *
- * @return {string}    Nicely formatted number as a string
+ * @return {string}    Formatted number
  */
 function Beautify(what, floats) {
 
@@ -763,6 +800,11 @@ function Beautify(what, floats) {
 	return CM.largeNumFormat(what, floats);
 
 }
-/* ===========================================
+
+/* ================================================
 	END COOKIE CLICKER FUNCTION OVERRIDES
-=========================================== */
+================================================ */
+
+
+// Start it up!
+CM.init();
