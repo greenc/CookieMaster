@@ -457,10 +457,8 @@ CM.attachSettingsPanel = function() {
 		html = '',
 		settings = this.config.settings,
 		$wrapper = this.config.ccWrapper,
-		$cmSettingsPanelWrapper = $('<div />').attr('id', 'CMSettingsPanelWrapper'),
-		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('Settings'),
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsTitle = $('<h2 />').attr('id', 'CMSettingsTitle').text('Settings:'),
+		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('Settings'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
 		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply');
 
@@ -512,18 +510,23 @@ CM.attachSettingsPanel = function() {
 		// Glue it together
 		$cmSettingsList.append(items.join(''));
 		$cmSettingsPanel.append(
-			$cmSettingsTitle,
+			$cmSettingsHandle,
 			$cmSettingsList,
 			$cmSettingsSaveButon
 		);
-		$cmSettingsPanelWrapper.append($cmSettingsHandle, $cmSettingsPanel);
 
 		// Attach to DOM
-		$wrapper.append($cmSettingsPanelWrapper);
+		$wrapper.append($cmSettingsPanel);
 
 		// Set event listeners
 		$cmSettingsHandle.click(function() {
-			$cmSettingsPanel.slideToggle({'direction': 'up'}, 300);
+			if($(this).hasClass('cmOpen')) {
+				$cmSettingsPanel.animate({'margin-bottom': '-342px'});
+				$(this).removeClass('cmOpen');
+			} else {
+				$cmSettingsPanel.animate({'margin-bottom': '0'});
+				$(this).addClass('cmOpen');
+			}
 		});
 		$cmSettingsSaveButon.click(function() {
 			self.saveUserSettings();

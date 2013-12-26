@@ -18,17 +18,15 @@
 ================================================ */
 
 /* Styles for the CM UI */
-#CMSettingsPanelWrapper {
+#CMSettingsPanel {
 	position: absolute;
 	z-index: 100000;
 	bottom: 0;
 	left: 50%;
-	width: 340px;
-	height: 340px;
+	width: 300px;
+	height: 300px;
 	margin-left: -171px;
-}
-
-#CMSettingsPanel {
+	margin-bottom: -342px;
 	background-color: rgba(0, 0, 0, 0.9);
 	padding: 20px;
 	color: #FFF;
@@ -54,11 +52,6 @@
 	border-top-right-radius: 3px;
 	font-family: "Kavoon", Georgia, serif;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-}
-
-#CMSettingsPanelHandle:hover {
-	color: #E20000;
-	border: 2px solid #6F6F6F;
 }
 
 #CMSettingsTitle {
