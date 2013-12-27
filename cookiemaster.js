@@ -57,9 +57,9 @@ CM.config = {
 			options: 'toggle',
 			current: 'on'
 		},
-		titleTimers: {
-			label: 'Title Timers',
-			desc: 'Display Golden Cookie and Reindeer countdown timers in the title bar',
+		showTimers: {
+			label: 'Show Timers',
+			desc: 'Display countdown timers for game events and buffs',
 			options: 'toggle',
 			current: 'on'
 		},
