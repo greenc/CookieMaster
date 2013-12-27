@@ -57,8 +57,11 @@
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
+#CMSettingsPanelHandle:hover {
+	color: #FFF;
+}
+
 #CMSettingsList {
-	border-top: 1px dashed #222;
 	margin-bottom: 10px;
 }
 

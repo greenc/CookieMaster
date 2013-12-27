@@ -48,7 +48,7 @@ CM.config = {
 	ccSectionRight: $('#sectionRight'),
 	ccGoldenCookie: $('#goldenCookie'),
 
-	// User configurable settings
+	// User settings (settings pane)
 	settings: {
 		cleanUI: {
 			label: 'Clean UI',
@@ -441,7 +441,9 @@ CM.Timer = function(type, label) {
 
 CM.mainLoop = function() {
 
-	if(this.config.settings.showTimers.current === 'on') {
+	var timerPanelAttached = $('#CMTimerPanel').length === 1;
+
+	if(timerPanelAttached) {
 		this.updateTimers();
 	}
 
