@@ -33,7 +33,7 @@ CM.config = {
 
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
-	cmTimerResolution: 1000,
+	cmRefreshRate: 1000,
 	cmGCOverlay: null, // Set only when needed
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
@@ -113,8 +113,11 @@ CM.config = {
  */
 CM.init = function() {
 
-	var cmCSS = this.config.cmCSS,
-		cssID = this.config.cmStyleID;
+	var self = this,
+		refreshRate = this.config.cmRefreshRate,
+		cmCSS = this.config.cmCSS,
+		cssID = this.config.cmStyleID,
+		updateLoop;
 
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
@@ -125,6 +128,8 @@ CM.init = function() {
 
 		// Apply user settings last
 		this.applyUserSettings();
+
+		setInterval(function() {self.mainLoop();}, refreshRate);
 
 		// All done :)
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
@@ -254,7 +259,7 @@ CM.largeNumFormat = function(num, floats) {
 };
 
 /**
- * Class for handling game event timers, e.g. Golden Cookie, Frenzies, etc.
+ * Class for managing individual timers, e.g. Golden Cookie, Frenzies, etc.
  *
  * @param {string} type  reindeer, goldenCookie, frenzy, clickFrenzy,
  *                       elderFrenzy, clot
@@ -423,17 +428,6 @@ CM.Timer = function(type, label) {
 
 	};
 
-	/**
-	 * Removes timer from DOM
-	 * @return {boolean} true
-	 */
-	this.remove = function() {
-
-		// TO DO: Make this?
-		return true;
-
-	};
-
 };
 
 /* ================================================
@@ -444,6 +438,14 @@ CM.Timer = function(type, label) {
 	Separating them out helps keep the init
 	method nice and tidy :)
 ================================================ */
+
+CM.mainLoop = function() {
+
+	if(this.config.settings.showTimers.current === 'on') {
+		this.updateTimers();
+	}
+
+};
 
 /**
  * Build and attach the settings panel to the DOM
@@ -547,96 +549,26 @@ CM.timerPanel = function(state) {
 
 	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
 		timerRes = this.config.cmTimerResolution,
-		$sectionLeft = this.config.ccSectionLeft,
-		self = this,
-		gcTimer,
-		reindeerTimer,
-		frenzyTimer,
-		clickFrenzyTimer,
-		elderFrenzyTimer,
-		clotTimer;
-
-	// TO DO: DRY this up
-	// Set up an execution loop for active timers
-	function manageTimers() {
-
-		// Golden cookie display timer
-		self.displayGCTimer();
-
-		// Golden Cookie timer
-		if($('#goldenCookie').is(':hidden')) {
-			gcTimer.update();
-			gcTimer.show();
-		} else {
-			gcTimer.hide();
-		}
-
-		// Reindeer timer
-		if($('#seasonPopup').is(':hidden')) {
-			reindeerTimer.update();
-			reindeerTimer.show();
-		} else {
-			reindeerTimer.hide();
-		}
-
-		// Frenzy timer
-		if(Game.frenzy > 0 && Game.frenzyPower === 7) {
-			frenzyTimer.update();
-			frenzyTimer.show();
-			elderFrenzyTimer.hide();
-			clotTimer.hide();
-		} else {
-			frenzyTimer.hide();
-		}
-
-		// Click frenzy timer
-		if(Game.clickFrenzy > 0) {
-			clickFrenzyTimer.update();
-			clickFrenzyTimer.show();
-		} else {
-			clickFrenzyTimer.hide();
-		}
-
-		// Elder frenzy timer
-		if(Game.frenzy > 0 && Game.frenzyPower === 666) {
-			elderFrenzyTimer.update();
-			elderFrenzyTimer.show();
-			frenzyTimer.hide();
-			clotTimer.hide();
-		} else {
-			elderFrenzyTimer.hide();
-		}
-
-		// Clot timer
-		if(Game.frenzy > 0 && Game.frenzyPower === 0.5) {
-			clotTimer.update();
-			clotTimer.show();
-			frenzyTimer.hide();
-			elderFrenzyTimer.hide();
-		} else {
-			clotTimer.hide();
-		}
-
-	}
+		$sectionLeft = this.config.ccSectionLeft;
 
 	if(state && $('#CMTimerPanel').length === 0) {
 
 		// Initialize timer objects
-		gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
-		reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
-		frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
-		clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
-		elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
-		clotTimer = new CM.Timer('clot', 'Clot:');
+		this.gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
+		this.reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
+		this.frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
+		this.clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
+		this.elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
+		this.clotTimer = new CM.Timer('clot', 'Clot:');
 
 		// Create the HTML and attach everyting to DOM
 		$cmTimerPanel.append(
-			gcTimer.create(),
-			reindeerTimer.create(),
-			frenzyTimer.create(),
-			elderFrenzyTimer.create(),
-			clotTimer.create(),
-			clickFrenzyTimer.create()
+			this.gcTimer.create(),
+			this.reindeerTimer.create(),
+			this.frenzyTimer.create(),
+			this.elderFrenzyTimer.create(),
+			this.clotTimer.create(),
+			this.clickFrenzyTimer.create()
 		);
 		$sectionLeft.append($cmTimerPanel);
 
@@ -647,31 +579,88 @@ CM.timerPanel = function(state) {
 			$('#CMGCOverlay').hide();
 		});
 
-		// Invoke our loop to continually evaluate timers
-		timerLoop = setInterval(manageTimers, timerRes);
-
 	} else {
 
 		if($('#CMTimerPanel').length !== 0) {
-			// Stop the execution loop
-			clearInterval(timerLoop);
 
 			// Remove references to all timers
-			gcTimer = null;
-			reindeerTimer = null;
-			frenzyTimer = null;
-			clickFrenzyTimer = null;
-			elderFrenzyTimer = null;
-			clotTimer = null;
+			this.gcTimer = null;
+			this.reindeerTimer = null;
+			this.frenzyTimer = null;
+			this.clickFrenzyTimer = null;
+			this.elderFrenzyTimer = null;
+			this.clotTimer = null;
 
 			// Remove golden cookie display timer
 			this.config.cmGCOverlay.remove();
-			this.config.cm
 
 			// Remove the timer panel
 			$('#CMTimerPanel').remove();
 		}
 
+	}
+
+};
+
+// TO DO: DRY this up
+// Update all timers with new values
+CM.updateTimers = function() {
+
+	// Golden cookie display timer
+	this.displayGCTimer();
+
+	// Golden Cookie timer
+	if($('#goldenCookie').is(':hidden')) {
+		this.gcTimer.update();
+		this.gcTimer.show();
+	} else {
+		this.gcTimer.hide();
+	}
+
+	// Reindeer timer
+	if($('#seasonPopup').is(':hidden')) {
+		this.reindeerTimer.update();
+		this.reindeerTimer.show();
+	} else {
+		this.reindeerTimer.hide();
+	}
+
+	// Frenzy timer
+	if(Game.frenzy > 0 && Game.frenzyPower === 7) {
+		this.frenzyTimer.update();
+		this.frenzyTimer.show();
+		this.elderFrenzyTimer.hide();
+		this.clotTimer.hide();
+	} else {
+		this.frenzyTimer.hide();
+	}
+
+	// Click frenzy timer
+	if(Game.clickFrenzy > 0) {
+		this.clickFrenzyTimer.update();
+		this.clickFrenzyTimer.show();
+	} else {
+		this.clickFrenzyTimer.hide();
+	}
+
+	// Elder frenzy timer
+	if(Game.frenzy > 0 && Game.frenzyPower === 666) {
+		this.elderFrenzyTimer.update();
+		this.elderFrenzyTimer.show();
+		this.frenzyTimer.hide();
+		this.clotTimer.hide();
+	} else {
+		this.elderFrenzyTimer.hide();
+	}
+
+	// Clot timer
+	if(Game.frenzy > 0 && Game.frenzyPower === 0.5) {
+		this.clotTimer.update();
+		this.clotTimer.show();
+		this.frenzyTimer.hide();
+		this.elderFrenzyTimer.hide();
+	} else {
+		this.clotTimer.hide();
 	}
 
 };
