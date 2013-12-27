@@ -563,11 +563,11 @@ CM.attachStatsPanel = function() {
 	// Set event handlers
 	$cmStatsHandle.click(function() {
 		if($(this).hasClass('cmOpen')) {
-			$cmStatsPanel.animate({'margin-bottom': '-232px'}, function() {
+			$cmStatsPanel.animate({'margin-top': '-422px'}, function() {
 				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
 			});
 		} else {
-			$cmStatsPanel.animate({'margin-bottom': '0'}, function() {
+			$cmStatsPanel.animate({'margin-top': '0'}, function() {
 				$cmStatsHandle.addClass('cmOpen').text('Close Stats');
 			});
 		}

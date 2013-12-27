@@ -177,10 +177,11 @@
 #CMStatsPanel {
 	bottom: auto;
 	top: 0;
+	z-index: 1000002;
 	width: 600px;
 	height: 400px;
 	margin-left: -321px;
-	margin-bottom: -211px;
+	margin-top: -422px;
 	border: 1px solid #555;
 	border-top: none;
 }
@@ -188,6 +189,7 @@
 #CMStatsPanelHandle {
 	position: absolute;
 	top: auto;
+	bottom: 27px;
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	border-bottom-left-radius: 3px;
