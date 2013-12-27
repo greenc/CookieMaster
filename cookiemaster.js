@@ -533,7 +533,7 @@ CM.attachSettingsPanel = function() {
 		// Set event handlers
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
-				$cmSettingsPanel.animate({'margin-bottom': '-232px'}, function() {
+				$cmSettingsPanel.animate({'margin-bottom': '-231px'}, function() {
 					$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
 				});
 			} else {
@@ -563,7 +563,7 @@ CM.attachStatsPanel = function() {
 	// Set event handlers
 	$cmStatsHandle.click(function() {
 		if($(this).hasClass('cmOpen')) {
-			$cmStatsPanel.animate({'margin-top': '-422px'}, function() {
+			$cmStatsPanel.animate({'margin-top': '-421px'}, function() {
 				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
 			});
 		} else {
