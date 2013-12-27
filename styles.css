@@ -18,7 +18,8 @@
 ================================================ */
 
 /* Styles for the CM UI */
-#CMSettingsPanel {
+#CMSettingsPanel,
+#CMStatsPanel {
 	position: fixed;
 	z-index: 1000001;
 	bottom: 0;
@@ -35,7 +36,8 @@
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
-#CMSettingsPanelHandle {
+#CMSettingsPanelHandle,
+#CMStatsPanelHandle {
 	position: absolute;
 	top: -27px;
 	left: 50%;
@@ -170,6 +172,27 @@
 	width: 96px;
 	z-index: 10000000000;
 	cursor: pointer;
+}
+
+#CMStatsPanel {
+	bottom: auto;
+	top: 0;
+	width: 600px;
+	height: 400px;
+	margin-left: -321px;
+	margin-bottom: -211px;
+	border: 1px solid #555;
+	border-top: none;
+}
+
+#CMStatsPanelHandle {
+	position: absolute;
+	top: auto;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-top: none;
 }
 
 .cf:before,

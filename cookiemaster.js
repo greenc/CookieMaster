@@ -34,6 +34,7 @@ CM.config = {
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 	cmRefreshRate: 1000,
+	cmTitleRefreshRate: 200,
 	cmGCOverlay: null, // Set only when needed
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
@@ -56,9 +57,9 @@ CM.config = {
 			options: 'toggle',
 			current: 'on'
 		},
-		showTimers: {
-			label: 'Show Timers',
-			desc: 'Display countdown timers for golden cookies and buffs',
+		titleTimers: {
+			label: 'Title Timers',
+			desc: 'Display Golden Cookie and Reindeer countdown timers in the title bar',
 			options: 'toggle',
 			current: 'on'
 		},
@@ -115,6 +116,7 @@ CM.init = function() {
 
 	var self = this,
 		refreshRate = this.config.cmRefreshRate,
+		titleRefreshRate = this.config.cmTitleRefreshRate,
 		cmCSS = this.config.cmCSS,
 		cssID = this.config.cmStyleID,
 		updateLoop;
@@ -129,7 +131,11 @@ CM.init = function() {
 		// Apply user settings last
 		this.applyUserSettings();
 
+		// Our continually updating methods go in here
 		setInterval(function() {self.mainLoop();}, refreshRate);
+
+		// Title updates get their own loop so they can be faster for accuracy
+		setInterval(function() {self.updateTitleTicker();}, titleRefreshRate);
 
 		// All done :)
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
@@ -543,6 +549,32 @@ CM.attachSettingsPanel = function() {
 
 };
 
+CM.attachStatsPanel = function() {
+
+	var $wrapper = this.config.ccWrapper,
+	$cmStatsPanel = $('<div />').attr('id', 'CMStatsPanel'),
+	$cmStatsHandle = $('<div />').attr('id', 'CMStatsPanelHandle').text('CookieMaster Stats');
+
+	$cmStatsPanel.append($cmStatsHandle);
+
+	// Attach to DOM
+	$wrapper.append($cmStatsPanel);
+
+	// Set event handlers
+	$cmStatsHandle.click(function() {
+		if($(this).hasClass('cmOpen')) {
+			$cmStatsPanel.animate({'margin-bottom': '-232px'}, function() {
+				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
+			});
+		} else {
+			$cmStatsPanel.animate({'margin-bottom': '0'}, function() {
+				$cmStatsHandle.addClass('cmOpen').text('Close Stats');
+			});
+		}
+	});
+
+};
+
 /**
  * Configure & populate the panel for showing game timers
  * @param  {boolean} state Active or inactive
@@ -696,6 +728,19 @@ CM.displayGCTimer = function() {
 		$overlay.hide();
 
 	}
+
+};
+
+/**
+ * Updates the title tag with timer statuses and cookie count
+ */
+CM.updateTitleTicker = function() {
+
+	var spI = (Game.seasonPopup.life > 0) ? 'R' : Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
+		gcI = (Game.goldenCookie.life > 0) ? 'G' : Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps),
+		cookie = Beautify(Game.cookies);
+
+	document.title = gcI + ' | ' + spI + ' - ' + Beautify(Game.cookies);
 
 };
 
@@ -882,6 +927,18 @@ function Beautify(what, floats) {
 	return CM.largeNumFormat(what, floats);
 
 }
+
+/**
+ * Remove the title tag update functionality from the main
+ * game as we will use our own, faster update function
+ */
+Game.Logic = new Function(
+	'',
+	Game.Logic.toString()
+	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
+	.replace(/^function[^{]+{/i, '')
+	.replace(/}[^}]*$/i, '')
+);
 
 /* ================================================
 	END COOKIE CLICKER FUNCTION OVERRIDES
