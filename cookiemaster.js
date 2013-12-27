@@ -302,7 +302,7 @@ CM.Timer = function(type, label) {
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
 			hardMin = timings.min / timings.max * 100;
 			if(width < 100 - hardMin) {
-				this.container.addClass('cmEmphasize');
+				$container.addClass('cmEmphasize');
 			}
 			$limiter = $('<span />').css('width', hardMin + '%');
 			$barOuter.append($limiter);
