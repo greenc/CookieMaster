@@ -222,7 +222,10 @@
 /* Feature: cleanUI */
 .cleanUI #topBar,
 .cleanUI #support { display: none; }
-.cleanUI #versionNumber { z-index: 20; }
+.cleanUI #versionNumber {
+	bottom: auto;
+	top: 0;
+}
 
 .cleanUI #game {
 	-webkit-touch-callout: none;
