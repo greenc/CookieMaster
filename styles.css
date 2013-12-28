@@ -25,7 +25,7 @@
 	bottom: 0;
 	left: 50%;
 	width: 300px;
-	height: 210px;
+	height: 300px;
 	margin-left: -171px;
 	margin-bottom: -232px;
 	background-color: rgba(0, 0, 0, 0.95);
@@ -206,6 +206,28 @@
 	border-bottom-right-radius: 3px;
 	border-top: none;
 	border-bottom: 1px solid #555;
+}
+
+#CMStatsPanelTable {
+	width: 100%;
+	font-size: 14px;
+	border-top: 1px dashed #222;
+}
+
+#CMStatsPanelTable td {
+	padding: 5px 0;
+	border-bottom: 1px dashed #222;
+	line-height: 20px;
+	color: #DDD;
+}
+
+#CMStatsPanelTable .cmStatsValue {
+	text-align: right;
+	color: #FFF;
+}
+
+#CMStatsPanelTable .cmHighlight {
+	color: #6F6;
 }
 
 .cf:before,

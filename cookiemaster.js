@@ -25,16 +25,16 @@
  * Hijacks the original Beautify method to use
  * our own formatting function
  *
- * @param {integer} what   Number to beautify
- * @param {integer} floats Desired precision
+ * @param {Integer} what   Number to beautify
+ * @param {Integer} floats Desired precision
  *
- * @return {string}    Formatted number
+ * @return {String}    Formatted number
  */
 function Beautify(what, floats) {
 
-	var floats = floats || 0;
+	var precision = floats || 0;
 
-	return CM.largeNumFormat(what, floats);
+	return CM.largeNumFormat(what, precision);
 
 }
 
@@ -52,12 +52,12 @@ Game.Logic = new Function(
 
 /**
  * Fixes the game's mangled attempt at blocking hotlinked audio files from
- * soundjay.com (soundjay files are still blocked, but the Audio api now
+ * soundjay.com (soundjay files are still blocked, but the Audio API now
  * works correctly again).
  *
- * @param {string} src source file
+ * @param {String} src source file
  *
- * @return {object}    new Audio object
+ * @return {Object}    new Audio object
  */
 Audio = function(src) {
 	if(src.indexOf('soundjay') !== -1) {
@@ -85,30 +85,41 @@ CM = {};
  */
 CM.config = {
 
-	cmVersion: '0.1',
-	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
-	cmGCAudioAlert: new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
-	cmSPAudioAlert: new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
-	cmAudioGCNotified: false,
-	cmAudioSPNotified: false,
-	cmRefreshRate: 1000,
-	cmFastRefreshRate: 200,
-	cmGCOverlay: null, // Set only when needed
+	///////////////////////////////////////////////
+	// General CookieMaster settings
+	///////////////////////////////////////////////
 
-	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
-	ccVersion: null, // Set during integrity check
+	cmVersion:            '0.1',
+	cmCSS:                'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
+	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
+	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
+	cmAudioGCNotified:    false,
+	cmAudioSPNotified:    false,
+	cmRefreshRate:        1000,
+	cmFastRefreshRate:    200,
+	cmGCOverlay:          null, // Set only when needed
+	ccURL:                'http://orteil.dashnet.org/cookieclicker/',
+	ccVersion:            null, // Set during integrity check
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
-	ccBody: $('body'),
-	ccWrapper: $('#wrapper'),
-	ccGame: $('#game'),
-	ccSectionLeft: $('#sectionLeft'),
-	ccSectionMiddle: $('#sectionMiddle'),
-	ccSectionRight: $('#sectionRight'),
-	ccGoldenCookie: $('#goldenCookie'),
-	ccSeasonPopup: $('#seasonPopup'),
+	///////////////////////////////////////////////
+	// Common Selectors
+	///////////////////////////////////////////////
 
-	// User settings (settings pane)
+	ccBody:          $('body'),
+	ccWrapper:       $('#wrapper'),
+	ccGame:          $('#game'),
+	ccSectionLeft:   $('#sectionLeft'),
+	ccSectionMiddle: $('#sectionMiddle'),
+	ccSectionRight:  $('#sectionRight'),
+	ccGoldenCookie:  $('#goldenCookie'),
+	ccSeasonPopup:   $('#seasonPopup'),
+	cmStatsTable:    {}, // Set when panel is created
+
+	///////////////////////////////////////////////
+	// Settings panel settings
+	///////////////////////////////////////////////
+
 	settings: {
 		cleanUI: {
 			label: 'Clean UI',
@@ -189,14 +200,15 @@ CM.init = function() {
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
 
-		this.loadUserSettings();
 		this.attachStyleSheet(cmCSS, cssID);
+		this.loadUserSettings();
 		this.attachSettingsPanel();
+		this.attachStatsPanel();
 
 		// Apply user settings last
 		this.applyUserSettings();
 
-		// Our continually updating methods go in here
+		// Start the main loop
 		setInterval(function() {self.mainLoop();}, refreshRate);
 
 		// Title updates and audio alerts get their own loop which updates faster
@@ -223,7 +235,7 @@ CM.init = function() {
  * Returns true if CM can run correctly
  * Also, sets warning and error messages if appropriate
  *
- * @return {boolean}
+ * @return {Boolean}
  */
 CM.integrityCheck = function() {
 
@@ -262,11 +274,11 @@ CM.integrityCheck = function() {
 };
 
 /**
- * Returns index index of version number in the array of known
+ * Returns index of version number in the array of known
  * compatible versions
  *
- * @param  {string}  version CC version
- * @return {integer}
+ * @param  {String}  version CC version
+ * @return {Integer}
  */
 CM.compatibilityCheck = function(version) {
 
@@ -289,17 +301,17 @@ CM.compatibilityCheck = function(version) {
  * thousands and decimal separators and performs correct rounding for
  * smaller numbers
  *
- * @param  {integer} num    The number to be formatted
- * @param  {integer} floats Amount of decimal places required
- * @return {string}
+ * @param  {Integer} num    The number to be formatted
+ * @param  {Integer} floats Amount of decimal places required
+ * @return {String}
  */
-CM.largeNumFormat = function(num, floats) {
+CM.largeNumFormat = function(num, precision) {
 
 	var useShortNums = this.config.settings.shortNums.current === 'on' ? true : false,
 		decSep = this.config.settings.numFormat.current === 'us' ? '.' : ',',
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
-		floats = floats || 0,
+		floats = precision || 0,
 		parts,
 		ranges = [
 			{divider: 1e33, suffix: 'Dc'},
@@ -313,6 +325,10 @@ CM.largeNumFormat = function(num, floats) {
 			{divider: 1e9, suffix: 'B'},
 			{divider: 1e6, suffix: 'M'}
 		];
+
+	if(num == Number.POSITIVE_INFINITY || num == Number.NEGATIVE_INFINITY) {
+		return 'Infinity';
+	}
 
 	if(useShortNums) {
 		for(var i = 0; i < ranges.length; i++) {
@@ -337,9 +353,9 @@ CM.largeNumFormat = function(num, floats) {
 /**
  * Class for managing individual timers, e.g. Golden Cookie, Frenzies, etc.
  *
- * @param {string} type  reindeer, goldenCookie, frenzy, clickFrenzy,
+ * @param {String} type  reindeer, goldenCookie, frenzy, clickFrenzy,
  *                       elderFrenzy, clot
- * @param {string} label Display label for the timer
+ * @param {String} label Display label for the timer
  */
 CM.Timer = function(type, label) {
 
@@ -354,7 +370,7 @@ CM.Timer = function(type, label) {
 
 	/**
 	 * Create a new timer object
-	 * @return {object} Timer HTML as jQuery object
+	 * @return {Object} Timer HTML as jQuery object
 	 */
 	this.create = function() {
 
@@ -396,7 +412,8 @@ CM.Timer = function(type, label) {
 
 	/**
 	 * Updates timing values of the timer
-	 * @return {object} this
+	 *
+	 * @return {Object} this
 	 */
 	this.update = function() {
 
@@ -430,7 +447,8 @@ CM.Timer = function(type, label) {
 
 	/**
 	 * Retrieves the current timings from the game code
-	 * @return {object} timings
+	 *
+	 * @return {Object} timings
 	 */
 	this.getTimings = function() {
 
@@ -465,7 +483,8 @@ CM.Timer = function(type, label) {
 
 	/**
 	 * Shows timer if hidden
-	 * @return {object} this
+	 *
+	 * @return {Object} this
 	 */
 	this.show = function() {
 
@@ -486,7 +505,8 @@ CM.Timer = function(type, label) {
 
 	/**
 	 * Hides timer if visible
-	 * @return {object} this
+	 *
+	 * @return {Object} this
 	 */
 	this.hide = function() {
 
@@ -506,6 +526,148 @@ CM.Timer = function(type, label) {
 
 };
 
+/**
+ * Returns array of stats for Heavenly Chips
+ *
+ * @return {Array} [maxHC, currentHC, cookiesToNextHC, timeToNextHC]
+ */
+CM.getHCStats = function() {
+
+	var stats = [],
+		max = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
+		current = Game.prestige['Heavenly chips'],
+		cookiesToNext = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
+		timeToNext = Math.round(cookiesToNext / Game.cookiesPs),
+		i;
+
+	function cookiesToHC(cookies) {
+		return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
+	}
+
+	function hcToCookies(hc) {
+		return 5 * Math.pow(10, 11) * hc * (hc + 1);
+	}
+
+	stats = [
+		Beautify(max),
+		Beautify(current),
+		Beautify(cookiesToNext),
+		this.secondsToTime(timeToNext)
+	];
+
+	return stats;
+
+};
+
+/**
+ * Returns array of stats for "Lucky" rewards
+ *
+ * @return {Array} [
+ *             requiredLucky,
+ *             requiredFrenzyLucky,
+ *             maxRewardLucky,
+ *             maxRewardFrenzyLucky,
+ *             currentRewardFrenzyLucky
+ *         ]
+ */
+// TO DO: Clean this up
+CM.getLuckyStats = function() {
+
+	var stats = [],
+		cps = Game.cookiesPs,
+		i;
+
+	function lucky(type) {
+
+		var required;
+
+		if(Game.frenzy > 0) {
+			cps = cps / Game.frenzyPower;
+		}
+
+		if(type === 'luckyFrenzy') {
+			cps = cps * 7;
+		}
+
+		required = Math.round((cps * 1200 + 13) / 0.1);
+
+		return (required <= Game.cookies) ? '<span class="cmHighlight">' + Beautify(required) + '</span>' : Beautify(required);
+
+	}
+
+	function luckyReward(type) {
+
+		if(Game.frenzy > 0 && type != 'cur') {
+			cps = cps / Game.frenzyPower;
+		}
+
+		if(type == 'maxFrenzy') {
+			cps = cps * 7;
+		}
+
+		var n = [
+			Math.round(cps * 1200 + 13),
+			Math.round(Game.cookies * 0.1 + 13)
+		];
+
+		if(type == 'max' || type == 'maxFrenzy') {
+
+			if(Math.round((cps * 1200 + 13) / 0.1) > Game.cookies) {
+				return Beautify(n[0]);
+			}
+
+		}
+
+		return Beautify(Math.min.apply(Math, n));
+
+	}
+
+	stats[0] = lucky('lucky');
+	stats[1] = lucky('luckyFrenzy');
+	stats[2] = luckyReward('max');
+	stats[3] = luckyReward('maxFrenzy');
+	stats[4] = luckyReward('cur');
+
+	return stats;
+
+};
+
+/**
+ * Returns the total cookies player would earn from popping all wrinklers
+ *
+ * @return {String} Formatted number
+ */
+CM.getWrinklerReward = function() {
+
+	var sucked = 0;
+
+	$.each(Game.wrinklers, function() {
+		sucked += this.sucked;
+	});
+
+	return Beautify(sucked * 1.1);
+
+};
+
+/**
+ * Converts seconds to a more readable format
+ *
+ * @param  {Integer} seconds Number to convert
+ * @return {String}          Formatted time
+ */
+CM.secondsToTime = function(seconds) {
+
+	var s = seconds, m, h;
+
+	h = Math.floor(s / (60 * 60));
+	s -= h * (60 * 60);
+	m = Math.floor(s / 60);
+	s -= m * 60;
+
+	return h + ' hours, ' + m + ' minutes, ' + s + ' seconds';
+
+};
+
 /* ================================================
 	NON-RETURNING METHODS
 
@@ -522,6 +684,8 @@ CM.mainLoop = function() {
 	if(timerPanelAttached) {
 		this.updateTimers();
 	}
+
+	this.updateStats();
 
 };
 
@@ -603,7 +767,9 @@ CM.attachSettingsPanel = function() {
 		// Set event handlers
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
-				$cmSettingsPanel.animate({'margin-bottom': '-231px'}, function() {
+				$cmSettingsPanel.animate({
+					'margin-bottom': '-' + $cmSettingsPanel.outerHeight() + 'px'
+				}, function() {
 					$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
 				});
 			} else {
@@ -623,9 +789,60 @@ CM.attachStatsPanel = function() {
 
 	var $wrapper = this.config.ccWrapper,
 	$cmStatsPanel = $('<div />').attr('id', 'CMStatsPanel'),
-	$cmStatsHandle = $('<div />').attr('id', 'CMStatsPanelHandle').text('CookieMaster Stats');
+	$cmStatsHandle = $('<div />').attr('id', 'CMStatsPanelHandle').text('CookieMaster Stats'),
+	tableHTML = '';
 
-	$cmStatsPanel.append($cmStatsHandle);
+	tableHTML += '<table id="CMStatsPanelTable">';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Current Heavenly Chips:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCCurrent"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Heavenly Chips:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCMax"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Cookies to next HC:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCCookiesToNext"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Time to next HC:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCTimeToNext"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Lucky cookies required:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyRequired"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Lucky + Frenzy cookies required:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyFrenzyRequired"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Lucky reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Lucky + Frenzy reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyFrenzyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Current Lucky reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsCurrentLuckyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Wrinklers reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML += '</table>';
+
+	$cmStatsPanelTable = $(tableHTML);
+
+	// Save this to config for easy access later
+	this.config.cmStatsTable = $cmStatsPanelTable;
+
+	$cmStatsPanel.append($cmStatsHandle, $cmStatsPanelTable);
 
 	// Attach to DOM
 	$wrapper.append($cmStatsPanel);
@@ -633,7 +850,9 @@ CM.attachStatsPanel = function() {
 	// Set event handlers
 	$cmStatsHandle.click(function() {
 		if($(this).hasClass('cmOpen')) {
-			$cmStatsPanel.animate({'margin-top': '-421px'}, function() {
+			$cmStatsPanel.animate({
+				'margin-top': '-' + $cmStatsPanel.outerHeight() + 'px'
+			}, function() {
 				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
 			});
 		} else {
@@ -642,6 +861,30 @@ CM.attachStatsPanel = function() {
 			});
 		}
 	});
+
+};
+
+CM.updateStats = function() {
+
+	var hcStats = this.getHCStats(),
+		luckyStats = this.getLuckyStats(),
+		wrinklerStats = this.getWrinklerReward();
+
+	// Heavenly Chip stats
+	$('#CMStatsHCCurrent').html(hcStats[0] + ' Heavenly Chips');
+	$('#CMStatsHCMax').html(hcStats[1] + ' Heavenly Chips');
+	$('#CMStatsHCCookiesToNext').html(hcStats[2] + ' cookies');
+	$('#CMStatsHCTimeToNext').html(hcStats[3]);
+
+	// Lucky stats
+	$('#CMStatsLuckyRequired').html(luckyStats[0] + ' cookies');
+	$('#CMStatsLuckyFrenzyRequired').html(luckyStats[1] + ' cookies');
+	$('#CMStatsMaxLuckyReward').html(luckyStats[2] + ' cookies');
+	$('#CMStatsMaxLuckyFrenzyReward').html(luckyStats[3] + ' cookies');
+	$('#CMStatsCurrentLuckyReward').html(luckyStats[4] + ' cookies');
+
+	// Wrinkler stats
+	$('#CMStatsWrinklersReward').html(wrinklerStats + ' cookies');
 
 };
 
@@ -890,7 +1133,7 @@ CM.cleanUI = function(state) {
 /**
  * Change the font of highlight and title text
  *
- * @param {string} font The selected font setting
+ * @param {String} font The selected font setting
  */
 CM.changeFont = function(font) {
 
@@ -906,8 +1149,8 @@ CM.changeFont = function(font) {
 /**
  * Attach an external stylesheet to the DOM
  *
- * @param  {string} url The URL of the stylesheet to load
- * @param  {string} id  an ID to give the stylesheet
+ * @param  {String} url The URL of the stylesheet to load
+ * @param  {String} id  an ID to give the stylesheet
  */
 CM.attachStyleSheet = function(url, id) {
 
@@ -1009,7 +1252,7 @@ CM.suicide = function() {
 /**
  * Alert user to messages (expand later)
  *
- * @param  {string} msg The message
+ * @param  {String} msg The message
  */
 CM.alertMessage = function(msg) {
 
