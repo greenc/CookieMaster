@@ -124,7 +124,7 @@ CM.config = {
 		},
 		audioAlerts: {
 			label: 'Audio Alerts',
-			desc: 'Play an audio alert when Golden Cookies and Reindeer spawn',
+			desc: 'Play an audio alert and flash the screen when Golden Cookies and Reindeer spawn',
 			options: 'toggle',
 			current: 'on'
 		},
@@ -814,12 +814,17 @@ CM.audioAlerts = function() {
 		gcNotified = this.config.cmAudioGCNotified,
 		spNotified = this.config.cmAudioSPNotified;
 
+	// Attach flash overlay if not already in DOM
+	if($('#CMOverlay').length === 0) {
+		$('body').append($('<div />').attr('id', 'CMOverlay'));
+	}
+
 	// Play Golden cookie notification
 	if($gc.is(':visible')) {
 		if(!gcNotified) {
 			gcAlert.volume = 1;
 			gcAlert.play();
-			$("#CMOverlay").show().fadeOut(300);
+			$("#CMOverlay").show().fadeOut(500);
 			this.config.cmAudioGCNotified = true;
 		}
 	} else {
@@ -831,7 +836,7 @@ CM.audioAlerts = function() {
 		if(!spNotified) {
 			spAlert.volume = 1;
 			spAlert.play();
-			$("#CMOverlay").show().fadeOut(300);
+			$("#CMOverlay").show().fadeOut(500);
 			this.config.cmAudioSPNotified = true;
 		}
 	} else {
