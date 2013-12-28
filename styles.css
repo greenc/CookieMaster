@@ -25,9 +25,7 @@
 	bottom: 0;
 	left: 50%;
 	width: 300px;
-	height: 300px;
 	margin-left: -171px;
-	margin-bottom: -321px;
 	background-color: rgba(0, 0, 0, 0.95);
 	padding: 10px 20px;
 	color: #FFF;
@@ -189,9 +187,7 @@
 	top: 0;
 	z-index: 1000002;
 	width: 600px;
-	height: 400px;
 	margin-left: -321px;
-	margin-top: -422px;
 	border: 1px solid #555;
 	border-top: none;
 }

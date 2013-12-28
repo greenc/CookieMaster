@@ -640,7 +640,7 @@ CM.getLuckyStats = function() {
 CM.getWrinklerStats = function() {
 
 	var stats = [],
-		sucked;
+		sucked = 0;
 
 	$.each(Game.wrinklers, function() {
 		sucked += this.sucked;
@@ -768,6 +768,9 @@ CM.attachSettingsPanel = function() {
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
 
+		// Set initial position
+		$cmSettingsPanel.css('margin-bottom', '-' + $cmSettingsPanel.outerHeight() + 'px');
+
 		// Set event handlers
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
@@ -836,11 +839,11 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Wrinklers sucked:</td>';
+	tableHTML +=         '<td>Cookies sucked by Wrinklers:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersSucked"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Wrinklers reward:</td>';
+	tableHTML +=         '<td>Reward for popping Wrinklers:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
@@ -854,6 +857,9 @@ CM.attachStatsPanel = function() {
 
 	// Attach to DOM
 	$wrapper.append($cmStatsPanel);
+
+	// Set initial position
+	$cmStatsPanel.css('margin-top', '-' + $cmStatsPanel.outerHeight() + 'px');
 
 	// Set event handlers
 	$cmStatsHandle.click(function() {
