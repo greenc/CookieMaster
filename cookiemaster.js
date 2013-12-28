@@ -768,9 +768,6 @@ CM.attachSettingsPanel = function() {
 		// Attach to DOM
 		$wrapper.append($cmSettingsPanel);
 
-		// Set initial position
-		$cmSettingsPanel.css('margin-bottom', '-' + $cmSettingsPanel.outerHeight() + 'px');
-
 		// Set event handlers
 		$cmSettingsHandle.click(function() {
 			if($(this).hasClass('cmOpen')) {
@@ -857,9 +854,6 @@ CM.attachStatsPanel = function() {
 
 	// Attach to DOM
 	$wrapper.append($cmStatsPanel);
-
-	// Set initial position
-	$cmStatsPanel.css('margin-top', '-' + $cmStatsPanel.outerHeight() + 'px');
 
 	// Set event handlers
 	$cmStatsHandle.click(function() {

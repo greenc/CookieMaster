@@ -23,11 +23,12 @@
 	position: fixed;
 	z-index: 1000001;
 	bottom: 0;
-	left: 50%;
-	width: 300px;
-	margin-left: -171px;
+	margin-bottom: -276px;
+	right: 165px;
+	width: 260px;
+	height: 235px;
 	background-color: rgba(0, 0, 0, 0.95);
-	padding: 10px 20px;
+	padding: 10px 20px 40px;
 	color: #FFF;
 	border: 1px solid #555;
 	border-bottom: none;
@@ -38,8 +39,7 @@
 #CMStatsPanelHandle {
 	position: absolute;
 	top: -27px;
-	left: 50%;
-	margin-left: -110px;
+	left: -1px;
 	height: 26px;
 	width: 220px;
 	background-color: rgba(0, 0, 0, 0.95);
@@ -54,7 +54,7 @@
 	cursor: pointer;
 	border-bottom: none;
 	font-family: "Kavoon", Georgia, serif;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+	box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.5);
 }
 
 #CMSettingsPanelHandle:hover {
@@ -183,25 +183,15 @@
 }
 
 #CMStatsPanel {
-	bottom: auto;
-	top: 0;
-	z-index: 1000002;
-	width: 600px;
-	margin-left: -321px;
-	border: 1px solid #555;
-	border-top: none;
+	z-index: 1000000;
+	width: 425px;
+	height: 404px;
+	margin-bottom: 455px;
 }
 
 #CMStatsPanelHandle {
-	position: absolute;
-	top: auto;
-	bottom: -27px;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-	border-bottom-left-radius: 3px;
-	border-bottom-right-radius: 3px;
-	border-top: none;
-	border-bottom: 1px solid #555;
+	left: auto;
+	right: -1px;
 }
 
 #CMStatsPanelTable {
