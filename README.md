@@ -56,6 +56,11 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.1.3 - 2013/12/28
+
+ - Added check to prevent loading CookieMaster more than once
+ - Made some error and warning messages a little clearer
+
 ### Version 1.1.2 - 2013/12/28
 
  - Removed cache buster parameter from jQuery dependency file
