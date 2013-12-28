@@ -21,10 +21,10 @@
 #CMSettingsPanel,
 #CMStatsPanel {
 	position: fixed;
-	z-index: 1000000;
+	z-index: 1000001;
 	bottom: 0;
 	margin-bottom: -286px;
-	right: 235px;
+	right: 255px;
 	width: 260px;
 	height: 235px;
 	background-color: rgba(0, 0, 0, 0.95);
@@ -181,8 +181,8 @@
 }
 
 #CMStatsPanel {
-	right: 0;
-	z-index: 1000001;
+	right: 20px;
+	z-index: 1000000;
 	width: 495px;
 	height: 404px;
 	margin-bottom: -455px;
