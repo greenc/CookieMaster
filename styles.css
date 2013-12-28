@@ -23,7 +23,7 @@
 	position: fixed;
 	z-index: 1000001;
 	bottom: 0;
-	margin-bottom: -276px;
+	margin-bottom: -286px;
 	right: 165px;
 	width: 260px;
 	height: 235px;
@@ -183,10 +183,11 @@
 }
 
 #CMStatsPanel {
+	right: 0;
 	z-index: 1000000;
 	width: 425px;
 	height: 404px;
-	margin-bottom: 455px;
+	margin-bottom: -455px;
 }
 
 #CMStatsPanelHandle {
