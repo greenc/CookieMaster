@@ -56,11 +56,11 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
-*Version 1.1.1* - 2013/12/28
+### Version 1.1.1 - 2013/12/28
 
  - Fixed bug where top bar would remain visible when Clean UI was active
 
-*Version 1.1.0* - 2013/12/28
+### Version 1.1.0* - 2013/12/28
 
  - Ads are no longer hidden when Clean UI is active
  - Added several suffix options when shortening numbers
