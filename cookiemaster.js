@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      0.1
+    Version:      1.0.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -89,7 +89,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	cmVersion:            '0.1',
+	cmVersion:            '1.0.0',
 	cmCSS:                'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
 	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
 	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
