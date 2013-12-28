@@ -633,19 +633,23 @@ CM.getLuckyStats = function() {
 };
 
 /**
- * Returns the total cookies player would earn from popping all wrinklers
+ * Returns total cookies sucked and total reward if clicked
  *
- * @return {String} Formatted number
+ * @return {Array} Wrinkler stats
  */
-CM.getWrinklerReward = function() {
+CM.getWrinklerStats = function() {
 
-	var sucked = 0;
+	var stats = [],
+		sucked;
 
 	$.each(Game.wrinklers, function() {
 		sucked += this.sucked;
 	});
 
-	return Beautify(sucked * 1.1);
+	stats[0] = Beautify(sucked);
+	stats[1] = Beautify(sucked * 1.1);
+
+	return stats;
 
 };
 
@@ -832,6 +836,10 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
 	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Wrinklers sucked:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersSucked"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Wrinklers reward:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersReward"></td>';
 	tableHTML +=     '</tr>';
@@ -868,23 +876,24 @@ CM.updateStats = function() {
 
 	var hcStats = this.getHCStats(),
 		luckyStats = this.getLuckyStats(),
-		wrinklerStats = this.getWrinklerReward();
+		wrinklerStats = this.getWrinklerStats();
 
 	// Heavenly Chip stats
-	$('#CMStatsHCCurrent').html(hcStats[0] + ' Heavenly Chips');
-	$('#CMStatsHCMax').html(hcStats[1] + ' Heavenly Chips');
-	$('#CMStatsHCCookiesToNext').html(hcStats[2] + ' cookies');
+	$('#CMStatsHCCurrent').html(hcStats[0]);
+	$('#CMStatsHCMax').html(hcStats[1]);
+	$('#CMStatsHCCookiesToNext').html(hcStats[2]);
 	$('#CMStatsHCTimeToNext').html(hcStats[3]);
 
 	// Lucky stats
-	$('#CMStatsLuckyRequired').html(luckyStats[0] + ' cookies');
-	$('#CMStatsLuckyFrenzyRequired').html(luckyStats[1] + ' cookies');
-	$('#CMStatsMaxLuckyReward').html(luckyStats[2] + ' cookies');
-	$('#CMStatsMaxLuckyFrenzyReward').html(luckyStats[3] + ' cookies');
-	$('#CMStatsCurrentLuckyReward').html(luckyStats[4] + ' cookies');
+	$('#CMStatsLuckyRequired').html(luckyStats[0]);
+	$('#CMStatsLuckyFrenzyRequired').html(luckyStats[1]);
+	$('#CMStatsMaxLuckyReward').html(luckyStats[2]);
+	$('#CMStatsMaxLuckyFrenzyReward').html(luckyStats[3]);
+	$('#CMStatsCurrentLuckyReward').html(luckyStats[4]);
 
 	// Wrinkler stats
-	$('#CMStatsWrinklersReward').html(wrinklerStats + ' cookies');
+	$('#CMStatsWrinklersSucked').html(wrinklerStats[0]);
+	$('#CMStatsWrinklersReward').html(wrinklerStats[1]);
 
 };
 
