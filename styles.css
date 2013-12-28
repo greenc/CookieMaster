@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.0.0
+    Version:      0.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -96,17 +96,17 @@
 }
 
 #CMSettingsPause {
-	border: 1px solid #636363;
+	border: 1px solid #747474;
 	background-color: #4D4D4D;
 	margin-left: 10px;
 }
 
 #CMSettingsSave:hover {
-	background-color: #5A5A5A;
+	background-color: #6AA01A;
 }
 
 #CMSettingsPause:hover {
-	background-color: #686868;
+	background-color: #5A5A5A;
 }
 
 #CMTimerPanel {
@@ -266,7 +266,6 @@
 .serif .title,
 .serif .section,
 .serif #CMSettingsSave,
-.serif #CMSettingsPause,
 .serif #CMTimerPanel,
 .serif #CMSettingsPanelHandle,
 .serif #CMStatsPanelHandle {
@@ -276,7 +275,6 @@
 .sansserif .title,
 .sansserif .section,
 .sansserif #CMSettingsSave,
-.sansserif #CMSettingsPause,
 .sansserif #CMTimerPanel,
 .sansserif #CMSettingsPanelHandle,
 .sansserif #CMStatsPanelHandle {
