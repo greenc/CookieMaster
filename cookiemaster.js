@@ -529,13 +529,15 @@ CM.Timer = function(type, label) {
 /**
  * Returns array of stats for Heavenly Chips
  *
- * @return {Array} [maxHC, currentHC, cookiesToNextHC, timeToNextHC]
+ * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, timeToNextHC]
  */
 CM.getHCStats = function() {
 
 	var stats = [],
-		max = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
 		current = Game.prestige['Heavenly chips'],
+		currentPercent = current * 2,
+		max = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
+		maxPercent = max * 2,
 		cookiesToNext = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
 		timeToNext = Math.round(cookiesToNext / Game.cookiesPs),
 		i;
@@ -549,8 +551,10 @@ CM.getHCStats = function() {
 	}
 
 	stats = [
-		Beautify(max),
 		Beautify(current),
+		Beautify(currentPercent) + '%',
+		Beautify(max),
+		Beautify(maxPercent) + '%',
 		Beautify(cookiesToNext),
 		this.secondsToTime(timeToNext)
 	];
@@ -574,12 +578,12 @@ CM.getHCStats = function() {
 CM.getLuckyStats = function() {
 
 	var stats = [],
-		cps = Game.cookiesPs,
 		i;
 
 	function lucky(type) {
 
-		var required;
+		var required,
+			cps = Game.cookiesPs;
 
 		if(Game.frenzy > 0) {
 			cps = cps / Game.frenzyPower;
@@ -596,6 +600,8 @@ CM.getLuckyStats = function() {
 	}
 
 	function luckyReward(type) {
+
+		var cps = Game.cookiesPs;
 
 		if(Game.frenzy > 0 && type != 'cur') {
 			cps = cps / Game.frenzyPower;
@@ -773,11 +779,11 @@ CM.attachSettingsPanel = function() {
 			if($(this).hasClass('cmOpen')) {
 				$cmSettingsPanel.animate({
 					'margin-bottom': '-' + $cmSettingsPanel.outerHeight() + 'px'
-				}, function() {
+				}, 300, function() {
 					$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
 				});
 			} else {
-				$cmSettingsPanel.animate({'margin-bottom': '0'}, function() {
+				$cmSettingsPanel.animate({'margin-bottom': '0'}, 300, function() {
 					$cmSettingsHandle.addClass('cmOpen').text('Close Settings');
 				});
 			}
@@ -798,6 +804,27 @@ CM.attachStatsPanel = function() {
 
 	tableHTML += '<table id="CMStatsPanelTable">';
 	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Lucky required:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyRequired"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Lucky + Frenzy required:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyFrenzyRequired"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Lucky reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Max Lucky + Frenzy reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyFrenzyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Current Lucky reward:</td>';
+	tableHTML +=         '<td class="cmStatsValue" id="CMStatsCurrentLuckyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
+	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Current Heavenly Chips:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCCurrent"></td>';
 	tableHTML +=     '</tr>';
@@ -812,27 +839,6 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Time to next HC:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCTimeToNext"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Lucky cookies required:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyRequired"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Lucky + Frenzy cookies required:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyFrenzyRequired"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Lucky reward:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyReward"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Lucky + Frenzy reward:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyFrenzyReward"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Current Lucky reward:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsCurrentLuckyReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
 	tableHTML +=     '<tr>';
@@ -860,11 +866,11 @@ CM.attachStatsPanel = function() {
 		if($(this).hasClass('cmOpen')) {
 			$cmStatsPanel.animate({
 				'margin-bottom': '-' + $cmStatsPanel.outerHeight() + 'px'
-			}, function() {
+			}, 250, function() {
 				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
 			});
 		} else {
-			$cmStatsPanel.animate({'margin-bottom': '0'}, function() {
+			$cmStatsPanel.animate({'margin-bottom': '0'}, 250, function() {
 				$cmStatsHandle.addClass('cmOpen').text('Close Stats');
 			});
 		}
@@ -878,18 +884,18 @@ CM.updateStats = function() {
 		luckyStats = this.getLuckyStats(),
 		wrinklerStats = this.getWrinklerStats();
 
-	// Heavenly Chip stats
-	$('#CMStatsHCCurrent').html(hcStats[0]);
-	$('#CMStatsHCMax').html(hcStats[1]);
-	$('#CMStatsHCCookiesToNext').html(hcStats[2]);
-	$('#CMStatsHCTimeToNext').html(hcStats[3]);
-
 	// Lucky stats
 	$('#CMStatsLuckyRequired').html(luckyStats[0]);
 	$('#CMStatsLuckyFrenzyRequired').html(luckyStats[1]);
 	$('#CMStatsMaxLuckyReward').html(luckyStats[2]);
 	$('#CMStatsMaxLuckyFrenzyReward').html(luckyStats[3]);
 	$('#CMStatsCurrentLuckyReward').html(luckyStats[4]);
+
+	// Heavenly Chip stats
+	$('#CMStatsHCCurrent').html(hcStats[0] + ' (' + hcStats[1] + ')');
+	$('#CMStatsHCMax').html(hcStats[2] + ' (' + hcStats[3] + ')');
+	$('#CMStatsHCCookiesToNext').html(hcStats[4]);
+	$('#CMStatsHCTimeToNext').html(hcStats[5]);
 
 	// Wrinkler stats
 	$('#CMStatsWrinklersSucked').html(wrinklerStats[0]);
