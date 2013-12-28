@@ -667,14 +667,21 @@ CM.getWrinklerStats = function() {
  */
 CM.secondsToTime = function(seconds) {
 
-	var s = seconds, m, h;
+	var time = '',
+		s = seconds,
+		m,
+		h;
 
 	h = Math.floor(s / (60 * 60));
 	s -= h * (60 * 60);
 	m = Math.floor(s / 60);
 	s -= m * 60;
 
-	return h + ' hours, ' + m + ' minutes, ' + s + ' seconds';
+	time += h > 0 ? h + ' hours, '   : '';
+	time += m > 0 ? m + ' minutes, ' : '';
+	time += s > 0 ? s + ' seconds'   : '';
+
+	return time;
 
 };
 

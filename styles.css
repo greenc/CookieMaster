@@ -257,7 +257,8 @@
 .serif .section,
 .serif #CMSettingsSave,
 .serif #CMTimerPanel,
-.serif #CMSettingsPanelHandle {
+.serif #CMSettingsPanelHandle,
+.serif #CMStatsPanelHandle {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
 
@@ -265,7 +266,8 @@
 .sansserif .section,
 .sansserif #CMSettingsSave,
 .sansserif #CMTimerPanel,
-.sansserif #CMSettingsPanelHandle {
+.sansserif #CMSettingsPanelHandle,
+.sansserif #CMStatsPanelHandle {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */
