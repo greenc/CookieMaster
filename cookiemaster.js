@@ -819,6 +819,7 @@ CM.audioAlerts = function() {
 		if(!gcNotified) {
 			gcAlert.volume = 1;
 			gcAlert.play();
+			$("#CMOverlay").show().fadeOut(300);
 			this.config.cmAudioGCNotified = true;
 		}
 	} else {
@@ -830,6 +831,7 @@ CM.audioAlerts = function() {
 		if(!spNotified) {
 			spAlert.volume = 1;
 			spAlert.play();
+			$("#CMOverlay").show().fadeOut(300);
 			this.config.cmAudioSPNotified = true;
 		}
 	} else {
