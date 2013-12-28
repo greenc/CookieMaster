@@ -60,7 +60,7 @@ Update log
 
  - Fixed bug where top bar would remain visible when Clean UI was active
 
-### Version 1.1.0* - 2013/12/28
+### Version 1.1.0 - 2013/12/28
 
  - Ads are no longer hidden when Clean UI is active
  - Added several suffix options when shortening numbers
