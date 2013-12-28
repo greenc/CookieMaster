@@ -17,6 +17,60 @@
 
 ================================================ */
 
+/* ================================================
+	COOKIE CLICKER FUNCTION OVERRIDES
+================================================ */
+
+/**
+ * Hijacks the original Beautify method to use
+ * our own formatting function
+ *
+ * @param {integer} what   Number to beautify
+ * @param {integer} floats Desired precision
+ *
+ * @return {string}    Formatted number
+ */
+function Beautify(what, floats) {
+
+	var floats = floats || 0;
+
+	return CM.largeNumFormat(what, floats);
+
+}
+
+/**
+ * Remove the title tag update functionality from the main
+ * game as we will use our own, faster update function
+ */
+Game.Logic = new Function(
+	'',
+	Game.Logic.toString()
+	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
+	.replace(/^function[^{]+{/i, '')
+	.replace(/}[^}]*$/i, '')
+);
+
+/**
+ * Fixes the game's mangled attempt at blocking hotlinked audio files from
+ * soundjay.com (soundjay files are still blocked, but the Audio api now
+ * works correctly again).
+ *
+ * @param {string} src source file
+ *
+ * @return {object}    new Audio object
+ */
+Audio = function(src) {
+	if(src.indexOf('soundjay') !== -1) {
+		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
+		this.play = function() {};
+	}
+	else return new realAudio(src);
+};
+
+/* ================================================
+	END COOKIE CLICKER FUNCTION OVERRIDES
+================================================ */
+
 /**
  * We will expose all methods and properties of CookieMaster
  * through the parent object, for easy extendability
@@ -33,8 +87,12 @@ CM.config = {
 
 	cmVersion: '0.1',
 	cmCSS: 'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
+	cmGCAudioAlert: new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
+	cmSPAudioAlert: new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
+	cmAudioGCNotified: false,
+	cmAudioSPNotified: false,
 	cmRefreshRate: 1000,
-	cmTitleRefreshRate: 200,
+	cmFastRefreshRate: 200,
 	cmGCOverlay: null, // Set only when needed
 
 	ccURL: 'http://orteil.dashnet.org/cookieclicker/',
@@ -48,6 +106,7 @@ CM.config = {
 	ccSectionMiddle: $('#sectionMiddle'),
 	ccSectionRight: $('#sectionRight'),
 	ccGoldenCookie: $('#goldenCookie'),
+	ccSeasonPopup: $('#seasonPopup'),
 
 	// User settings (settings pane)
 	settings: {
@@ -60,6 +119,12 @@ CM.config = {
 		showTimers: {
 			label: 'Show Timers',
 			desc: 'Display countdown timers for game events and buffs',
+			options: 'toggle',
+			current: 'on'
+		},
+		audioAlerts: {
+			label: 'Audio Alerts',
+			desc: 'Play an audio alert when Golden Cookies and Reindeer spawn',
 			options: 'toggle',
 			current: 'on'
 		},
@@ -116,7 +181,7 @@ CM.init = function() {
 
 	var self = this,
 		refreshRate = this.config.cmRefreshRate,
-		titleRefreshRate = this.config.cmTitleRefreshRate,
+		fastRefreshRate = this.config.cmFastRefreshRate,
 		cmCSS = this.config.cmCSS,
 		cssID = this.config.cmStyleID,
 		updateLoop;
@@ -134,8 +199,13 @@ CM.init = function() {
 		// Our continually updating methods go in here
 		setInterval(function() {self.mainLoop();}, refreshRate);
 
-		// Title updates get their own loop so they can be faster for accuracy
-		setInterval(function() {self.updateTitleTicker();}, titleRefreshRate);
+		// Title updates and audio alerts get their own loop which updates faster
+		setInterval(function() {
+			self.updateTitleTicker();
+			if(self.config.settings.audioAlerts.current === 'on') {
+				self.audioAlerts();
+			}
+		}, fastRefreshRate);
 
 		// All done :)
 		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
@@ -585,33 +655,37 @@ CM.timerPanel = function(state) {
 		timerRes = this.config.cmTimerResolution,
 		$sectionLeft = this.config.ccSectionLeft;
 
-	if(state && $('#CMTimerPanel').length === 0) {
+	if(state) {
 
-		// Initialize timer objects
-		this.gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
-		this.reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
-		this.frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
-		this.clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
-		this.elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
-		this.clotTimer = new CM.Timer('clot', 'Clot:');
+		if($('#CMTimerPanel').length === 0) {
 
-		// Create the HTML and attach everyting to DOM
-		$cmTimerPanel.append(
-			this.gcTimer.create(),
-			this.reindeerTimer.create(),
-			this.frenzyTimer.create(),
-			this.elderFrenzyTimer.create(),
-			this.clotTimer.create(),
-			this.clickFrenzyTimer.create()
-		);
-		$sectionLeft.append($cmTimerPanel);
+			// Initialize timer objects
+			this.gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
+			this.reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
+			this.frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
+			this.clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
+			this.elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
+			this.clotTimer = new CM.Timer('clot', 'Clot:');
 
-		// Attach golden cookie display timer and handler
-		this.displayGCTimer();
-		this.config.cmGCOverlay.click(function() {
-			Game.goldenCookie.click();
-			$('#CMGCOverlay').hide();
-		});
+			// Create the HTML and attach everyting to DOM
+			$cmTimerPanel.append(
+				this.gcTimer.create(),
+				this.reindeerTimer.create(),
+				this.frenzyTimer.create(),
+				this.elderFrenzyTimer.create(),
+				this.clotTimer.create(),
+				this.clickFrenzyTimer.create()
+			);
+			$sectionLeft.append($cmTimerPanel);
+
+			// Attach golden cookie display timer and handler
+			this.displayGCTimer();
+			this.config.cmGCOverlay.click(function() {
+				Game.goldenCookie.click();
+				$('#CMGCOverlay').hide();
+			});
+
+		}
 
 	} else {
 
@@ -731,6 +805,39 @@ CM.displayGCTimer = function() {
 
 };
 
+CM.audioAlerts = function() {
+
+	var $gc = this.config.ccGoldenCookie,
+		$sp = this.config.ccSeasonPopup,
+		gcAlert = this.config.cmGCAudioAlert,
+		spAlert = this.config.cmSPAudioAlert,
+		gcNotified = this.config.cmAudioGCNotified,
+		spNotified = this.config.cmAudioSPNotified;
+
+	// Play Golden cookie notification
+	if($gc.is(':visible')) {
+		if(!gcNotified) {
+			gcAlert.volume = 1;
+			gcAlert.play();
+			this.config.cmAudioGCNotified = true;
+		}
+	} else {
+		this.config.cmAudioGCNotified = false;
+	}
+
+	// Play Reindeer notification
+	if($sp.is(':visible')) {
+		if(!spNotified) {
+			spAlert.volume = 1;
+			spAlert.play();
+			this.config.cmAudioSPNotified = true;
+		}
+	} else {
+		this.config.cmAudioSPNotified = false;
+	}
+
+};
+
 /**
  * Updates the title tag with timer statuses and cookie count
  */
@@ -738,9 +845,9 @@ CM.updateTitleTicker = function() {
 
 	var spI = (Game.seasonPopup.life > 0) ? 'R' : Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
 		gcI = (Game.goldenCookie.life > 0) ? 'G' : Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps),
-		cookie = Beautify(Game.cookies);
+		cookies = Beautify(Game.cookies);
 
-	document.title = gcI + ' | ' + spI + ' - ' + Beautify(Game.cookies);
+	document.title = gcI + ' | ' + spI + ' - ' + cookies + ' cookies';
 
 };
 
@@ -905,43 +1012,6 @@ CM.alertMessage = function(msg) {
 
 /* ================================================
 	END NON-RETURNING METHODS
-================================================ */
-
-/* ================================================
-	COOKIE CLICKER FUNCTION OVERRIDES
-================================================ */
-
-/**
- * Hijacks the original Beautify method to use
- * our own formatting function
- *
- * @param {integer} what   Number to beautify
- * @param {integer} floats Desired precision
- *
- * @return {string}    Formatted number
- */
-function Beautify(what, floats) {
-
-	var floats = floats || 0;
-
-	return CM.largeNumFormat(what, floats);
-
-}
-
-/**
- * Remove the title tag update functionality from the main
- * game as we will use our own, faster update function
- */
-Game.Logic = new Function(
-	'',
-	Game.Logic.toString()
-	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
-	.replace(/^function[^{]+{/i, '')
-	.replace(/}[^}]*$/i, '')
-);
-
-/* ================================================
-	END COOKIE CLICKER FUNCTION OVERRIDES
 ================================================ */
 
 
