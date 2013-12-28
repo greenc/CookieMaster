@@ -14,6 +14,16 @@ How to use
 2. Load up Cookie Clicker.
 3. Load the recently created bookmark.
 
+Browser support
+----------
+
+This is a very early release and extensive browser testing has not yet been done, however it should work in current releases of the following browsers:
+
+ - Chrome
+ - Firefox
+ - Safari
+ - IE
+
 What can CookieMaster do?
 ---------------------------
 
