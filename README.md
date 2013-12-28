@@ -71,6 +71,7 @@ Update log
  - Upgrade prices now display correct number formatting
  - Moved project to Grunt
  - Bookmarklet now loads a bootstrap file that handles all dependencies
+ - All external sources are now loaded in minified for speeeeed
 
 ### Version 1.0.0 - 2013/12/28
 

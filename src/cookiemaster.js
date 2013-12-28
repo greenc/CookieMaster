@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.1.2
+    Version:      1.1.3
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -89,7 +89,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.1.2',
+	version:              '1.1.3',
 	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
 	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
 	cmAudioGCNotified:    false,
@@ -275,12 +275,12 @@ CM.integrityCheck = function() {
 	}
 
 	if(this.compatibilityCheck(ccVers) === -1) {
-		message = 'Warning: This version of Cookie Clicker may not be fully supported!';
+		message = 'Warning: CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!';
 	}
 
 	// Warn about golden cookie and season popup bug
 	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
-		message = "Warning: New/unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)";
+		message = "Warning: New or unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)";
 	}
 
 	if(message) { this.alertMessage(message); }
