@@ -96,13 +96,13 @@
 }
 
 #CMSettingsPause {
-	border: 1px solid #747474;
+	border: 1px solid #636363;
 	background-color: #4D4D4D;
 	margin-left: 10px;
 }
 
 #CMSettingsSave:hover {
-	background-color: #6AA01A;
+	background-color: #5A5A5A;
 }
 
 #CMSettingsPause:hover {
@@ -266,6 +266,7 @@
 .serif .title,
 .serif .section,
 .serif #CMSettingsSave,
+.serif #CMSettingsPause,
 .serif #CMTimerPanel,
 .serif #CMSettingsPanelHandle,
 .serif #CMStatsPanelHandle {
@@ -275,6 +276,7 @@
 .sansserif .title,
 .sansserif .section,
 .sansserif #CMSettingsSave,
+.sansserif #CMSettingsPause,
 .sansserif #CMTimerPanel,
 .sansserif #CMSettingsPanelHandle,
 .sansserif #CMStatsPanelHandle {
