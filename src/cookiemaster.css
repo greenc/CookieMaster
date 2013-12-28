@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      0.1
+    Version:      1.1.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -23,10 +23,10 @@
 	position: fixed;
 	z-index: 1000001;
 	bottom: 0;
-	margin-bottom: -286px;
+	margin-bottom: -326px;
 	right: 255px;
 	width: 260px;
-	height: 235px;
+	height: 275px;
 	background-color: rgba(0, 0, 0, 0.95);
 	padding: 10px 20px 40px;
 	color: #FFF;
@@ -232,7 +232,6 @@
 
 /* Feature: cleanUI */
 .cleanUI #topBar,
-.cleanUI #support { display: none; }
 .cleanUI #versionNumber {
 	z-index: 20;
 	bottom: auto;

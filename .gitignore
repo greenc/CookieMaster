@@ -1,2 +1,6 @@
+# Dependencies
+node_modules
+
+# Sublime Text Stuff
 *.sublime-project
 *.sublime-workspace

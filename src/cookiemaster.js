@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.0.0
+    Version:      1.1.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -89,8 +89,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	cmVersion:            '1.0.0',
-	cmCSS:                'https://rawgithub.com/greenc/CookieMaster/master/styles.css',
+	version:              '1.1.0',
 	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
 	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
 	cmAudioGCNotified:    false,
@@ -99,7 +98,6 @@ CM.config = {
 	cmFastRefreshRate:    200,
 	cmGCOverlay:          null, // Set only when needed
 	ccURL:                'http://orteil.dashnet.org/cookieclicker/',
-	ccVersion:            null, // Set during integrity check
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
 	///////////////////////////////////////////////
@@ -160,6 +158,25 @@ CM.config = {
 			options: 'toggle',
 			current: 'on'
 		},
+		suffixFormat: {
+			label: 'Suffix Type',
+			desc: 'Set the number suffixes to desired type',
+			options: [
+				{
+					label: 'Mathematical',
+					value: 'math'
+				},
+				{
+					label: 'SI',
+					value: 'si'
+				},
+				{
+					label: 'Standard',
+					value: 'standard'
+				}
+			],
+			current: 'math'
+		},
 		changeFont: {
 			label: 'Font',
 			desc: 'Set the highlight font',
@@ -200,7 +217,6 @@ CM.init = function() {
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
 
-		this.attachStyleSheet(cmCSS, cssID);
 		this.loadUserSettings();
 		this.attachSettingsPanel();
 		this.attachStatsPanel();
@@ -220,7 +236,7 @@ CM.init = function() {
 		}, fastRefreshRate);
 
 		// All done :)
-		Game.Popup('CookieMaster v.' + this.config.cmVersion + ' loaded successfully!');
+		Game.Popup('CookieMaster v.' + this.config.version + ' loaded successfully!');
 
 	} else {
 
@@ -239,11 +255,10 @@ CM.init = function() {
  */
 CM.integrityCheck = function() {
 
-	var message = false,
+	var ccVers = Game.version.toString(),
+		message = false,
 		error = false,
 		i;
-
-	this.config.ccVersion = Game.version.toString() || '';
 
 	if(document.location.href.indexOf(this.config.ccURL) === -1) {
 		// Wrong URL
@@ -259,7 +274,7 @@ CM.integrityCheck = function() {
 		error = true;
 	}
 
-	if(this.compatibilityCheck(this.config.ccVersion) === -1) {
+	if(this.compatibilityCheck(ccVers) === -1) {
 		message = 'Warning: This version of Cookie Clicker may not be fully supported!';
 	}
 
@@ -283,11 +298,10 @@ CM.integrityCheck = function() {
 CM.compatibilityCheck = function(version) {
 
 	var vArray = this.config.ccCompatibleVersions,
-		ccVersion = version || '',
 		i;
 
 	for(i = 0; i < vArray.length; i++) {
-		if(vArray[i].match(ccVersion)) {
+		if(vArray[i].match(version)) {
 			return i;
 		}
 	}
@@ -308,22 +322,20 @@ CM.compatibilityCheck = function(version) {
 CM.largeNumFormat = function(num, precision) {
 
 	var useShortNums = this.config.settings.shortNums.current === 'on' ? true : false,
+		notation = this.config.settings.suffixFormat.current,
 		decSep = this.config.settings.numFormat.current === 'us' ? '.' : ',',
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
 		floats = precision || 0,
 		parts,
 		ranges = [
-			{divider: 1e33, suffix: 'Dc'},
-			{divider: 1e30, suffix: 'No'},
-			{divider: 1e27, suffix: 'Oc'},
-			{divider: 1e24, suffix: 'Sp'},
-			{divider: 1e21, suffix: 'Sx'},
-			{divider: 1e18, suffix: 'Qi'},
-			{divider: 1e15, suffix: 'Qa'},
-			{divider: 1e12, suffix: 'T'},
-			{divider: 1e9, suffix: 'B'},
-			{divider: 1e6, suffix: 'M'}
+			{divider: 1e24, suffix: {math: 'Sp', si: 'Y', standard: 'septillion'}},
+			{divider: 1e21, suffix: {math: 'Sx', si: 'Z', standard: 'sextillion'}},
+			{divider: 1e18, suffix: {math: 'Qi', si: 'E', standard: 'quintillion'}},
+			{divider: 1e15, suffix: {math: 'Qa', si: 'P', standard: 'quadrillion'}},
+			{divider: 1e12, suffix: {math: 'T', si: 'T', standard: 'trillion'}},
+			{divider: 1e9, suffix: {math: 'B', si: 'G', standard: 'billion'}},
+			{divider: 1e6, suffix: {math: 'M', si: 'M', standard: 'million'}}
 		];
 
 	if(num == Number.POSITIVE_INFINITY || num == Number.NEGATIVE_INFINITY) {
@@ -333,7 +345,7 @@ CM.largeNumFormat = function(num, precision) {
 	if(useShortNums) {
 		for(var i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
-				num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix;
+				num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix[notation];
 				return num.replace('.', decimal);
 			}
 		}
@@ -1174,27 +1186,6 @@ CM.changeFont = function(font) {
 };
 
 /**
- * Attach an external stylesheet to the DOM
- *
- * @param  {String} url The URL of the stylesheet to load
- * @param  {String} id  an ID to give the stylesheet
- */
-CM.attachStyleSheet = function(url, id) {
-
-	var $stylesheet = $('<link />');
-
-	$stylesheet.attr({
-		'type': 'text/css',
-		'rel': 'stylesheet',
-		'href': url,
-		'id': id
-	});
-
-	$('head').append($stylesheet);
-
-};
-
-/**
  * Apply the current user settings to the game
  */
 CM.applyUserSettings = function() {
@@ -1205,6 +1196,7 @@ CM.applyUserSettings = function() {
 	this.changeFont(settings.changeFont.current);
 	this.timerPanel(settings.showTimers.current === 'on');
 	Game.RebuildStore();
+	Game.RebuildUpgrades();
 
 };
 
@@ -1290,7 +1282,6 @@ CM.alertMessage = function(msg) {
 /* ================================================
 	END NON-RETURNING METHODS
 ================================================ */
-
 
 // Start it up!
 CM.init();
