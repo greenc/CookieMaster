@@ -72,7 +72,6 @@ Update log
  - Moved project to Grunt
  - Bookmarklet now loads a bootstrap file that handles all dependencies
 
-### Version 1.1.0 - 2013/12/28
+### Version 1.0.0 - 2013/12/28
 
  - First public release :)
-
