@@ -223,6 +223,7 @@
 .cleanUI #topBar,
 .cleanUI #support { display: none; }
 .cleanUI #versionNumber {
+	z-index: 20;
 	bottom: auto;
 	top: 0;
 }
