@@ -81,22 +81,32 @@
 	border: 1px solid #444;
 }
 
-#CMSettingsSave {
-	display: block;
+#CMSettingsSave,
+#CMSettingsPause {
 	cursor: pointer;
 	border: 1px solid #6CA01E;
 	background-color: #588811;
 	color: #FFF;
-	padding: 3px 25px;
+	padding: 5px 10px;
 	margin: 0 auto;
 	border-radius: 2px;
 	font-family: "Kavoon", Georgia, serif;
-	font-size: 18px;
+	font-size: 16px;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+}
+
+#CMSettingsPause {
+	border: 1px solid #747474;
+	background-color: #4D4D4D;
+	margin-left: 10px;
 }
 
 #CMSettingsSave:hover {
 	background-color: #6AA01A;
+}
+
+#CMSettingsPause:hover {
+	background-color: #686868;
 }
 
 #CMTimerPanel {

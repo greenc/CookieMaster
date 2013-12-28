@@ -25,14 +25,14 @@ Not a whole lot yet, as it's still fairly early in development. Here's the check
  - Change game font
  - Display accurate countdown timers for game events, e.g. Next golden cookie, remaining time for buffs
  - Play an audio alert and flash the screen when Golden Cookies and Reindeer spawn
+ - Calculates and display Heavenly Chip data
+ - Calculates and display information regarding banked cookies for maximum buff payouts and other items
+ - Pause button
 
 And when it's done?
 -----------
 
  - Calculate and display the most effienct purchases and upgrades
- - Calculate and display Heavenly Chip data
- - Calculate and display information regarding banked cookies for maximum buff payouts and other items
- - Pause button
  - Multiple save slots and easy save import/export functionality
  - Higher attainable FPS for more accurate timers without crippling your system!
 

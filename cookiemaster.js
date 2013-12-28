@@ -723,7 +723,8 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('CookieMaster Settings'),
 		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
-		$cmSettingsSaveButon = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply');
+		$cmSettingsSaveButton = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply Settings');
+		$cmSettingsPauseButton = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button'}).text('Pause Game');
 
 		// Build each setting item
 		$.each(settings, function(key, value) {
@@ -775,7 +776,8 @@ CM.attachSettingsPanel = function() {
 		$cmSettingsPanel.append(
 			$cmSettingsHandle,
 			$cmSettingsList,
-			$cmSettingsSaveButon
+			$cmSettingsSaveButton,
+			$cmSettingsPauseButton
 		);
 
 		// Attach to DOM
@@ -795,9 +797,12 @@ CM.attachSettingsPanel = function() {
 				});
 			}
 		});
-		$cmSettingsSaveButon.click(function() {
+		$cmSettingsSaveButton.click(function() {
 			self.saveUserSettings();
 			self.applyUserSettings();
+		});
+		$cmSettingsPauseButton.click(function() {
+			alert('Game paused. Click OK to resume.');
 		});
 
 };
