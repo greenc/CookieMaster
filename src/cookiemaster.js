@@ -390,7 +390,7 @@ CM.largeNumFormat = function(num, precision) {
 	if(useShortNums) {
 		for(var i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
-				num = (num / ranges[i].divider).toFixed(3) + ' ' + ranges[i].suffix[notation];
+				num = Math.floor((num / ranges[i].divider) * 1000) / 1000 + ' ' + ranges[i].suffix[notation];
 				return num.replace('.', decimal);
 			}
 		}
@@ -1160,8 +1160,6 @@ CM.displayGCTimer = function() {
 	var $gc      = this.config.ccGoldenCookie,
 		$overlay = this.config.cmGCOverlay || $('<div />').attr('id', 'CMGCOverlay'),
 		timeLeft = Math.round(Game.goldenCookie.life / Game.fps);
-
-	this.config.cmGCOverlay = $overlay;
 
 	// Reattach if it was removed at some point
 	if($('#CMGCOverlay').length === 0) {
