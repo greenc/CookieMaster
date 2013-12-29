@@ -17,65 +17,11 @@
 
 ================================================ */
 
-/* ================================================
-	COOKIE CLICKER FUNCTION OVERRIDES
-================================================ */
-
-/**
- * Hijacks the original Beautify method to use
- * our own formatting function
- *
- * @param {Integer} what   Number to beautify
- * @param {Integer} floats Desired precision
- *
- * @return {String}    Formatted number
- */
-function Beautify(what, floats) {
-
-	var precision = floats || 0;
-
-	return CM.largeNumFormat(what, precision);
-
-}
-
-/**
- * Remove the title tag update functionality from the main
- * game as we will use our own, faster update function
- */
-Game.Logic = new Function(
-	'',
-	Game.Logic.toString()
-	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
-	.replace(/^function[^{]+{/i, '')
-	.replace(/}[^}]*$/i, '')
-);
-
-/**
- * Fixes the game's mangled attempt at blocking hotlinked audio files from
- * soundjay.com (soundjay files are still blocked, but the Audio API now
- * works correctly again).
- *
- * @param {String} src source file
- *
- * @return {Object}    new Audio object
- */
-Audio = function(src) {
-	if(src.indexOf('soundjay') !== -1) {
-		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
-		this.play = function() {};
-	}
-	else return new realAudio(src);
-};
-
-/* ================================================
-	END COOKIE CLICKER FUNCTION OVERRIDES
-================================================ */
-
 /**
  * We will expose all methods and properties of CookieMaster
  * through the parent object, for easy extendability
  */
-CM = {};
+var CM = {};
 
 /**
  * Configuration settings for CookieMaster, the loaded version of
@@ -90,8 +36,10 @@ CM.config = {
 	///////////////////////////////////////////////
 
 	version:              '1.2.1',
-	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
-	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
+	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
+	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
+	cmGCAudioObject:      null,
+	cmSPAudioObject:      null,
 	cmAudioGCNotified:    false,
 	cmAudioSPNotified:    false,
 	cmVisualGCNotified:   false,
@@ -255,6 +203,10 @@ CM.init = function() {
 		refreshRate = this.config.cmRefreshRate,
 		fastRefreshRate = this.config.cmFastRefreshRate;
 
+	// Cache the audio alert sound files
+	this.config.cmGCAudioObject = new Audio(this.config.cmGCAudioAlertURL);
+	this.config.cmSPAudioObject = new Audio(this.config.cmSPAudioAlertURL);
+
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
 
@@ -373,6 +325,7 @@ CM.largeNumFormat = function(num, precision) {
 		comma = decSep === '.' ? ',' : '.',
 		floats = precision || 0,
 		parts,
+		i,
 		ranges = [
 			{divider: 1e24, suffix: {math: 'Sp', si: 'Y', standard: 'septillion'}},
 			{divider: 1e21, suffix: {math: 'Sx', si: 'Z', standard: 'sextillion'}},
@@ -383,12 +336,12 @@ CM.largeNumFormat = function(num, precision) {
 			{divider: 1e6,  suffix: {math: 'M',  si: 'M', standard: 'million'}}
 		];
 
-	if(num == Number.POSITIVE_INFINITY || num == Number.NEGATIVE_INFINITY) {
+	if(num === Number.POSITIVE_INFINITY || num === Number.NEGATIVE_INFINITY) {
 		return 'Infinity';
 	}
 
 	if(useShortNums) {
-		for(var i = 0; i < ranges.length; i++) {
+		for(i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
 				num = Math.floor((num / ranges[i].divider) * 1000) / 1000 + ' ' + ranges[i].suffix[notation];
 				return num.replace('.', decimal);
@@ -593,6 +546,14 @@ CM.Timer = function(type, label) {
  */
 CM.getHCStats = function() {
 
+	function cookiesToHC(cookies) {
+		return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
+	}
+
+	function hcToCookies(hc) {
+		return 5 * Math.pow(10, 11) * hc * (hc + 1);
+	}
+
 	var stats          = [],
 		current        = Game.prestige['Heavenly chips'],
 		currentPercent = current * 2,
@@ -601,14 +562,6 @@ CM.getHCStats = function() {
 		cookiesToNext  = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
 		timeToNext     = Math.round(cookiesToNext / Game.cookiesPs),
 		i;
-
-	function cookiesToHC(cookies) {
-		return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
-	}
-
-	function hcToCookies(hc) {
-		return 5 * Math.pow(10, 11) * hc * (hc + 1);
-	}
 
 	stats = [
 		Beautify(current),
@@ -661,30 +614,31 @@ CM.getLuckyStats = function() {
 
 	function luckyReward(type) {
 
-		var cps = Game.cookiesPs;
+		var cps = Game.cookiesPs,
+			required;
 
-		if(Game.frenzy > 0 && type != 'cur') {
+		if(Game.frenzy > 0 && type !== 'cur') {
 			cps = cps / Game.frenzyPower;
 		}
 
-		if(type == 'maxFrenzy') {
+		if(type === 'maxFrenzy') {
 			cps = cps * 7;
 		}
 
-		var n = [
+		required = [
 			Math.round(cps * 1200 + 13),
 			Math.round(Game.cookies * 0.1 + 13)
 		];
 
-		if(type == 'max' || type == 'maxFrenzy') {
+		if(type === 'max' || type === 'maxFrenzy') {
 
 			if(Math.round((cps * 1200 + 13) / 0.1) > Game.cookies) {
-				return Beautify(n[0]);
+				return Beautify(required[0]);
 			}
 
 		}
 
-		return Beautify(Math.min.apply(Math, n));
+		return Beautify(Math.min.apply(Math, required));
 
 	}
 
@@ -1270,8 +1224,8 @@ CM.playAudioAlerts = function() {
 	var $body      = this.config.ccBody,
 		$gc        = this.config.ccGoldenCookie,
 		$sp        = this.config.ccSeasonPopup,
-		gcAlert    = this.config.cmGCAudioAlert,
-		spAlert    = this.config.cmSPAudioAlert,
+		gcAlert    = this.config.cmGCAudioObject,
+		spAlert    = this.config.cmSPAudioURL,
 		gcNotified = this.config.cmAudioGCNotified,
 		spNotified = this.config.cmAudioSPNotified,
 		setting    = this.config.settings.audioAlerts.current;
@@ -1283,7 +1237,7 @@ CM.playAudioAlerts = function() {
 
 			if(!gcNotified) {
 				gcAlert.volume = 0.5;
-				gcAlert.play();
+				spAlert.play();
 				this.config.cmAudioGCNotified = true;
 			}
 
@@ -1323,10 +1277,10 @@ CM.playAudioAlerts = function() {
  */
 CM.updateTitleTicker = function() {
 
-	var gcTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps,
-		spTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps,
-		gcI     = (Game.goldenCookie.life > 0) ? 'G' : gcTime),
-		spI     = (Game.seasonPopup.life > 0) ? 'R' : spTime),
+	var gcTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
+		spTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
+		gcI     = (Game.goldenCookie.life > 0) ? 'G' : gcTime,
+		spI     = (Game.seasonPopup.life > 0) ? 'R' : spTime,
 		cookies = Beautify(Game.cookies);
 
 	document.title = gcI + ' | ' + spI + ' - ' + cookies + ' cookies';
@@ -1495,6 +1449,61 @@ CM.alertMessage = function(msg) {
 
 /* ================================================
 	END NON-RETURNING METHODS
+================================================ */
+
+/* ================================================
+	COOKIE CLICKER FUNCTION OVERRIDES
+================================================ */
+
+/**
+ * Hijacks the original Beautify method to use
+ * our own formatting function
+ *
+ * @param {Integer} what   Number to beautify
+ * @param {Integer} floats Desired precision
+ *
+ * @return {String}    Formatted number
+ */
+function Beautify(what, floats) {
+
+	var precision = floats || 0;
+
+	return CM.largeNumFormat(what, precision);
+
+}
+
+/**
+ * Remove the title tag update functionality from the main
+ * game as we will use our own, faster update function
+ */
+Game.Logic = new Function(
+	'',
+	Game.Logic.toString()
+	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
+	.replace(/^function[^{]+{/i, '')
+	.replace(/}[^}]*$/i, '')
+);
+
+/**
+ * Fixes the game's mangled attempt at blocking hotlinked audio files from
+ * soundjay.com (soundjay files are still blocked, but the Audio API now
+ * works correctly again).
+ *
+ * @param {String} src source file
+ *
+ * @return {Object}    new Audio object
+ */
+Audio = function(src) {
+	if(src.indexOf('soundjay') !== -1) {
+		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
+		this.play = function() {};
+	} else {
+		return new realAudio(src);
+	}
+};
+
+/* ================================================
+	END COOKIE CLICKER FUNCTION OVERRIDES
 ================================================ */
 
 // Start it up!
