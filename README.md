@@ -56,6 +56,12 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.2.1 - 2013/12/29
+
+ - Fixed bug where audio alert settings would not work correctly
+ - Improved accuracy of large number formatting (still not perfect though)
+ - Improved precision of time to next HC stat
+
 ### Version 1.2.0 - 2013/12/29
 
  - Moderate refactoring of many methods for clarity and performance

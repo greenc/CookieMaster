@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.2.0
+    Version:      1.2.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -89,7 +89,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.2.0',
+	version:              '1.2.1',
 	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
 	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
 	cmAudioGCNotified:    false,
@@ -729,15 +729,22 @@ CM.getWrinklerStats = function() {
 // TO DO Make this smarter, add days and years
 CM.secondsToTime = function(s) {
 
-	var time = '',
-		m,
-		h;
+	var time = '', m, h, d;
 
-	h = Math.floor(s / (60 * 60));
+	// Nobody needs to wait more than a year
+	// for anything in Cookie Clicker!
+	if(s >= 3.15569e7) {
+		return '> 1 year';
+	}
+
+	d  = Math.floor(s / (60 * 60 * 24));
+	s -= d * (60 * 60 * 24);
+	h  = Math.floor(s / (60 * 60));
 	s -= h * (60 * 60);
-	m = Math.floor(s / 60);
+	m  = Math.floor(s / 60);
 	s -= m * 60;
 
+	time += d > 0 ? d + ' days, '    : '';
 	time += h > 0 ? h + ' hours, '   : '';
 	time += m > 0 ? m + ' minutes, ' : '';
 	time += s > 0 ? s + ' seconds'   : '';
@@ -806,7 +813,7 @@ CM.attachSettingsPanel = function() {
 			// Build a select box if a setting has multiple options
 			$.each(this.options, function() {
 
-				selected = (current === this.toString()) ? ' selected="selected"' : '';
+				selected = (current === this.value.toString()) ? ' selected="selected"' : '';
 				options.push('<option value="' + this.value + '"' + selected + '>' + this.label + '</option>');
 
 			});
