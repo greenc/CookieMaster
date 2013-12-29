@@ -56,6 +56,17 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.2.0 - 2013/12/29
+
+ - Moderate refactoring of many methods for clarity and performance
+ - Added more granular control over audio and visual alerts
+ - Reduced playback volume for audio alerts
+ - Added section headings to the stats panel
+ - Added a button to pop all Wrinklers at once
+ - Removed "s" suffix from timer countdown values
+ - Minor performance tweaks
+ - Improved source formatting and commenting
+
 ### Version 1.1.3 - 2013/12/28
 
  - Added check to prevent loading CookieMaster more than once

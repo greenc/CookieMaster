@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.1.3
+    Version:      1.2.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -89,14 +89,15 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.1.3',
+	version:              '1.2.0',
 	cmGCAudioAlert:       new Audio('http://www.freesound.org/data/previews/103/103236_829608-lq.mp3'),
 	cmSPAudioAlert:       new Audio('http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3'),
 	cmAudioGCNotified:    false,
 	cmAudioSPNotified:    false,
+	cmVisualGCNotified:   false,
+	cmVisualSPNotified:   false,
 	cmRefreshRate:        1000,
 	cmFastRefreshRate:    200,
-	cmGCOverlay:          null, // Set only when needed
 	ccURL:                'http://orteil.dashnet.org/cookieclicker/',
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
@@ -112,7 +113,10 @@ CM.config = {
 	ccSectionRight:  $('#sectionRight'),
 	ccGoldenCookie:  $('#goldenCookie'),
 	ccSeasonPopup:   $('#seasonPopup'),
-	cmStatsTable:    {}, // Set when panel is created
+	cmTimerPanel:    null, // Set when panel is created
+	cmStatsTable:    null, // Set when panel is created
+	cmOverlay:       null, // Set when overlay is created
+	cmGCOverlay:     null, // Set when GC overlay is created
 
 	///////////////////////////////////////////////
 	// Settings panel settings
@@ -120,26 +124,66 @@ CM.config = {
 
 	settings: {
 		cleanUI: {
-			label: 'Clean UI',
-			desc: 'Hide the top bar, and make other small graphical enhancements to the game interface',
+			label:   'Clean Interface',
+			desc:    'Hide the top bar, and make other small graphical enhancements to the game interface',
 			options: 'toggle',
 			current: 'on'
 		},
 		showTimers: {
-			label: 'Show Timers',
-			desc: 'Display countdown timers for game events and buffs',
+			label:   'Show Timers',
+			desc:    'Display countdown timers for game events and buffs',
 			options: 'toggle',
 			current: 'on'
 		},
 		audioAlerts: {
-			label: 'Audio Alerts',
-			desc: 'Play an audio alert and flash the screen when Golden Cookies and Reindeer spawn',
-			options: 'toggle',
-			current: 'on'
+			label:   'Audio Alerts',
+			desc:    'Play an audio alert when Golden Cookies and Reindeer spawn',
+			options: [
+				{
+					label: 'Off',
+					value: 'off'
+				},
+				{
+					label: 'Golden Cookie',
+					value: 'gc'
+				},
+				{
+					label: 'Reindeer',
+					value: 'sp'
+				},
+				{
+					label: 'All',
+					value: 'all'
+				}
+			],
+			current: 'all'
+		},
+		visualAlerts: {
+			label:   'Visual Alerts',
+			desc:    'Flash the screen when Golden Cookies and Reindeer spawn',
+			options: [
+				{
+					label: 'Off',
+					value: 'off'
+				},
+				{
+					label: 'Golden Cookie',
+					value: 'gc'
+				},
+				{
+					label: 'Reindeer',
+					value: 'sp'
+				},
+				{
+					label: 'All',
+					value: 'all'
+				}
+			],
+			current: 'all'
 		},
 		numFormat: {
 			label: 'Number Formatting',
-			desc: 'Sets the desired decimal and thousands separator symbols for numbers',
+			desc:  'Sets the desired decimal and thousands separator symbols for numbers',
 			options: [
 				{
 					label: '1,234.56',
@@ -153,14 +197,14 @@ CM.config = {
 			current: 'us'
 		},
 		shortNums: {
-			label: 'Short Numbers',
-			desc: 'Shorten large numbers with suffixes',
+			label:   'Short Numbers',
+			desc:    'Shorten large numbers with suffixes',
 			options: 'toggle',
 			current: 'on'
 		},
 		suffixFormat: {
 			label: 'Suffix Type',
-			desc: 'Set the number suffixes to desired type',
+			desc:  'Set the number suffixes to desired type',
 			options: [
 				{
 					label: 'Mathematical',
@@ -179,7 +223,7 @@ CM.config = {
 		},
 		changeFont: {
 			label: 'Font',
-			desc: 'Set the highlight font',
+			desc:  'Set the highlight font',
 			options: [
 				{
 					label: 'Kavoon (default)',
@@ -209,10 +253,7 @@ CM.init = function() {
 
 	var self = this,
 		refreshRate = this.config.cmRefreshRate,
-		fastRefreshRate = this.config.cmFastRefreshRate,
-		cmCSS = this.config.cmCSS,
-		cssID = this.config.cmStyleID,
-		updateLoop;
+		fastRefreshRate = this.config.cmFastRefreshRate;
 
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
@@ -221,7 +262,7 @@ CM.init = function() {
 		this.attachSettingsPanel();
 		this.attachStatsPanel();
 
-		// Apply user settings last
+		// This also attaches anything else we need
 		this.applyUserSettings();
 
 		// Start the main loop
@@ -229,10 +270,13 @@ CM.init = function() {
 
 		// Title updates and audio alerts get their own loop which updates faster
 		setInterval(function() {
+
 			self.updateTitleTicker();
-			if(self.config.settings.audioAlerts.current === 'on') {
-				self.audioAlerts();
+
+			if(self.config.settings.audioAlerts.current !== 'off') {
+				self.playAudioAlerts();
 			}
+
 		}, fastRefreshRate);
 
 		// All done :)
@@ -274,11 +318,12 @@ CM.integrityCheck = function() {
 		error = true;
 	}
 
+	// Warn user if this version of Cookie Clicker has not been tested with CookieMaster
 	if(this.compatibilityCheck(ccVers) === -1) {
 		message = 'Warning: CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!';
 	}
 
-	// Warn about golden cookie and season popup bug
+	// Warn about Golden Cookie and Season Popup bug
 	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
 		message = "Warning: New or unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)";
 	}
@@ -333,9 +378,9 @@ CM.largeNumFormat = function(num, precision) {
 			{divider: 1e21, suffix: {math: 'Sx', si: 'Z', standard: 'sextillion'}},
 			{divider: 1e18, suffix: {math: 'Qi', si: 'E', standard: 'quintillion'}},
 			{divider: 1e15, suffix: {math: 'Qa', si: 'P', standard: 'quadrillion'}},
-			{divider: 1e12, suffix: {math: 'T', si: 'T', standard: 'trillion'}},
-			{divider: 1e9, suffix: {math: 'B', si: 'G', standard: 'billion'}},
-			{divider: 1e6, suffix: {math: 'M', si: 'M', standard: 'million'}}
+			{divider: 1e12, suffix: {math: 'T',  si: 'T', standard: 'trillion'}},
+			{divider: 1e9,  suffix: {math: 'B',  si: 'G', standard: 'billion'}},
+			{divider: 1e6,  suffix: {math: 'M',  si: 'M', standard: 'million'}}
 		];
 
 	if(num == Number.POSITIVE_INFINITY || num == Number.NEGATIVE_INFINITY) {
@@ -386,24 +431,29 @@ CM.Timer = function(type, label) {
 	 */
 	this.create = function() {
 
-		var timings = this.getTimings(),
+		var timings    = this.getTimings(),
 			$container = $('<div />').attr({'class': 'cmTimerContainer cf cmTimer-' + this.type, 'id': this.id}),
-			$barOuter = $('<div />').addClass('cmTimer'),
-			$barInner = $('<div />'),
-			$label = $('<div />').addClass('cmTimerLabel').text(this.label),
-			$counter = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent) + 's'),
-			$limiter = {}, // Not always needed, so we create it further down
-			width = timings.minCurrent / timings.max * 100,
+			$barOuter  = $('<div />').addClass('cmTimer'),
+			$barInner  = $('<div />'),
+			$label     = $('<div />').addClass('cmTimerLabel').text(this.label),
+			$counter   = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
+			$limiter   = {}, // Not always needed, so we create it further down
+			width      = timings.minCurrent / timings.max * 100,
 			hardMin;
 
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
+
 			hardMin = timings.min / timings.max * 100;
+
+			// Emphasize the timer if it has reached its minimum spawn time
 			if(width < 100 - hardMin) {
 				$container.addClass('cmEmphasize');
 			}
+
 			$limiter = $('<span />').css('width', hardMin + '%');
 			$barOuter.append($limiter);
+
 		}
 
 		$barInner.css('width', width + '%');
@@ -411,12 +461,12 @@ CM.Timer = function(type, label) {
 		$barOuter.append($barInner);
 		$container.append($label, $barOuter, $counter);
 
-		// Set parent object properties for easier retrieval later
+		// Update the properties on the Timer object
 		this.container = $container;
-		this.barOuter = $barOuter;
-		this.barInner = $barInner;
-		this.limiter = $limiter;
-		this.counter = $counter;
+		this.barOuter  = $barOuter;
+		this.barInner  = $barInner;
+		this.limiter   = $limiter;
+		this.counter   = $counter;
 
 		return $container;
 
@@ -440,9 +490,7 @@ CM.Timer = function(type, label) {
 
 			if(width < 100 - hardMin) {
 				this.limiter.fadeOut(500);
-				if(!this.container.hasClass('cmEmphasize')) {
-					this.container.addClass('cmEmphasize');
-				}
+				this.container.addClass('cmEmphasize');
 			} else {
 				this.limiter.show();
 				this.container.removeClass('cmEmphasize');
@@ -451,7 +499,7 @@ CM.Timer = function(type, label) {
 		}
 
 		this.barInner.css('width', width + '%');
-		this.counter.text(Math.round(timings.minCurrent) + 's');
+		this.counter.text(Math.round(timings.minCurrent));
 
 		return this;
 
@@ -545,13 +593,13 @@ CM.Timer = function(type, label) {
  */
 CM.getHCStats = function() {
 
-	var stats = [],
-		current = Game.prestige['Heavenly chips'],
+	var stats          = [],
+		current        = Game.prestige['Heavenly chips'],
 		currentPercent = current * 2,
-		max = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
-		maxPercent = max * 2,
-		cookiesToNext = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
-		timeToNext = Math.round(cookiesToNext / Game.cookiesPs),
+		max            = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
+		maxPercent     = max * 2,
+		cookiesToNext  = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
+		timeToNext     = Math.round(cookiesToNext / Game.cookiesPs),
 		i;
 
 	function cookiesToHC(cookies) {
@@ -651,21 +699,22 @@ CM.getLuckyStats = function() {
 };
 
 /**
- * Returns total cookies sucked and total reward if clicked
+ * Returns array of Wrinkler stats
  *
- * @return {Array} Wrinkler stats
+ * @return {Array} [cookiesSucked, toralReward]
  */
 CM.getWrinklerStats = function() {
 
 	var stats = [],
-		sucked = 0;
+		sucked = 0,
+		rewardMultiplier = 1.1;
 
 	$.each(Game.wrinklers, function() {
 		sucked += this.sucked;
 	});
 
 	stats[0] = Beautify(sucked);
-	stats[1] = Beautify(sucked * 1.1);
+	stats[1] = Beautify(sucked * rewardMultiplier);
 
 	return stats;
 
@@ -677,10 +726,10 @@ CM.getWrinklerStats = function() {
  * @param  {Integer} seconds Number to convert
  * @return {String}          Formatted time
  */
-CM.secondsToTime = function(seconds) {
+// TO DO Make this smarter, add days and years
+CM.secondsToTime = function(s) {
 
 	var time = '',
-		s = seconds,
 		m,
 		h;
 
@@ -708,10 +757,16 @@ CM.secondsToTime = function(seconds) {
 
 CM.mainLoop = function() {
 
-	var timerPanelAttached = $('#CMTimerPanel').length === 1;
+	var settings = this.config.settings;
 
-	if(timerPanelAttached) {
+	// Update timers if active and attached
+	if(settings.showTimers.current === 'on' && $('#CMTimerPanel').length) {
 		this.updateTimers();
+	}
+
+	// Show visual alerts if active
+	if(settings.visualAlerts.current !== 'off') {
+		this.showVisualAlerts();
 	}
 
 	this.updateStats();
@@ -723,110 +778,118 @@ CM.mainLoop = function() {
  */
 CM.attachSettingsPanel = function() {
 
-	var self = this,
-		items = [],
-		options = [],
-		control = [],
-		current = '',
+	var self     = this,
+		items    = [],
+		options  = [],
+		control  = [],
+		current  = '',
 		selected = '',
-		html = '',
+		html     = '',
 		settings = this.config.settings,
-		$wrapper = this.config.ccWrapper,
-		$cmSettingsPanel = $('<div />').attr('id', 'CMSettingsPanel'),
+
+		$wrapper          = this.config.ccWrapper,
+		$cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('CookieMaster Settings'),
-		$cmSettingsList = $('<ul />').attr('id', 'CMSettingsList'),
-		$cmSettingsSaveButton = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply Settings');
-		$cmSettingsPauseButton = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button'}).text('Pause Game');
+		$cmSettingsList   = $('<ul />').attr('id', 'CMSettingsList'),
+		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply Settings'),
+		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button'}).text('Pause Game');
 
-		// Build each setting item
-		$.each(settings, function(key, value) {
+	// Build each setting item
+	$.each(settings, function(key, value) {
 
-			// Reset these for each loop
-			options = [];
-			current = this.current;
+		// Reset these for each loop
+		options = [];
+		current = this.current;
 
-			if(typeof this.options === 'object') {
+		if(typeof this.options === 'object') {
 
-				// Build a select box if a setting has multiple options
-				$.each(this.options, function() {
-					selected = (current === this.toString()) ? ' selected="selected"' : '';
-					options.push('<option value="' + this.value + '"' + selected + '>' + this.label + '</option>');
-				});
-				control =  '<select id="CMsetting-' + key + '">';
-				control += options.join('');
-				control += '</select>';
+			// Build a select box if a setting has multiple options
+			$.each(this.options, function() {
 
-				// Add event listener for change event
-				$cmSettingsList.on('change', '.setting-' + key + ' select', function() {
-					settings[key].current = $(this).find(":selected").val();
-				});
+				selected = (current === this.toString()) ? ' selected="selected"' : '';
+				options.push('<option value="' + this.value + '"' + selected + '>' + this.label + '</option>');
 
-			} else if(this.options === 'toggle') {
+			});
 
-				// Build a checkbox if it's a simple toggle
-				selected = (current === 'on') ? ' checked="checked"' : '';
-				control = '<input type="checkbox" id="CMsetting' + key + '"' + selected + ' />';
+			control =  '<select id="CMSetting-' + key + '">';
+			control += options.join('');
+			control += '</select>';
 
-				// Add event listener for change event
-				$cmSettingsList.on('change', '.setting-' + key + ' input', function() {
-					settings[key].current = $(this).prop('checked') ? 'on' : 'off';
-				});
+			// Add event handler for change event
+			$cmSettingsList.on('change', '.setting-' + key + ' select', function() {
+				settings[key].current = $(this).find(":selected").val();
+			});
 
-			}
+		} else if(this.options === 'toggle') {
 
-			// Build the list of items
-			html =  '<li class="cf setting setting-' + key + '" title="' + this.desc + '"">';
-			html +=     '<label for="CMsetting' + key + '">'  + this.label + control + '</label>';
-			html += '</li>';
+			// Build a checkbox if it's a simple toggle
+			selected = (current === 'on') ? ' checked="checked"' : '';
+			control  = '<input type="checkbox" id="CMSetting-' + key + '"' + selected + ' />';
 
-			items.push(html);
+			// Add event handler for change event
+			$cmSettingsList.on('change', '.setting-' + key + ' input', function() {
+				settings[key].current = $(this).prop('checked') ? 'on' : 'off';
+			});
 
-		});
+		}
 
-		// Glue it together
-		$cmSettingsList.append(items.join(''));
-		$cmSettingsPanel.append(
-			$cmSettingsHandle,
-			$cmSettingsList,
-			$cmSettingsSaveButton,
-			$cmSettingsPauseButton
-		);
+		// Build the list of items
+		html =  '<li class="cf setting setting-' + key + '" title="' + this.desc + '"">';
+		html +=     '<label for="CMSetting-' + key + '">'  + this.label + control + '</label>';
+		html += '</li>';
 
-		// Attach to DOM
-		$wrapper.append($cmSettingsPanel);
+		items.push(html);
 
-		// Set event handlers
-		$cmSettingsHandle.click(function() {
-			if($(this).hasClass('cmOpen')) {
-				$cmSettingsPanel.animate({
-					'margin-bottom': '-' + $cmSettingsPanel.outerHeight() + 'px'
-				}, 300, function() {
-					$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
-				});
-			} else {
-				$cmSettingsPanel.animate({'margin-bottom': '0'}, 300, function() {
-					$cmSettingsHandle.addClass('cmOpen').text('Close Settings');
-				});
-			}
-		});
-		$cmSettingsSaveButton.click(function() {
-			self.saveUserSettings();
-			self.applyUserSettings();
-		});
-		$cmSettingsPauseButton.click(function() {
-			alert('Game paused. Click OK to resume.');
-		});
+	});
+
+	// Glue it together
+	$cmSettingsList.append(items.join(''));
+	$cmSettingsPanel.append(
+		$cmSettingsHandle,
+		$cmSettingsList,
+		$cmSettingsSave,
+		$cmSettingsPause
+	);
+
+	// Attach to DOM
+	$wrapper.append($cmSettingsPanel);
+
+	// Set event handlers
+	$cmSettingsHandle.click(function() {
+		if($(this).hasClass('cmOpen')) {
+			$cmSettingsPanel.animate({
+				'margin-bottom': '-' + $cmSettingsPanel.outerHeight() + 'px'
+			}, 300, function() {
+				$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
+			});
+		} else {
+			$cmSettingsPanel.animate({'margin-bottom': '0'}, 300, function() {
+				$cmSettingsHandle.addClass('cmOpen').text('Close Settings');
+			});
+		}
+	});
+	$cmSettingsSave.click(function() {
+		self.saveUserSettings();
+		self.applyUserSettings();
+	});
+	$cmSettingsPause.click(function() {
+		alert('Game paused. Click OK to resume.');
+	});
 
 };
 
 CM.attachStatsPanel = function() {
 
-	var $wrapper = this.config.ccWrapper,
-	$cmStatsPanel = $('<div />').attr('id', 'CMStatsPanel'),
-	$cmStatsHandle = $('<div />').attr('id', 'CMStatsPanelHandle').text('CookieMaster Stats'),
-	tableHTML = '';
+	var $wrapper           = this.config.ccWrapper,
+		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
+		$cmStatsHandle     = $('<div />').attr('id', 'CMStatsPanelHandle').text('CookieMaster Stats'),
+		$cmStatsPanelTable = {},
+		tableHTML          = '';
 
 	tableHTML += '<table id="CMStatsPanelTable">';
+	tableHTML +=     '<tr class="cmStatsHeader cmStatsHeaderFirst">';
+	tableHTML +=         '<th colspan="2">Lucky and Frenzy Rewards</th>';
+	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Max Lucky required:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyRequired"></td>';
@@ -847,13 +910,15 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<td>Current Lucky reward:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsCurrentLuckyReward"></td>';
 	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
+	tableHTML +=     '<tr class="cmStatsHeader">';
+	tableHTML +=         '<th colspan="2">Heavenly Chips</th>';
+	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Current Heavenly Chips:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCCurrent"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Heavenly Chips:</td>';
+	tableHTML +=         '<td>Heavenly Chips after reset:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCMax"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
@@ -864,7 +929,9 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<td>Time to next HC:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCTimeToNext"></td>';
 	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr><td colspan="2">&nbsp;</td></tr>';
+	tableHTML +=     '<tr class="cmStatsHeader">';
+	tableHTML +=         '<th colspan="2">Wrinklers<button id="CMPopWrinklers" type="button">Pop all Wrinklers</button></th>';
+	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Cookies sucked by Wrinklers:</td>';
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersSucked"></td>';
@@ -877,35 +944,53 @@ CM.attachStatsPanel = function() {
 
 	$cmStatsPanelTable = $(tableHTML);
 
-	// Save this to config for easy access later
-	this.config.cmStatsTable = $cmStatsPanelTable;
 
 	$cmStatsPanel.append($cmStatsHandle, $cmStatsPanelTable);
 
 	// Attach to DOM
 	$wrapper.append($cmStatsPanel);
 
+	// Save selectors to config for later use
+	this.config.cmStatsPanel = $cmStatsPanel;
+	this.config.cmStatsTable = $cmStatsPanelTable;
+
 	// Set event handlers
+	$('#CMPopWrinklers').click(function() {
+		Game.CollectWrinklers();
+	});
+
 	$cmStatsHandle.click(function() {
+
 		if($(this).hasClass('cmOpen')) {
+
+			// Close panel
 			$cmStatsPanel.animate({
 				'margin-bottom': '-' + $cmStatsPanel.outerHeight() + 'px'
 			}, 250, function() {
 				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
 			});
+
 		} else {
+
+			// Open panel
 			$cmStatsPanel.animate({'margin-bottom': '0'}, 250, function() {
 				$cmStatsHandle.addClass('cmOpen').text('Close Stats');
 			});
+
 		}
+
 	});
 
 };
 
+/**
+ * Populates the stats panel with the latest game stats
+ */
+// TO DO: Possibly cache these selectors for performance :/
 CM.updateStats = function() {
 
-	var hcStats = this.getHCStats(),
-		luckyStats = this.getLuckyStats(),
+	var hcStats       = this.getHCStats(),
+		luckyStats    = this.getLuckyStats(),
 		wrinklerStats = this.getWrinklerStats();
 
 	// Lucky stats
@@ -928,72 +1013,84 @@ CM.updateStats = function() {
 };
 
 /**
- * Configure & populate the panel for showing game timers
- * @param  {boolean} state Active or inactive
+ * Attach and populate the timer panel for showing game event timers
  */
-CM.timerPanel = function(state) {
+CM.attachTimerPanel = function() {
 
 	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
-		timerRes = this.config.cmTimerResolution,
-		$sectionLeft = this.config.ccSectionLeft;
+		$sectionLeft  = this.config.ccSectionLeft,
+		timerRes      = this.config.cmTimerResolution;
 
-	if(state) {
+	// Only attach it if it's not already in DOM
+	if($('#CMTimerPanel').length === 0) {
 
-		if($('#CMTimerPanel').length === 0) {
+		// Initialize timer objects
+		// TO DO: Condense frenzy, elderFrenzy and clot into single timer instance
+		//  since they are basically the same thing, and cannot stack together
+		this.gcTimer          = new CM.Timer('goldenCookie', 'Next Cookie:');
+		this.reindeerTimer    = new CM.Timer('reindeer', 'Next Reindeer:');
+		this.frenzyTimer      = new CM.Timer('frenzy', 'Frenzy:');
+		this.clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
+		this.elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
+		this.clotTimer        = new CM.Timer('clot', 'Clot:');
 
-			// Initialize timer objects
-			this.gcTimer = new CM.Timer('goldenCookie', 'Next Cookie:');
-			this.reindeerTimer = new CM.Timer('reindeer', 'Next Reindeer:');
-			this.frenzyTimer = new CM.Timer('frenzy', 'Frenzy:');
-			this.clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
-			this.elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
-			this.clotTimer = new CM.Timer('clot', 'Clot:');
+		// Create the HTML and attach everyting to DOM
+		$cmTimerPanel.append(
+			this.gcTimer.create(),
+			this.reindeerTimer.create(),
+			this.frenzyTimer.create(),
+			this.elderFrenzyTimer.create(),
+			this.clotTimer.create(),
+			this.clickFrenzyTimer.create()
+		);
+		$sectionLeft.append($cmTimerPanel);
 
-			// Create the HTML and attach everyting to DOM
-			$cmTimerPanel.append(
-				this.gcTimer.create(),
-				this.reindeerTimer.create(),
-				this.frenzyTimer.create(),
-				this.elderFrenzyTimer.create(),
-				this.clotTimer.create(),
-				this.clickFrenzyTimer.create()
-			);
-			$sectionLeft.append($cmTimerPanel);
+		// Save selector to config for later use
+		this.config.cmTimerPanel = $cmTimerPanel;
 
-			// Attach golden cookie display timer and handler
-			this.displayGCTimer();
-			this.config.cmGCOverlay.click(function() {
-				Game.goldenCookie.click();
-				$('#CMGCOverlay').hide();
-			});
+		// Attach golden cookie display timer
+		this.displayGCTimer();
 
-		}
-
-	} else {
-
-		if($('#CMTimerPanel').length !== 0) {
-
-			// Remove references to all timers
-			this.gcTimer = null;
-			this.reindeerTimer = null;
-			this.frenzyTimer = null;
-			this.clickFrenzyTimer = null;
-			this.elderFrenzyTimer = null;
-			this.clotTimer = null;
-
-			// Remove golden cookie display timer
-			this.config.cmGCOverlay.remove();
-
-			// Remove the timer panel
-			$('#CMTimerPanel').remove();
-		}
+		// Click handler for golden cookie display timer
+		this.config.cmGCOverlay.click(function() {
+			Game.goldenCookie.click();
+			$('#CMGCOverlay').hide();
+		});
 
 	}
 
 };
 
+/**
+ * Destroy all timers and remove the timer panel
+ */
+CM.removeTimerPanel = function() {
+
+	// Only remove it if it exists in DOM
+	if($('#CMTimerPanel').length) {
+
+		// Remove references to all timers
+		this.gcTimer = null;
+		this.reindeerTimer = null;
+		this.frenzyTimer = null;
+		this.clickFrenzyTimer = null;
+		this.elderFrenzyTimer = null;
+		this.clotTimer = null;
+
+		// Remove golden cookie display timer
+		this.config.cmGCOverlay.remove();
+
+		// Remove the timer panel
+		this.config.cmTimerPanel.remove();
+
+	}
+
+};
+
+/**
+ * Update all timers with new values
+ */
 // TO DO: DRY this up
-// Update all timers with new values
 CM.updateTimers = function() {
 
 	// Golden cookie display timer
@@ -1060,18 +1157,19 @@ CM.updateTimers = function() {
  */
 CM.displayGCTimer = function() {
 
-	var $gc = this.config.ccGoldenCookie,
-		$overlay = this.config.cmGCOverlay || $('<div />').attr('id', 'CMGCOverlay').appendTo(this.config.ccGame),
+	var $gc      = this.config.ccGoldenCookie,
+		$overlay = this.config.cmGCOverlay || $('<div />').attr('id', 'CMGCOverlay'),
 		timeLeft = Math.round(Game.goldenCookie.life / Game.fps);
 
 	this.config.cmGCOverlay = $overlay;
 
-	if($gc.is(':visible')) {
+	// Reattach if it was removed at some point
+	if($('#CMGCOverlay').length === 0) {
+		this.config.ccGame.append($overlay);
+		this.config.cmGCOverlay = $overlay;
+	}
 
-		// Reattach if it was removed at some point
-		if($('#CMGCOverlay').length === 0) {
-			$overlay.appendTo(this.config.ccGame);
-		}
+	if($gc.is(':visible')) {
 
 		$overlay.css({
 			'top': $gc.css('top'),
@@ -1087,42 +1185,130 @@ CM.displayGCTimer = function() {
 
 };
 
-CM.audioAlerts = function() {
+/**
+ * Flash the screen when Golden Cookies and Reindeer spawn
+ */
+CM.showVisualAlerts = function() {
 
-	var $gc = this.config.ccGoldenCookie,
-		$sp = this.config.ccSeasonPopup,
-		gcAlert = this.config.cmGCAudioAlert,
-		spAlert = this.config.cmSPAudioAlert,
-		gcNotified = this.config.cmAudioGCNotified,
-		spNotified = this.config.cmAudioSPNotified;
+	var $overlay   = this.config.cmOverlay || $('<div />').attr('id', 'CMOverlay'),
+		$body      = this.config.ccBody,
+		$gc        = this.config.ccGoldenCookie,
+		$sp        = this.config.ccSeasonPopup,
+		gcNotified = this.config.cmVisualGCNotified,
+		spNotified = this.config.cmVisualSPNotified,
+		setting    = this.config.settings.visualAlerts.current;
 
-	// Attach flash overlay if not already in DOM
+	// Reattach overlay if it was removed at some point
 	if($('#CMOverlay').length === 0) {
-		$('body').append($('<div />').attr('id', 'CMOverlay'));
+		$body.append($overlay);
+		this.config.cmOverlay = $overlay;
 	}
 
-	// Play Golden cookie notification
-	if($gc.is(':visible')) {
-		if(!gcNotified) {
-			gcAlert.volume = 1;
-			gcAlert.play();
-			$("#CMOverlay").show().fadeOut(500);
-			this.config.cmAudioGCNotified = true;
+	// Flash on Golden cookie notification
+	if(setting === 'gc' || setting === 'all') {
+
+		if($gc.is(':visible')) {
+
+			if(!gcNotified) {
+				$overlay.show().fadeOut(500);
+				this.config.cmVisualGCNotified = true;
+			}
+
+		} else {
+
+			this.config.cmVisualGCNotified = false;
+
 		}
-	} else {
-		this.config.cmAudioGCNotified = false;
+
+	}
+
+	// Flash on Reindeer notification
+	if(setting === 'sp' || setting === 'all') {
+
+		if($sp.is(':visible')) {
+
+			if(!spNotified) {
+
+				$overlay.show().fadeOut(500);
+				this.config.cmVisualSPNotified = true;
+
+			}
+
+		} else {
+
+			this.config.cmVisualSPNotified = false;
+
+		}
+
+	}
+
+};
+
+/**
+ * Remove the visual alerts overlay div
+ */
+CM.removeVisualAlerts = function() {
+
+	// Reset notification flags
+	this.config.cmVisualGCNotified = false;
+	this.config.cmVisualSPNotified = false;
+
+	$('#CMOverlay').remove();
+
+};
+
+/**
+ * Play an audio alert and flash the screen on golden cookie and reindeer spawns
+ */
+CM.playAudioAlerts = function() {
+
+	var $body      = this.config.ccBody,
+		$gc        = this.config.ccGoldenCookie,
+		$sp        = this.config.ccSeasonPopup,
+		gcAlert    = this.config.cmGCAudioAlert,
+		spAlert    = this.config.cmSPAudioAlert,
+		gcNotified = this.config.cmAudioGCNotified,
+		spNotified = this.config.cmAudioSPNotified,
+		setting    = this.config.settings.audioAlerts.current;
+
+	// Play Golden cookie notification
+	if(setting === 'gc' || setting === 'all') {
+
+		if($gc.is(':visible')) {
+
+			if(!gcNotified) {
+				gcAlert.volume = 0.5;
+				gcAlert.play();
+				this.config.cmAudioGCNotified = true;
+			}
+
+		} else {
+
+			this.config.cmAudioGCNotified = false;
+
+		}
+
 	}
 
 	// Play Reindeer notification
-	if($sp.is(':visible')) {
-		if(!spNotified) {
-			spAlert.volume = 1;
-			spAlert.play();
-			$("#CMOverlay").show().fadeOut(500);
-			this.config.cmAudioSPNotified = true;
+	if(setting === 'sp' || setting === 'all') {
+
+		if($sp.is(':visible')) {
+
+			if(!spNotified) {
+
+				spAlert.volume = 0.2;
+				spAlert.play();
+				this.config.cmAudioSPNotified = true;
+
+			}
+
+		} else {
+
+			this.config.cmAudioSPNotified = false;
+
 		}
-	} else {
-		this.config.cmAudioSPNotified = false;
+
 	}
 
 };
@@ -1132,8 +1318,10 @@ CM.audioAlerts = function() {
  */
 CM.updateTitleTicker = function() {
 
-	var spI = (Game.seasonPopup.life > 0) ? 'R' : Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
-		gcI = (Game.goldenCookie.life > 0) ? 'G' : Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps),
+	var gcTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps,
+		spTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps,
+		gcI     = (Game.goldenCookie.life > 0) ? 'G' : gcTime),
+		spI     = (Game.seasonPopup.life > 0) ? 'R' : spTime),
 		cookies = Beautify(Game.cookies);
 
 	document.title = gcI + ' | ' + spI + ' - ' + cookies + ' cookies';
@@ -1150,6 +1338,8 @@ CM.cleanUI = function(state) {
 	var cssClass = 'cleanUI',
 		$body = this.config.ccBody;
 
+	// All the UI cleaning stuff is done via CSS, which we accomplish by adding or
+	// removing a CSS class to the body
 	if(state) {
 		$body.addClass(cssClass);
 	} else {
@@ -1194,7 +1384,21 @@ CM.applyUserSettings = function() {
 
 	this.cleanUI(settings.cleanUI.current === 'on');
 	this.changeFont(settings.changeFont.current);
-	this.timerPanel(settings.showTimers.current === 'on');
+
+	// Timers
+	if(settings.showTimers.current === 'on') {
+		this.attachTimerPanel();
+	} else {
+		this.removeTimerPanel();
+	}
+
+	// Remove Visual alert overlay if not required
+	// (It will automatically reattach itself when activated)
+	if(settings.visualAlerts.current === 'off') {
+		this.removeVisualAlerts();
+	}
+
+	// Refresh the game panels
 	Game.RebuildStore();
 	Game.RebuildUpgrades();
 
@@ -1205,10 +1409,10 @@ CM.applyUserSettings = function() {
  */
 CM.saveUserSettings = function() {
 
-	var settings = this.config.settings,
-		settingsStates = {},
-		serializedSettings = '',
-		cookieDate = new Date();
+	var settings           = this.config.settings,
+		cookieDate         = new Date(),
+		settingsStates     = {},
+		serializedSettings = '';
 
 	// Grab the current value of each user setting
 	$.each(settings, function(key, value) {
@@ -1216,13 +1420,15 @@ CM.saveUserSettings = function() {
 	});
 
 	// Serialize the data
-	serializedSettings = $.param(settingsStates).replace(/=/g, ':').replace(/&/g, '|');
+	serializedSettings = $.param(settingsStates)
+		.replace(/=/g, ':')  // Replace = with :
+		.replace(/&/g, '|'); // Replace & with |
 
-	// Create and set cookie
-	cookieDate.setFullYear(cookieDate.getFullYear() + 1);
+	// Create and set cookie, good for 5 years :)
+	cookieDate.setFullYear(cookieDate.getFullYear() + 5);
 	document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
-	// All good?
+	// Verify we saved it correctly
 	if (document.cookie.indexOf('CMSettings') === -1) {
 		Game.Popup('Error: Could not save settings!');
 	} else {
@@ -1236,11 +1442,12 @@ CM.saveUserSettings = function() {
  */
 CM.loadUserSettings = function() {
 
-	var settings = this.config.settings,
-		cookie = document.cookie.replace(/(?:(?:^|.*;\s*)CMSettings\s*\=\s*([^;]*).*$)|^.*$/, "$1"),
+	var settings      = this.config.settings,
+		match         = /(?:(?:^|.*;\s*)CMSettings\s*\=\s*([^;]*).*$)|^.*$/,
+		cookie        = document.cookie.replace(match, '$1'),
 		settingsPairs = [],
-		keyVals = [],
-		self = this;
+		keyVals       = [],
+		self          = this;
 
 	if(cookie) {
 
@@ -1264,8 +1471,10 @@ CM.loadUserSettings = function() {
  * Remove all traces of CookieMaster
  */
 CM.suicide = function() {
+
 	// TO DO: Implement this functionality
 	alert('This kills the CookieMaster.');
+
 };
 
 /**

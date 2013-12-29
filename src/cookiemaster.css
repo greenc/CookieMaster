@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.1.3
+    Version:      1.2.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -23,10 +23,10 @@
 	position: fixed;
 	z-index: 1000001;
 	bottom: 0;
-	margin-bottom: -326px;
+	margin-bottom: -366px;
 	right: 255px;
 	width: 260px;
-	height: 275px;
+	height: 315px;
 	background-color: rgba(0, 0, 0, 0.95);
 	padding: 10px 20px 40px;
 	color: #FFF;
@@ -194,20 +194,68 @@
 	right: 20px;
 	z-index: 1000000;
 	width: 495px;
-	height: 404px;
-	margin-bottom: -455px;
+	height: 485px;
+	margin-bottom: -536px;
 }
 
 #CMStatsPanelTable {
 	width: 100%;
 }
 
-#CMStatsPanelTable td {
+#CMStatsPanelTable td,
+#CMStatsPanelTable th {
 	padding: 5px 0;
 	border-bottom: 1px dashed #222;
 	line-height: 20px;
 	color: #DDD;
 }
+
+#CMStatsPanelTable .cmStatsHeader th {
+	text-align: left;
+	font-size: 24px;
+	font-family: "Kavoon", Georgia, serif;
+	line-height: 28px;
+	vertical-align: top;
+	padding: 20px 0 5px;
+}
+
+#CMStatsPanelTable .cmStatsHeaderFirst {
+	padding: 5px 0 5px;
+}
+
+#CMStatsPanelTable button {
+	background-color: #1B1B1B;
+	border: none;
+	color: #6CCF00;
+	padding: 3px 10px;
+	font-size: 12px;
+	border: 1px solid #272727;
+	border-radius: 2px;
+	font-weight: bold;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.9);
+	cursor: pointer;
+}
+
+#CMStatsPanelTable button:hover {
+	background-color: #252525;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.65);
+}
+
+#CMPopWrinklers { float: right; }
+
+/*
+NOT YET USED
+.cmIcon {
+	height: 38px;
+	width: 38px;
+	float: left;
+	margin: 0 10px 5px 0;
+}
+
+.cmIconLucky { background-position: -484px -54px; }
+.cmIconHC { background-position: -916px -343px; }
+.cmIconWrinkler { background-position: -677px -244px; }
+*/
 
 #CMStatsPanelTable .cmStatsValue {
 	text-align: right;
@@ -216,7 +264,7 @@
 }
 
 #CMStatsPanelTable .cmHighlight {
-	color: #6F6;
+	color: #6CCF00;
 }
 
 .cf:before,
@@ -267,7 +315,8 @@
 .serif #CMSettingsSave,
 .serif #CMTimerPanel,
 .serif #CMSettingsPanelHandle,
-.serif #CMStatsPanelHandle {
+.serif #CMStatsPanelHandle,
+.serif #CMStatsPanelTable .cmStatsHeader th {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
 
@@ -276,7 +325,8 @@
 .sansserif #CMSettingsSave,
 .sansserif #CMTimerPanel,
 .sansserif #CMSettingsPanelHandle,
-.sansserif #CMStatsPanelHandle {
+.sansserif #CMStatsPanelHandle,
+.sansserif #CMStatsPanelTable .cmStatsHeader th {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */
