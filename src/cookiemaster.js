@@ -19,7 +19,7 @@
 
 /**
  * We will expose all methods and properties of CookieMaster
- * through the parent object, for easy extendability
+ * through a single parent object, for easy extendability
  */
 var CM = {};
 
@@ -1493,6 +1493,7 @@ Game.Logic = new Function(
  *
  * @return {Object}    new Audio object
  */
+/*jshint -W020 */
 Audio = function(src) {
 	if(src.indexOf('soundjay') !== -1) {
 		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
@@ -1501,6 +1502,7 @@ Audio = function(src) {
 		return new realAudio(src);
 	}
 };
+/*jshint +W020 */
 
 /* ================================================
 	END COOKIE CLICKER FUNCTION OVERRIDES
