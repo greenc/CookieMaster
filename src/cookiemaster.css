@@ -51,7 +51,6 @@
 	font-size: 16px;
 	cursor: pointer;
 	border-bottom: none;
-	font-family: "Kavoon", Georgia, serif;
 	box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -90,7 +89,6 @@
 	padding: 4px 5px;
 	margin: 0 auto;
 	border-radius: 2px;
-	font-family: "Kavoon", Georgia, serif;
 	font-size: 14px;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 }
@@ -117,7 +115,6 @@
 	left: 0;
 	width: 100%;
 	z-index: 20;
-	font-family: "Kavoon", Georgia, serif;
 	font-size: 15px;
 }
 
@@ -179,7 +176,6 @@
 
 #CMGCOverlay {
 	position: absolute;
-	font-family: "Kavoon", Georgia, serif;
 	font-size:32px;
 	text-shadow: 0 0 6px rgba(0, 0, 0, 1);
 	line-height: 96px;
@@ -213,7 +209,6 @@
 #CMStatsPanelTable .cmStatsHeader th {
 	text-align: left;
 	font-size: 24px;
-	font-family: "Kavoon", Georgia, serif;
 	line-height: 28px;
 	vertical-align: top;
 	padding: 20px 0 5px;
@@ -269,6 +264,8 @@ NOT YET USED
 	color: #6CCF00;
 }
 
+.cmFont { font-family: "Kavoon", Georgia, serif; }
+
 .cf:before,
 .cf:after {
 	content: " ";
@@ -314,21 +311,13 @@ NOT YET USED
 /* Feature: changeFont */
 .serif .title,
 .serif .section,
-.serif #CMSettingsSave,
-.serif #CMTimerPanel,
-.serif #CMSettingsPanelHandle,
-.serif #CMStatsPanelHandle,
-.serif #CMStatsPanelTable .cmStatsHeader th {
+.serif .cmFont {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
 
 .sansserif .title,
 .sansserif .section,
-.sansserif #CMSettingsSave,
-.sansserif #CMTimerPanel,
-.sansserif #CMSettingsPanelHandle,
-.sansserif #CMStatsPanelHandle,
-.sansserif #CMStatsPanelTable .cmStatsHeader th {
+.sansserif .cmFont {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */

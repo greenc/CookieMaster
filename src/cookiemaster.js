@@ -777,10 +777,10 @@ CM.attachSettingsPanel = function() {
 
 		$wrapper          = this.config.ccWrapper,
 		$cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsHandle = $('<div />').attr('id', 'CMSettingsPanelHandle').text('CookieMaster Settings'),
+		$cmSettingsHandle = $('<div />').attr({'id': 'CMSettingsPanelHandle', 'class': 'cmFont'}).text('CookieMaster Settings'),
 		$cmSettingsList   = $('<ul />').attr('id', 'CMSettingsList'),
-		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button'}).text('Apply Settings'),
-		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button'}).text('Pause Game');
+		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Apply Settings'),
+		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button', 'class': 'cmFont'}).text('Pause Game');
 
 	// Build each setting item
 	$.each(settings, function(key, value) {
@@ -870,13 +870,13 @@ CM.attachStatsPanel = function() {
 
 	var $wrapper           = this.config.ccWrapper,
 		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
-		$cmStatsHandle     = $('<div />').attr('id', 'CMStatsPanelHandle').text('CookieMaster Stats'),
+		$cmStatsHandle     = $('<div />').attr({'id': 'CMStatsPanelHandle', 'class': 'cmFont'}).text('CookieMaster Stats'),
 		$cmStatsPanelTable = {},
 		tableHTML          = '';
 
 	tableHTML += '<table id="CMStatsPanelTable">';
 	tableHTML +=     '<tr class="cmStatsHeader cmStatsHeaderFirst">';
-	tableHTML +=         '<th colspan="2">Lucky and Frenzy Rewards</th>';
+	tableHTML +=         '<th colspan="2" class="cmFont">Lucky and Frenzy Rewards</th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Max Lucky required:</td>';
@@ -899,7 +899,7 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsCurrentLuckyReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr class="cmStatsHeader">';
-	tableHTML +=         '<th colspan="2">Heavenly Chips</th>';
+	tableHTML +=         '<th colspan="2" class="cmFont">Heavenly Chips</th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Current Heavenly Chips:</td>';
@@ -918,7 +918,7 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCTimeToNext"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr class="cmStatsHeader">';
-	tableHTML +=         '<th colspan="2">Wrinklers<button id="CMPopWrinklers" type="button">Pop all Wrinklers</button></th>';
+	tableHTML +=         '<th colspan="2" class="cmFont">Wrinklers<button id="CMPopWrinklers" type="button">Pop all Wrinklers</button></th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Cookies sucked by Wrinklers:</td>';
@@ -1005,7 +1005,7 @@ CM.updateStats = function() {
  */
 CM.attachTimerPanel = function() {
 
-	var $cmTimerPanel = $('<div />').attr('id', 'CMTimerPanel'),
+	var $cmTimerPanel = $('<div />').attr({'id': 'CMTimerPanel', 'class': 'cmFont'}),
 		$sectionLeft  = this.config.ccSectionLeft,
 		timerRes      = this.config.cmTimerResolution;
 
@@ -1146,7 +1146,7 @@ CM.updateTimers = function() {
 CM.displayGCTimer = function() {
 
 	var $gc      = this.config.ccGoldenCookie,
-		$overlay = this.config.cmGCOverlay || $('<div />').attr('id', 'CMGCOverlay'),
+		$overlay = this.config.cmGCOverlay || $('<div />').attr({'id': 'CMGCOverlay', 'class': 'cmFont'}),
 		timeLeft = Math.round(Game.goldenCookie.life / Game.fps);
 
 	// Reattach if it was removed at some point
