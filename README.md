@@ -10,7 +10,7 @@ New features that I think of will also be incorporated.
 How to use
 ----------
 
-1. Paste the contents of https://github.com/greenc/CookieMaster/blob/master/bookmarklet.js into a bookmark in your browser.
+1. Paste the contents of https://github.com/greenc/CookieMaster/blob/master/build/bookmarklet.js into a bookmark in your browser.
 2. Load up Cookie Clicker.
 3. Load the recently created bookmark.
 
