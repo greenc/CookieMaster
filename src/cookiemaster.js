@@ -1016,11 +1016,11 @@ CM.attachTimerPanel = function() {
 		// TO DO: Condense frenzy, elderFrenzy and clot into single timer instance
 		//  since they are basically the same thing, and cannot stack together
 		this.gcTimer          = new CM.Timer('goldenCookie', 'Next Cookie:');
-		this.reindeerTimer    = new CM.Timer('reindeer', 'Next Reindeer:');
-		this.frenzyTimer      = new CM.Timer('frenzy', 'Frenzy:');
-		this.clickFrenzyTimer = new CM.Timer('clickFrenzy', 'Click Frenzy:');
-		this.elderFrenzyTimer = new CM.Timer('elderFrenzy', 'Elder Frenzy:');
-		this.clotTimer        = new CM.Timer('clot', 'Clot:');
+		this.reindeerTimer    = new CM.Timer('reindeer',     'Next Reindeer:');
+		this.frenzyTimer      = new CM.Timer('frenzy',       'Frenzy:');
+		this.clickFrenzyTimer = new CM.Timer('clickFrenzy',  'Click Frenzy:');
+		this.elderFrenzyTimer = new CM.Timer('elderFrenzy',  'Elder Frenzy:');
+		this.clotTimer        = new CM.Timer('clot',         'Clot:');
 
 		// Create the HTML and attach everyting to DOM
 		$cmTimerPanel.append(
@@ -1158,8 +1158,8 @@ CM.displayGCTimer = function() {
 	if($gc.is(':visible')) {
 
 		$overlay.css({
-			'top': $gc.css('top'),
-			'left': $gc.css('left'),
+			'top':     $gc.css('top'),
+			'left':    $gc.css('left'),
 			'opacity': $gc.css('opacity')
 		}).text(timeLeft).show();
 
