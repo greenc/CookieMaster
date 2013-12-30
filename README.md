@@ -56,6 +56,10 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.2.3 - 2013/12/30
+
+ - Fixed bug where Golden Cookie audio alert would play Reindeer alert sound instead
+
 ### Version 1.2.2 - 2013/12/29
 
  - Fixed bug where title bar counters would display "undefined"
