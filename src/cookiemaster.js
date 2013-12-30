@@ -1304,7 +1304,7 @@ CM.playAudioAlerts = function() {
  */
 CM.updateTitleTicker = function() {
 
-	var gcTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
+	var gcTime  = Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps),
 		spTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
 		gcI     = (Game.goldenCookie.life > 0) ? 'G' : gcTime,
 		spI     = (Game.seasonPopup.life > 0) ? 'R' : spTime,
