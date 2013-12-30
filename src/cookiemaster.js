@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.2.1
+    Version:      1.2.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -35,7 +35,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.2.1',
+	version:              '1.2.2',
 	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
 	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
 	cmGCAudioObject:      null,
@@ -569,7 +569,7 @@ CM.getHCStats = function() {
 		Beautify(max),
 		Beautify(maxPercent) + '%',
 		Beautify(cookiesToNext),
-		this.secondsToTime(timeToNext)
+		this.formatTime(timeToNext)
 	];
 
 	return stats;
@@ -675,35 +675,62 @@ CM.getWrinklerStats = function() {
 };
 
 /**
- * Converts seconds to a more readable format
+ * Format a time (s) to an human-readable format
  *
- * @param  {Integer} seconds Number to convert
- * @return {String}          Formatted time
+ * @param {Integer} time
+ * @param {String}  compressed  Compressed output (minutes => m, etc.)
+ *
+ * @return {String}
  */
-// TO DO Make this smarter, add days and years
-CM.secondsToTime = function(s) {
+// TO DO: Make this not suck
+CM.formatTime = function(time) {
 
-	var time = '', m, h, d;
+	var units     = [' day, ', ' hour, ', ' minute, ', ' second'],
+		days      = parseInt(time / 86400) % 999,
+		hours     = parseInt(time / 3600) % 24,
+		minutes   = parseInt(time / 60) % 60,
+		seconds   = time % 60,
+		formatted = '';
 
-	// Nobody needs to wait more than a year
-	// for anything in Cookie Clicker!
-	if(s >= 3.15569e7) {
-		return '> 1 year';
+	// Take care of special cases
+	if(time === Infinity) {
+		return 'Never';
+	} else if(time === 0) {
+		return 'Done!';
+	} else if(time / 86400 > 1e3) {
+		return '> 1,000 days';
 	}
 
-	d  = Math.floor(s / (60 * 60 * 24));
-	s -= d * (60 * 60 * 24);
-	h  = Math.floor(s / (60 * 60));
-	s -= h * (60 * 60);
-	m  = Math.floor(s / 60);
-	s -= m * 60;
 
-	time += d > 0 ? d + ' days, '    : '';
-	time += h > 0 ? h + ' hours, '   : '';
-	time += m > 0 ? m + ' minutes, ' : '';
-	time += s > 0 ? s + ' seconds'   : '';
+	// Pluralize units if necessary
+	if(days > 1) {
+		units[0] = ' days, ';
+	}
+	if(hours > 1) {
+		units[1] = ' hours, ';
+	}
+	if(minutes > 1) {
+		units[2] = ' minutes, ';
+	}
+	if(seconds > 1) {
+		units[3] = ' seconds';
+	}
 
-	return time;
+	// Create final string
+	if(seconds) {
+		formatted = seconds + units[3];
+	}
+	if(minutes) {
+		formatted = minutes + units[2] + formatted;
+	}
+	if(hours) {
+		formatted = hours + units[1] + formatted;
+	}
+	if(days) {
+		formatted = days + units[0] + formatted;
+	}
+
+	return formatted;
 
 };
 
@@ -1225,7 +1252,7 @@ CM.playAudioAlerts = function() {
 		$gc        = this.config.ccGoldenCookie,
 		$sp        = this.config.ccSeasonPopup,
 		gcAlert    = this.config.cmGCAudioObject,
-		spAlert    = this.config.cmSPAudioURL,
+		spAlert    = this.config.cmSPAudioObject,
 		gcNotified = this.config.cmAudioGCNotified,
 		spNotified = this.config.cmAudioSPNotified,
 		setting    = this.config.settings.audioAlerts.current;

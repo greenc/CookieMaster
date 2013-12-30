@@ -56,6 +56,12 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.2.2 - 2013/12/29
+
+ - Fixed bug where title bar counters would display "undefined"
+ - Now using stricter linting of source files
+ - Minor performance enhancements
+
 ### Version 1.2.1 - 2013/12/29
 
  - Fixed bug where audio alert settings would not work correctly
