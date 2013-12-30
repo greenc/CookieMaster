@@ -32,8 +32,8 @@ if(typeof CM === 'undefined') {
 			cmcss = document.createElement('link'),
 			sources = [
 				'//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
-				'//rawgithub.com/greenc/CookieMaster/master/build/cookiemaster.min.js?v=' + version,
-				'//rawgithub.com/greenc/CookieMaster/master/build/cookiemaster.min.css?v=' + version
+				'../cookiemaster/src/cookiemaster.js?v=' + version,
+				'../cookiemaster/src/cookiemaster.css?v=' + version
 			];
 
 		cmcss.rel  = 'stylesheet';

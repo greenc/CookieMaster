@@ -46,7 +46,7 @@ CM.config = {
 	cmVisualSPNotified:   false,
 	cmRefreshRate:        1000,
 	cmFastRefreshRate:    200,
-	ccURL:                'http://orteil.dashnet.org/cookieclicker/',
+	ccURL:                'http://dev:8080/cookieclicker/',
 	ccCompatibleVersions: ['1.0402', '1.0403'],
 
 	///////////////////////////////////////////////

@@ -6,6 +6,7 @@
 
 	"devDependencies": {
 		"grunt":                        "~0.4.0",
+		"grunt-text-replace":           "~0.3.10",
 		"grunt-contrib-clean":          "*",
 		"grunt-contrib-cssmin":         "*",
 		"grunt-cssc":                   "*",
