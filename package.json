@@ -1,17 +1,18 @@
 {
 	"name": "CookieMaster",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"author": "Chris Green",
 	"private": true,
 
 	"devDependencies": {
-		"grunt":                        "~0.4.0",
-		"grunt-text-replace":           "~0.3.10",
-		"grunt-contrib-clean":          "*",
-		"grunt-contrib-cssmin":         "*",
-		"grunt-cssc":                   "*",
-		"grunt-contrib-uglify":         "*",
-		"grunt-version":                "*",
-		"matchdep":                     "*"
+		"grunt": "~0.4.0",
+		"grunt-text-replace": "~0.3.10",
+		"grunt-contrib-copy": "~0.5.0",
+		"grunt-contrib-clean": "*",
+		"grunt-contrib-cssmin": "*",
+		"grunt-cssc": "*",
+		"grunt-contrib-uglify": "*",
+		"grunt-version": "*",
+		"matchdep": "*"
 	}
 }

@@ -6,20 +6,37 @@ module.exports = function(grunt) {
 
 		pkg: grunt.file.readJSON('package.json'),
 
+		/**
+		 * Remove all files from build directory
+		 */
 		clean: {
 			build: {
 				src: [ 'build' ]
 			},
 		},
+		/**
+		 * Copy over the bookmarklet as-is
+		 */
+		copy: {
+			main: {
+				src: 'src/bookmarklet.js',
+				dest: 'build/bookmarklet.js',
+			},
+		},
+		/**
+		 * Minify the other JS files into the build directory
+		 */
 		uglify: {
 			build: {
 				files: {
-					'build/bookmarklet.js':      'src/bookmarklet.js',
 					'build/cm-bootstrap.min.js': 'src/cm-bootstrap.js',
 					'build/cookiemaster.min.js': 'src/cookiemaster.js'
 				}
 			}
 		},
+		/**
+		 * Optimize the CSS file
+		 */
 		cssc: {
 			build: {
 				options: {
@@ -31,12 +48,18 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		/**
+		 * Minify the CSS file
+		 */
 		cssmin: {
 			build: {
 				src:  'build/cookiemaster.min.css',
 				dest: 'build/cookiemaster.min.css'
 			}
 		},
+		/**
+		 * Increment version number across all files
+		 */
 		version: {
 			options: {
 				prefix: '[^\\-][Vv]ersion[\'"]?\\s*[:=]\\s*[\'"]?'
@@ -45,6 +68,9 @@ module.exports = function(grunt) {
 				src: ['src/cookiemaster.js', 'src/cookiemaster.css', 'src/cm-bootstrap.js']
 			},
 		},
+		/**
+		 * Change paths to production ones on build
+		 */
 		replace: {
 			sources: {
 				src: ['build/cm-bootstrap.min.js', 'build/bookmarklet.js'],
@@ -79,6 +105,6 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default', []);
 	grunt.registerTask('css',  ['cssc', 'cssmin']);
-	grunt.registerTask('build', ['clean', 'css', 'uglify', 'replace']);
+	grunt.registerTask('build', ['clean', 'copy', 'css', 'uglify', 'replace']);
 
 };

@@ -56,6 +56,10 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.2.4 - 2013/12/31
+
+ - Fixed broken bookmarklet code
+
 ### Version 1.2.3 - 2013/12/30
 
  - Fixed bug where Golden Cookie audio alert would play Reindeer alert sound instead
