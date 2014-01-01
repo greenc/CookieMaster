@@ -62,6 +62,11 @@ I try to update CookieMaster as often as possible, but I'm currently a single de
 Update log
 -----------
 
+### Version 1.3.2 - 2013/12/31
+
+ - Stats panel now updates instantly when opened
+ - Added CookieMaster version info to Stats and Settings panels
+
 ### Version 1.3.1 - 2013/12/31
 
  - Fixed bug where clicking a Golden Cookie would sometimes not register properly

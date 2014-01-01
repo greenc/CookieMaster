@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.3.1
+    Version:      1.3.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -35,7 +35,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.3.1',
+	version:              '1.3.2',
 	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
 	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
 	cmGCAudioObject:      null,
@@ -864,7 +864,7 @@ CM.attachSettingsPanel = function() {
 		$ccComments       = this.config.ccComments,
 		$cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsButton = $('<div />').attr({'id': 'CMSettingsPanelButton', 'class': 'button'}).text('Settings'),
-		$cmSettingsTitle   = $('<h3 />').attr('class', 'title').text('CookieMaster Settings'),
+		$cmSettingsTitle   = $('<h3 />').attr('class', 'title').html('CookieMaster Settings<span class="cmTitleSub">v' + this.config.version + '</span>'),
 		$cmSettingsTable   = $('<table />').attr({'id': 'CMSettingsTable', 'class': 'cmTable'}),
 		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Apply Settings'),
 		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button', 'class': 'cmFont'}).text('Pause Game');
@@ -962,7 +962,7 @@ CM.attachStatsPanel = function() {
 	var $ccSectionMiddle   = this.config.ccSectionMiddle,
 		$ccComments        = this.config.ccComments,
 		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
-		$cmStatsTitle      = $('<h3 />').attr('class', 'title').text('CookieMaster Statistics'),
+		$cmStatsTitle      = $('<h3 />').attr('class', 'title').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v' + this.config.version + '</span>'),
 		$cmStatsButton     = $('<div />').attr({'id': 'CMStatsPanelButton', 'class': 'button'}).text('Stats +'),
 		$cmTable = {},
 		tableHTML          = '';
@@ -1617,6 +1617,7 @@ CM.setEvents = function() {
 	});
 	$('#CMStatsPanelButton').click(function() {
 		if($statsPanel.is(':hidden')) {
+			self.updateStats();
 			$statsPanel.show();
 			$settingsPanel.hide();
 			$('#rows').hide();
