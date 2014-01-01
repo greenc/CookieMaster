@@ -62,6 +62,12 @@ I try to update CookieMaster as often as possible, but I'm currently a single de
 Update log
 -----------
 
+### Version 1.3.3 - 2013/12/31
+
+ - Fixed crash when importing a save into a new, unsaved game
+ - Fixed bug where timers would show the min limit when importing a save into a new, unsaved game
+ - Fixed bug in stats values for Frenzy and Elder Frenzy
+
 ### Version 1.3.2 - 2013/12/31
 
  - Stats panel now updates instantly when opened

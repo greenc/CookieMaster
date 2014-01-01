@@ -156,11 +156,11 @@ CM.config = {
 			desc:  'Sets the desired decimal and thousands separator symbols for numbers',
 			options: [
 				{
-					label: '1,234.56',
+					label: '1,234,567.890',
 					value: 'us'
 				},
 				{
-					label: '1.234,56',
+					label: '1.234.567,890',
 					value: 'eu'
 				}
 			],
@@ -168,7 +168,7 @@ CM.config = {
 		},
 		shortNums: {
 			type:    'checkbox',
-			label:   'Short Numbers:',
+			label:   'Shorten Numbers:',
 			desc:    'Shorten large numbers with suffixes',
 			current: 'on'
 		},
@@ -182,7 +182,7 @@ CM.config = {
 					value: 'math'
 				},
 				{
-					label: 'SI',
+					label: 'SI Units',
 					value: 'si'
 				},
 				{
@@ -194,7 +194,7 @@ CM.config = {
 		},
 		changeFont: {
 			type:  'select',
-			label: 'Font:',
+			label: 'Game Font:',
 			desc:  'Set the highlight font',
 			options: [
 				{
@@ -1109,8 +1109,9 @@ CM.updateStats = function() {
 
 	// Misc. stats
 	$('#CMStatsBaseCPS').html(Beautify(this.baseCps()));
-	$('#CMStatsFrenzyCPS').html(Beautify(Game.cookiesPs * 7));
-	$('#CMStatsElderFrenzyCPS').html(Beautify(Game.cookiesPs * 666));
+	$('#CMStatsBaseCPC').html(Beautify(this.baseCps()));
+	$('#CMStatsFrenzyCPS').html(Beautify(this.baseCps() * 7));
+	$('#CMStatsElderFrenzyCPS').html(Beautify(this.baseCps() * 666));
 	$('#CMStatsLastGC').html(lastGC);
 	$('#CMStatsMissedGC').html(Beautify(Game.missedGoldenClicks));
 
