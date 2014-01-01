@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.2.4
+    Version:      1.3.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -35,7 +35,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.2.4',
+	version:              '1.3.0',
 	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
 	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
 	cmGCAudioObject:      null,
@@ -59,9 +59,12 @@ CM.config = {
 	ccSectionLeft:   $('#sectionLeft'),
 	ccSectionMiddle: $('#sectionMiddle'),
 	ccSectionRight:  $('#sectionRight'),
+	ccComments:      $('#comments'),
 	ccGoldenCookie:  $('#goldenCookie'),
 	ccSeasonPopup:   $('#seasonPopup'),
 	cmTimerPanel:    null, // Set when panel is created
+	cmSettingsPanel: null, // Set when panel is created
+	cmStatsPanel:    null, // Set when panel is created
 	cmStatsTable:    null, // Set when panel is created
 	cmOverlay:       null, // Set when overlay is created
 	cmGCOverlay:     null, // Set when GC overlay is created
@@ -72,19 +75,36 @@ CM.config = {
 
 	settings: {
 		cleanUI: {
-			label:   'Clean Interface',
+			type:    'checkbox',
+			label:   'Clean Interface:',
 			desc:    'Hide the top bar, and make other small graphical enhancements to the game interface',
-			options: 'toggle',
 			current: 'on'
 		},
 		showTimers: {
-			label:   'Show Timers',
+			type:    'checkbox',
+			label:   'Show Timers:',
 			desc:    'Display countdown timers for game events and buffs',
-			options: 'toggle',
 			current: 'on'
 		},
+		timerBarPosition: {
+			type:    'select',
+			label:   'Timer Bar Position:',
+			desc:    'Position the timer bar at the top or bottom of the screen',
+			options: [
+				{
+					label: 'Top',
+					value: 'top'
+				},
+				{
+					label: 'Bottom',
+					value: 'bottom'
+				}
+			],
+			current: 'bottom'
+		},
 		audioAlerts: {
-			label:   'Audio Alerts',
+			type:    'select',
+			label:   'Audio Alerts:',
 			desc:    'Play an audio alert when Golden Cookies and Reindeer spawn',
 			options: [
 				{
@@ -107,7 +127,8 @@ CM.config = {
 			current: 'all'
 		},
 		visualAlerts: {
-			label:   'Visual Alerts',
+			type:    'select',
+			label:   'Visual Alerts:',
 			desc:    'Flash the screen when Golden Cookies and Reindeer spawn',
 			options: [
 				{
@@ -130,7 +151,8 @@ CM.config = {
 			current: 'all'
 		},
 		numFormat: {
-			label: 'Number Formatting',
+			type:  'select',
+			label: 'Number Formatting:',
 			desc:  'Sets the desired decimal and thousands separator symbols for numbers',
 			options: [
 				{
@@ -145,13 +167,14 @@ CM.config = {
 			current: 'us'
 		},
 		shortNums: {
-			label:   'Short Numbers',
+			type:    'checkbox',
+			label:   'Short Numbers:',
 			desc:    'Shorten large numbers with suffixes',
-			options: 'toggle',
 			current: 'on'
 		},
 		suffixFormat: {
-			label: 'Suffix Type',
+			type:  'select',
+			label: 'Suffix Type:',
 			desc:  'Set the number suffixes to desired type',
 			options: [
 				{
@@ -170,7 +193,8 @@ CM.config = {
 			current: 'math'
 		},
 		changeFont: {
-			label: 'Font',
+			type:  'select',
+			label: 'Font:',
 			desc:  'Set the highlight font',
 			options: [
 				{
@@ -187,6 +211,23 @@ CM.config = {
 				}
 			],
 			current: 'default'
+		},
+		autoClick: {
+			type:    'checkbox',
+			label:   'Auto-click Big Cookie:',
+			desc:    'Automatically click the big cookie',
+			current: 'off'
+		},
+		autoClickSpeed: {
+			type:  'range',
+			label: 'Auto-click Speed:',
+			desc:  'How many times per second to auto-click the big cookie',
+			options: {
+				min: 1,
+				max: 100,
+				step: 1
+			},
+			current: 10
 		}
 	},
 
@@ -213,6 +254,8 @@ CM.init = function() {
 		this.loadUserSettings();
 		this.attachSettingsPanel();
 		this.attachStatsPanel();
+		this.AddPopWrinklersButton();
+		this.setEvents();
 
 		// This also attaches anything else we need
 		this.applyUserSettings();
@@ -231,8 +274,9 @@ CM.init = function() {
 
 		}, fastRefreshRate);
 
+
 		// All done :)
-		Game.Popup('CookieMaster v.' + this.config.version + ' loaded successfully!');
+		this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!');
 
 	} else {
 
@@ -258,29 +302,27 @@ CM.integrityCheck = function() {
 
 	if(document.location.href.indexOf(this.config.ccURL) === -1) {
 		// Wrong URL
-		message = 'Error: This isn\'t the Cookie Clicker URL!';
+		this.alertMessage('Error: This isn\'t the Cookie Clicker URL!');
 		error = true;
 	} else if(!window.jQuery) {
 		// jQuery isn't loaded
-		message = 'Error: jQuery is not loaded!';
+		this.alertMessage('Error: jQuery is not loaded!');
 		error = true;
 	} else if(!Game) {
 		// Game class doesn't exist
-		message = 'Error: Cookie Clicker does not appear to be initialized!';
+		this.alertMessage('Error: Cookie Clicker does not appear to be initialized!');
 		error = true;
 	}
 
 	// Warn user if this version of Cookie Clicker has not been tested with CookieMaster
 	if(this.compatibilityCheck(ccVers) === -1) {
-		message = 'Warning: CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!';
+		this.alertMessage('Warning: CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!');
 	}
 
 	// Warn about Golden Cookie and Season Popup bug
 	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
-		message = "Warning: New or unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)";
+		this.alertMessage("Warning: New or unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)");
 	}
-
-	if(message) { this.alertMessage(message); }
 
 	return error ? false : true;
 };
@@ -577,85 +619,88 @@ CM.getHCStats = function() {
 };
 
 /**
- * Returns array of stats for "Lucky" rewards
+ * Returns base CPS
  *
- * @return {Array} [
- *             requiredLucky,
- *             requiredFrenzyLucky,
- *             maxRewardLucky,
- *             maxRewardFrenzyLucky,
- *             currentRewardFrenzyLucky
- *         ]
+ * @return {Integer}
  */
-// TO DO: Clean this up
-CM.getLuckyStats = function() {
+CM.baseCps = function() {
 
-	var stats = [],
-		i;
+	var frenzyMod = (Game.frenzy > 0) ? Game.frenzyPower : 1;
 
-	function lucky(type) {
+	return Game.cookiesPs / frenzyMod;
 
-		var required,
-			cps = Game.cookiesPs;
+};
 
-		if(Game.frenzy > 0) {
-			cps = cps / Game.frenzyPower;
-		}
+/**
+ * Returns bank required for max Lucky reward
+ *
+ * @return {Integer}
+ */
+CM.luckyBank = function() {
 
-		if(type === 'luckyFrenzy') {
-			cps = cps * 7;
-		}
+	return this.baseCps() * 1200 * 10 + 13;
 
-		required = Math.round((cps * 1200 + 13) / 0.1);
+};
 
-		return (required <= Game.cookies) ? '<span class="cmHighlight">' + Beautify(required) + '</span>' : Beautify(required);
+/**
+ * Returns bank required for max Lucky + Frenzy reward
+ *
+ * @return {Integer}
+ */
+CM.luckyFrenzyBank = function() {
 
-	}
+	return this.baseCps() * 1200 * 10 * 7 + 13;
 
-	function luckyReward(type) {
+};
 
-		var cps = Game.cookiesPs,
-			required;
+/**
+ * Returns maximum Lucky reward
+ *
+ * @return {Integer}
+ */
+CM.maxLuckyReward = function() {
 
-		if(Game.frenzy > 0 && type !== 'cur') {
-			cps = cps / Game.frenzyPower;
-		}
+	return this.baseCps() * 1200 + 13;
 
-		if(type === 'maxFrenzy') {
-			cps = cps * 7;
-		}
+};
 
-		required = [
-			Math.round(cps * 1200 + 13),
-			Math.round(Game.cookies * 0.1 + 13)
-		];
+/**
+ * Returns maximum Lucky + Frenzy reward
+ *
+ * @return {[type]} [description]
+ */
+CM.maxLuckyFrenzyReward = function() {
 
-		if(type === 'max' || type === 'maxFrenzy') {
+	return this.baseCps() * 1200 * 7 + 13;
 
-			if(Math.round((cps * 1200 + 13) / 0.1) > Game.cookies) {
-				return Beautify(required[0]);
-			}
+};
 
-		}
+/**
+ * Returns current Lucky reward
+ *
+ * @return {Integer}
+ */
+CM.luckyReward = function() {
 
-		return Beautify(Math.min.apply(Math, required));
+	return Math.min(Game.cookies * 10 + 13, this.baseCps() * 1200 + 13);
 
-	}
+};
 
-	stats[0] = lucky('lucky');
-	stats[1] = lucky('luckyFrenzy');
-	stats[2] = luckyReward('max');
-	stats[3] = luckyReward('maxFrenzy');
-	stats[4] = luckyReward('cur');
+/**
+ * Returns current Lucky + Frenzy reward
+ *
+ * @return {[type]} [description]
+ */
+CM.luckyFrenzyReward = function() {
 
-	return stats;
+	return Math.min(Game.cookies * 10 + 13, this.baseCps() * 1200 * 7 + 13);
 
 };
 
 /**
  * Returns array of Wrinkler stats
  *
- * @return {Array} [cookiesSucked, toralReward]
+ * @return {Array} [cookiesSucked, totalReward]
  */
 CM.getWrinklerStats = function() {
 
@@ -679,7 +724,6 @@ CM.getWrinklerStats = function() {
  *
  * @param {Integer} time
  * @param {String}  compressed  Compressed output (minutes => m, etc.)
- *
  * @return {String}
  */
 // TO DO: Make this not suck
@@ -734,6 +778,45 @@ CM.formatTime = function(time) {
 
 };
 
+/**
+ * Checks if any Wrinkers are on screen
+ *
+ * @return {[Boolean]}
+ */
+CM.wrinklersExist = function() {
+
+	var exist = false,
+		i;
+
+	for(i in Game.wrinklers) {
+		if(Game.wrinklers[i].phase > 0) {
+			exist = true;
+		}
+	}
+
+	return exist;
+
+};
+
+/**
+ * Capitalize the first letter of each word
+ *
+ * @param  {String} str String to process
+ * @return {String}
+ */
+CM.toTitleCase = function(str) {
+	return str.replace(/\w\S*/g, function(txt) {
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+	});
+};
+
+CM.popup = function(message) {
+
+	return Game.Popup('<span class="cmPopupText">' + message + '</span>');
+
+};
+
+
 /* ================================================
 	NON-RETURNING METHODS
 
@@ -757,7 +840,9 @@ CM.mainLoop = function() {
 		this.showVisualAlerts();
 	}
 
-	this.updateStats();
+	if(this.config.cmStatsPanel.is(':visible')) {
+		this.updateStats();
+	}
 
 };
 
@@ -775,10 +860,12 @@ CM.attachSettingsPanel = function() {
 		html     = '',
 		settings = this.config.settings,
 
-		$wrapper          = this.config.ccWrapper,
+		$ccSectionMiddle  = this.config.ccSectionMiddle,
+		$ccComments       = this.config.ccComments,
 		$cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
-		$cmSettingsHandle = $('<div />').attr({'id': 'CMSettingsPanelHandle', 'class': 'cmFont'}).text('CookieMaster Settings'),
-		$cmSettingsList   = $('<ul />').attr('id', 'CMSettingsList'),
+		$cmSettingsButton = $('<div />').attr({'id': 'CMSettingsPanelButton', 'class': 'button'}).text('Settings'),
+		$cmSettingsTitle   = $('<h3 />').attr('class', 'title').text('CookieMaster Settings'),
+		$cmSettingsTable   = $('<table />').attr({'id': 'CMSettingsTable', 'class': 'cmTable'}),
 		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Apply Settings'),
 		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button', 'class': 'cmFont'}).text('Pause Game');
 
@@ -789,9 +876,8 @@ CM.attachSettingsPanel = function() {
 		options = [];
 		current = this.current;
 
-		if(typeof this.options === 'object') {
+		if(this.type === 'select') { // Build a select box
 
-			// Build a select box if a setting has multiple options
 			$.each(this.options, function() {
 
 				selected = (current === this.value.toString()) ? ' selected="selected"' : '';
@@ -804,58 +890,63 @@ CM.attachSettingsPanel = function() {
 			control += '</select>';
 
 			// Add event handler for change event
-			$cmSettingsList.on('change', '.setting-' + key + ' select', function() {
+			$cmSettingsTable.on('change', '.setting-' + key + ' select', function() {
 				settings[key].current = $(this).find(":selected").val();
 			});
 
-		} else if(this.options === 'toggle') {
+		} else if(this.type === 'checkbox') { // Build a checkbox
 
-			// Build a checkbox if it's a simple toggle
 			selected = (current === 'on') ? ' checked="checked"' : '';
 			control  = '<input type="checkbox" id="CMSetting-' + key + '"' + selected + ' />';
 
 			// Add event handler for change event
-			$cmSettingsList.on('change', '.setting-' + key + ' input', function() {
+			$cmSettingsTable.on('change', '.setting-' + key + ' input', function() {
 				settings[key].current = $(this).prop('checked') ? 'on' : 'off';
+			});
+
+		} else if(this.type === 'range') { // Build a range slider
+
+			control  = '<span class="currentValue">' + this.current + '</span>';
+			control += '<input type="range" value="'+ this.current + '" min="' + this.options.min + '" max="' + this.options.max + '" step="' + this.options.step + '" id="CMSetting-' + key + '" />';
+
+			// Add event handler for change event
+			$cmSettingsTable.on('change', '.setting-' + key + ' input', function() {
+				$(this).siblings('.currentValue').text($(this).val());
+				settings[key].current = $(this).val();
 			});
 
 		}
 
 		// Build the list of items
-		html =  '<li class="cf setting setting-' + key + '" title="' + this.desc + '"">';
-		html +=     '<label for="CMSetting-' + key + '">'  + this.label + control + '</label>';
-		html += '</li>';
+		html =  '<tr class="setting setting-' + key + '">';
+		html +=     '<td>';
+		html +=         '<label for="CMSetting-' + key + '">' + this.label + '</label>';
+		html +=         '<small>' + this.desc + '</small>';
+		html +=          '</td>';
+		html +=     '<td class="cmValue">' + control + '</td>';
+		html += '</tr>';
 
 		items.push(html);
 
 	});
 
 	// Glue it together
-	$cmSettingsList.append(items.join(''));
+	$cmSettingsTable.append(items.join(''));
 	$cmSettingsPanel.append(
-		$cmSettingsHandle,
-		$cmSettingsList,
+		$cmSettingsTitle,
+		$cmSettingsTable,
 		$cmSettingsSave,
 		$cmSettingsPause
 	);
 
 	// Attach to DOM
-	$wrapper.append($cmSettingsPanel);
+	$ccSectionMiddle.append($cmSettingsPanel);
+	$ccComments.prepend($cmSettingsButton);
+
+	// Cache the selector
+	this.config.cmSettingsPanel = $cmSettingsPanel;
 
 	// Set event handlers
-	$cmSettingsHandle.click(function() {
-		if($(this).hasClass('cmOpen')) {
-			$cmSettingsPanel.animate({
-				'margin-bottom': '-' + $cmSettingsPanel.outerHeight() + 'px'
-			}, 300, function() {
-				$cmSettingsHandle.removeClass('cmOpen').text('CookieMaster Settings');
-			});
-		} else {
-			$cmSettingsPanel.animate({'margin-bottom': '0'}, 300, function() {
-				$cmSettingsHandle.addClass('cmOpen').text('Close Settings');
-			});
-		}
-	});
 	$cmSettingsSave.click(function() {
 		self.saveUserSettings();
 		self.applyUserSettings();
@@ -868,106 +959,110 @@ CM.attachSettingsPanel = function() {
 
 CM.attachStatsPanel = function() {
 
-	var $wrapper           = this.config.ccWrapper,
+	var $ccSectionMiddle   = this.config.ccSectionMiddle,
+		$ccComments        = this.config.ccComments,
 		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
-		$cmStatsHandle     = $('<div />').attr({'id': 'CMStatsPanelHandle', 'class': 'cmFont'}).text('CookieMaster Stats'),
-		$cmStatsPanelTable = {},
+		$cmStatsTitle      = $('<h3 />').attr('class', 'title').text('CookieMaster Statistics'),
+		$cmStatsButton     = $('<div />').attr({'id': 'CMStatsPanelButton', 'class': 'button'}).text('Stats +'),
+		$cmTable = {},
 		tableHTML          = '';
 
-	tableHTML += '<table id="CMStatsPanelTable">';
-	tableHTML +=     '<tr class="cmStatsHeader cmStatsHeaderFirst">';
-	tableHTML +=         '<th colspan="2" class="cmFont">Lucky and Frenzy Rewards</th>';
+	tableHTML += '<table class="cmTable">';
+	tableHTML +=     '<tr class="cmHeader">';
+	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconLucky"></span>Lucky and Frenzy Rewards</th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Lucky required:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyRequired"></td>';
+	tableHTML +=         '<td>Lucky bank required:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyRequired"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Lucky + Frenzy required:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsLuckyFrenzyRequired"></td>';
+	tableHTML +=         '<td>Lucky + Frenzy bank required:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyFrenzyRequired"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Lucky reward:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyReward"></td>';
+	tableHTML +=         '<td>Lucky reward:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Max Lucky + Frenzy reward:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsMaxLuckyFrenzyReward"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Current Lucky reward:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsCurrentLuckyReward"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr class="cmStatsHeader">';
-	tableHTML +=         '<th colspan="2" class="cmFont">Heavenly Chips</th>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Current Heavenly Chips:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCCurrent"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Heavenly Chips after reset:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCMax"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Cookies to next HC:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCCookiesToNext"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Time to next HC:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsHCTimeToNext"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr class="cmStatsHeader">';
-	tableHTML +=         '<th colspan="2" class="cmFont">Wrinklers<button id="CMPopWrinklers" type="button">Pop all Wrinklers</button></th>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Cookies sucked by Wrinklers:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersSucked"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Reward for popping Wrinklers:</td>';
-	tableHTML +=         '<td class="cmStatsValue" id="CMStatsWrinklersReward"></td>';
+	tableHTML +=         '<td>Lucky + Frenzy reward:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyFrenzyReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
 
-	$cmStatsPanelTable = $(tableHTML);
+	tableHTML += '<table class="cmTable">';
+	tableHTML +=     '<tr class="cmHeader">';
+	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Heavenly Chips</th>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Current Heavenly Chips:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsHCCurrent"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Heavenly Chips after reset:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsHCMax"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Cookies to next HC:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToNext"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Time to next HC:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsHCTimeToNext"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML += '</table>';
+
+	tableHTML += '<table class="cmTable">';
+	tableHTML +=     '<tr class="cmHeader">';
+	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconWrinkler"></span>Wrinklers</th>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Cookies sucked by Wrinklers:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsWrinklersSucked"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Reward for popping Wrinklers:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsWrinklersReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML += '</table>';
+
+	tableHTML += '<table class="cmTable">';
+	tableHTML +=     '<tr class="cmHeader">';
+	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconMisc"></span>Miscellaneous Stats</th>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Base CPS:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsBaseCPS"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Frenzy CPS:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyCPS"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Elder Frenzy CPS:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsElderFrenzyCPS"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Last Golden Cookie effect:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsLastGC"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Golden Cookies Missed:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsMissedGC"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML += '</table>';
+
+	$cmTable = $(tableHTML);
 
 
-	$cmStatsPanel.append($cmStatsHandle, $cmStatsPanelTable);
+	$cmStatsPanel.append($cmStatsTitle, $cmTable);
 
 	// Attach to DOM
-	$wrapper.append($cmStatsPanel);
+	$ccSectionMiddle.append($cmStatsPanel);
+	$ccComments.prepend($cmStatsButton);
 
-	// Save selectors to config for later use
+	// Cache selectors
 	this.config.cmStatsPanel = $cmStatsPanel;
-	this.config.cmStatsTable = $cmStatsPanelTable;
-
-	// Set event handlers
-	$('#CMPopWrinklers').click(function() {
-		Game.CollectWrinklers();
-	});
-
-	$cmStatsHandle.click(function() {
-
-		if($(this).hasClass('cmOpen')) {
-
-			// Close panel
-			$cmStatsPanel.animate({
-				'margin-bottom': '-' + $cmStatsPanel.outerHeight() + 'px'
-			}, 250, function() {
-				$cmStatsHandle.removeClass('cmOpen').text('CookieMaster Stats');
-			});
-
-		} else {
-
-			// Open panel
-			$cmStatsPanel.animate({'margin-bottom': '0'}, 250, function() {
-				$cmStatsHandle.addClass('cmOpen').text('Close Stats');
-			});
-
-		}
-
-	});
+	this.config.cmStatsTable = $cmTable;
 
 };
 
@@ -978,15 +1073,18 @@ CM.attachStatsPanel = function() {
 CM.updateStats = function() {
 
 	var hcStats       = this.getHCStats(),
-		luckyStats    = this.getLuckyStats(),
-		wrinklerStats = this.getWrinklerStats();
+		wrinklerStats = this.getWrinklerStats(),
+		lastGC        = this.toTitleCase(Game.goldenCookie.last) || 'None clicked this session!',
+		lbText        = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
+		lfbText       = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank());
 
 	// Lucky stats
-	$('#CMStatsLuckyRequired').html(luckyStats[0]);
-	$('#CMStatsLuckyFrenzyRequired').html(luckyStats[1]);
-	$('#CMStatsMaxLuckyReward').html(luckyStats[2]);
-	$('#CMStatsMaxLuckyFrenzyReward').html(luckyStats[3]);
-	$('#CMStatsCurrentLuckyReward').html(luckyStats[4]);
+	$('#CMStatsLuckyRequired').html(lbText);
+	$('#CMStatsLuckyFrenzyRequired').html(lfbText);
+	$('#CMStatsLuckyReward').html(Beautify(this.luckyReward())
+		+ ' (max: ' + Beautify(this.maxLuckyReward()) + ')');
+	$('#CMStatsLuckyFrenzyReward').html(Beautify(this.luckyFrenzyReward())
+		+ ' (max: ' + Beautify(this.maxLuckyFrenzyReward()) + ')');
 
 	// Heavenly Chip stats
 	$('#CMStatsHCCurrent').html(hcStats[0] + ' (' + hcStats[1] + ')');
@@ -997,6 +1095,13 @@ CM.updateStats = function() {
 	// Wrinkler stats
 	$('#CMStatsWrinklersSucked').html(wrinklerStats[0]);
 	$('#CMStatsWrinklersReward').html(wrinklerStats[1]);
+
+	// Misc. stats
+	$('#CMStatsBaseCPS').html(Beautify(this.baseCps()));
+	$('#CMStatsFrenzyCPS').html(Beautify(Game.cookiesPs * 7));
+	$('#CMStatsElderFrenzyCPS').html(Beautify(Game.cookiesPs * 666));
+	$('#CMStatsLastGC').html(lastGC);
+	$('#CMStatsMissedGC').html(Beautify(Game.missedGoldenClicks));
 
 };
 
@@ -1300,6 +1405,20 @@ CM.playAudioAlerts = function() {
 };
 
 /**
+ * Adds a button to pop all existing wrinklers
+ */
+CM.AddPopWrinklersButton = function() {
+
+	var $button = $('<button />').attr({
+			'id': 'CMPopWrinklers',
+			'type': 'button'
+		}).text('Pop all Wrinklers');
+
+	$('#cookieAnchor').append($button);
+
+};
+
+/**
  * Updates the title tag with timer statuses and cookie count
  */
 CM.updateTitleTicker = function() {
@@ -1366,7 +1485,8 @@ CM.changeFont = function(font) {
  */
 CM.applyUserSettings = function() {
 
-	var settings = this.config.settings;
+	var config = this.config,
+		settings = this.config.settings;
 
 	this.cleanUI(settings.cleanUI.current === 'on');
 	this.changeFont(settings.changeFont.current);
@@ -1377,12 +1497,34 @@ CM.applyUserSettings = function() {
 	} else {
 		this.removeTimerPanel();
 	}
+	if(settings.timerBarPosition.current === 'top') {
+		config.ccBody.addClass('cmTimerTop');
+	} else {
+		config.ccBody.removeClass('cmTimerTop');
+	}
 
 	// Remove Visual alert overlay if not required
 	// (It will automatically reattach itself when activated)
 	if(settings.visualAlerts.current === 'off') {
 		this.removeVisualAlerts();
 	}
+
+	// Start/stop the auto-clicker
+	if (settings.autoClick.current === 'on') {
+		if(this.autoClicker) {
+			clearInterval(this.autoClicker);
+		}
+		this.autoClicker = setInterval(
+			function() {
+				Game.ClickCookie();
+			}, 1000 / CM.config.settings.autoClickSpeed.current
+		);
+	} else {
+		if(this.autoClicker) {
+			clearInterval(this.autoClicker);
+		}
+	}
+
 
 	// Refresh the game panels
 	Game.RebuildStore();
@@ -1416,9 +1558,9 @@ CM.saveUserSettings = function() {
 
 	// Verify we saved it correctly
 	if (document.cookie.indexOf('CMSettings') === -1) {
-		Game.Popup('Error: Could not save settings!');
+		this.popup('Error: Could not save settings!');
 	} else {
-		Game.Popup('Settings saved successfully!');
+		this.popup('Settings saved successfully!');
 	}
 
 };
@@ -1450,6 +1592,76 @@ CM.loadUserSettings = function() {
 		});
 
 	}
+
+};
+
+/**
+ * Set event handlers for non-setting specific actions
+ * (Setting-specific actions should have their event handlers
+ * set and destroyed in their respective creation/removal methods)
+ */
+CM.setEvents = function() {
+
+	// TO DO: Cache selectors and clean this up
+	var self           = this,
+		$game          = this.config.ccGame,
+		$statsPanel    = this.config.cmStatsPanel,
+		$settingsPanel = this.config.cmSettingsPanel,
+		$sectionLeft   = this.config.ccSectionLeft;
+
+	// Set some click handlers for the menu buttons
+	$('#statsButton, #prefsButton, #logButton').click(function() {
+		$('#rows').show();
+		$('#CMStatsPanel, #CMSettingsPanel').hide();
+	});
+	$('#CMStatsPanelButton').click(function() {
+		if($statsPanel.is(':hidden')) {
+			$statsPanel.show();
+			$settingsPanel.hide();
+			$('#rows').hide();
+			$game.addClass('onCMMenu');
+		} else {
+			$statsPanel.hide();
+			$settingsPanel.hide();
+			$('#rows').show();
+			$game.removeClass('onCMMenu');
+		}
+		$('#menu').empty();
+		$game.removeClass('onMenu');
+		Game.onMenu = '';
+	});
+	$('#CMSettingsPanelButton').click(function() {
+		if($settingsPanel.is(':hidden')) {
+			$settingsPanel.show();
+			$statsPanel.hide();
+			$('#rows').hide();
+			$game.addClass('onCMMenu');
+		} else {
+			$settingsPanel.hide();
+			$statsPanel.hide();
+			$('#rows').show();
+			$game.removeClass('onCMMenu');
+		}
+		$('#menu').empty();
+		$game.removeClass('onMenu');
+		Game.onMenu = '';
+	});
+
+	// Pop Wrinklers button
+	$sectionLeft.hover(
+		function() {
+			if(self.wrinklersExist()) {
+				$('#CMPopWrinklers').fadeIn(200);
+			}
+		},
+		function() {
+			$('#CMPopWrinklers').fadeOut(200);
+		}
+	);
+	$('#CMPopWrinklers').click(function() {
+		Game.CollectWrinklers();
+		$('#CMPopWrinklers').hide();
+	});
 
 };
 

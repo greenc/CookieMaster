@@ -56,6 +56,16 @@ I'm currently a single developer doing this in my spare time, so updates may be 
 Update log
 -----------
 
+### Version 1.3.0 - 2013/12/31
+
+ - Integrated Stats and Settings windows into the center game panel
+ - Added option to display timers at the top or bottom of the left panel
+ - Added option to auto-click the big cookie (with speed control)
+ - Moved button to pop all reindeer into left panel, now only displays when needed
+ - Added more stats
+ - Visual tweaks and improvements
+ - Cleaned up some messy code
+
 ### Version 1.2.4 - 2013/12/31
 
  - Fixed broken bookmarklet code

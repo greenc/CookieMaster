@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.2.4
+    Version:      1.3.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -18,66 +18,77 @@
 ================================================ */
 
 /* Styles for the CM UI */
-#CMSettingsPanel,
-#CMStatsPanel {
-	position: fixed;
-	z-index: 1000001;
-	bottom: 0;
-	margin-bottom: -346px;
-	right: 255px;
-	width: 260px;
-	height: 295px;
-	background-color: rgba(0, 0, 0, 0.95);
-	padding: 10px 20px 40px;
-	color: #FFF;
-	border: 1px solid #555;
-	border-bottom: none;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-}
-
-#CMSettingsPanelHandle,
-#CMStatsPanelHandle {
+#CMStatsPanel, #CMSettingsPanel {
+	display: none;
+	z-index: 1000000;
 	position: absolute;
-	top: -27px;
-	right: -1px;
-	height: 26px;
-	width: 220px;
-	background-color: rgba(0, 0, 0, 0.95);
-	text-align: center;
-	color: #B8B8B8;
-	line-height: 26px;
-	font-weight: normal;
-	border: 1px solid #555;
-	font-size: 16px;
-	cursor: pointer;
-	border-bottom: none;
-	box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.5);
+	left: 16px;
+	right: 0px;
+	top: 112px;
+	padding: 20px;
+	font-size: 13px;
 }
 
-#CMSettingsPanelHandle:hover {
-	color: #FFF;
+#CMSettingsPanelButton,
+#CMStatsPanelButton {
+	width: 90px;
+	padding: 4px 16px 4px 0;
+	top: 0;
+	right: -16px;
+	font-size: 15px;
+	line-height: 24px;
+	color: #6CF;
 }
 
-#CMSettingsList {
-	margin-bottom: 10px;
+#CMSettingsPanelButton:hover,
+#CMStatsPanelButton:hover {
+	right: -8px;
+	box-shadow: 0px 0px 12px #88C1FF inset, 0px 0px 4px #000;
+
 }
 
-#CMSettingsList .setting {
-	border-bottom: 1px dashed #222;
-	padding: 5px 0;
-	line-height: 20px;
-	color: #DDD;
+#CMStatsPanelButton { top: 32px; }
+
+#logButton {
+	width: 90px !important;
+	padding: 4px 16px 4px 0;
+	right: -16px;
+	font-size: 15px;
+	line-height: 24px;
 }
 
-#CMSettingsList label { display: block; }
+#commentsText {
+	padding: 0px 80px 0 64px;
+}
 
-#CMSettingsList input,
-#CMSettingsList select {
-	float: right;
-	margin-left: 5px;
+#CMSettingsPanel h3,
+#CMStatsPanel h3 {
+	color: #6CF;
+	font-size: 28px;
+	margin: 0 0 20px;
+}
+
+#CMSettingsTable { border-top: 1px dashed #3A3A3A; }
+
+#CMSettingsTable small {
+	display: block;
+	line-height: 14px;
+	font-size: 11px;
+	color: #666;
+}
+
+#CMSettingsTable .cmValue {
+	vertical-align: middle;
+	text-align: right;
+}
+
+.cmTable input,
+.cmTable select {
+	font-size: 14px;
 	background-color: #111;
 	color: #FFF;
 	border: 1px solid #444;
+	padding: 2px;
 }
 
 #CMSettingsSave,
@@ -91,10 +102,11 @@
 	border-radius: 2px;
 	font-size: 14px;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+	outline: none;
 }
 
 #CMSettingsPause {
-	border: 1px solid #747474;
+	border: 1px solid #5A5A5A;
 	background-color: #4D4D4D;
 	margin-left: 10px;
 }
@@ -134,6 +146,7 @@
 	height: 14px;
 	background-color: #494949;
 	position: relative;
+	border-radius: 3px;
 }
 
 .cmTimer span {
@@ -148,6 +161,7 @@
 .cmTimer div {
 	height: 14px;
 	background-color: #B3B3B3;
+	border-radius: 3px;
 }
 .cmTimer-goldenCookie .cmTimer div { background-color: #FF00FF;}
 .cmTimer-reindeer .cmTimer div { background-color: #FF8500;}
@@ -186,85 +200,117 @@
 	cursor: pointer;
 }
 
-#CMStatsPanel {
-	right: 20px;
-	z-index: 1000000;
-	width: 495px;
-	height: 505px;
-	margin-bottom: -556px;
-}
-
-#CMStatsPanelTable {
+.cmTable {
 	width: 100%;
+	margin: 0 0 20px;
 }
 
-#CMStatsPanelTable td,
-#CMStatsPanelTable th {
+.cmTable tr:nth-child(even) {
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.cmTable td,
+.cmTable th {
 	padding: 5px 0;
-	border-bottom: 1px dashed #222;
-	line-height: 20px;
+	border-bottom: 1px dashed #3A3A3A;
+	line-height: 18px;
 	color: #DDD;
 }
 
-#CMStatsPanelTable .cmStatsHeader th {
+.cmTable .cmHeader th {
 	text-align: left;
 	font-size: 24px;
-	line-height: 28px;
+	line-height: 38px;
 	vertical-align: top;
-	padding: 20px 0 5px;
+	padding: 0 0 5px;
 }
 
-#CMStatsPanelTable .cmStatsHeaderFirst {
-	padding: 5px 0 5px;
+.cmTable .cmFirst th {
+	padding: 0 0 5px;
 }
 
-#CMStatsPanelTable button {
-	background-color: #1B1B1B;
-	border: none;
+.cmTable .cmValue {
+	width: 50%;
+	color: #FFF;
+	font-weight: bold;
+}
+
+.cmTable .cmHighlight {
 	color: #6CCF00;
-	padding: 3px 10px;
+}
+
+.cmTable input[type="range"] {
+	-webkit-appearance: none;
+	-moz-apperance: none;
+	width: 65%;
+	height: 8px;
+	padding: 0;
+	outline: none;
+	border-radius: 6px;
+}
+
+.cmTable input::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	-moz-apperance: none;
+	width: 10px;
+	height:25px;
+	border-radius: 10px;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fefefe), color-stop(0.49, #dddddd), color-stop(0.51, #d1d1d1), color-stop(1, #a1a1a1) );
+}
+
+.cmTable .currentValue {
+	margin-right: 10px;
+}
+
+#CMPopWrinklers {
+	display: none;
+	background-color: rgba(0, 0, 0, 0.75);
+	border: none;
+	color: #6CF;
+	padding: 5px;
 	font-size: 12px;
 	line-height: 16px;
-	border: 1px solid #272727;
 	border-radius: 2px;
-	font-weight: bold;
 	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.9);
 	cursor: pointer;
 	outline: none;
+	position: absolute;
+	z-index: 21;
+	bottom: -183px;
+	left: -52px;
+	white-space: nowrap;
 }
 
-#CMStatsPanelTable button:hover {
+#CMPopWrinklers:hover {
 	background-color: #252525;
 	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.65);
 }
 
-#CMPopWrinklers { float: right; }
-
-/*
-NOT YET USED
 .cmIcon {
 	height: 38px;
 	width: 38px;
 	float: left;
-	margin: 0 10px 5px 0;
+	margin: 0 15px 5px 0;
 }
 
 .cmIconLucky { background-position: -484px -54px; }
 .cmIconHC { background-position: -916px -343px; }
 .cmIconWrinkler { background-position: -677px -244px; }
-*/
-
-#CMStatsPanelTable .cmStatsValue {
-	text-align: right;
-	color: #FFF;
-	font-weight: bold;
-}
-
-#CMStatsPanelTable .cmHighlight {
-	color: #6CCF00;
-}
+.cmIconMisc { background-position: -6px -342px; }
 
 .cmFont { font-family: "Kavoon", Georgia, serif; }
+
+#game.onCMMenu #sectionMiddle {
+	background: #000 url(http://orteil.dashnet.org/cookieclicker/img/darkNoise.png);
+}
+
+.cmPopupText {
+	color: #6CF;
+	background-color: rgba(0, 0, 0, 0.85);
+	padding: 20px 25px;
+	border-radius: 20px;
+	display: inline-block;
+}
 
 .cf:before,
 .cf:after {
@@ -321,3 +367,9 @@ NOT YET USED
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 /* End Feature: Font */
+
+/* Feature: timerBarPosition */
+.cmTimerTop #CMTimerPanel {
+	bottom: auto;
+	top: 0;
+}
