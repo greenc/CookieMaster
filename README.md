@@ -64,9 +64,10 @@ Update log
 
 ### Version 1.3.3 - 2013/12/31
 
+ - Added more stats for CpS and CpC
  - Fixed crash when importing a save into a new, unsaved game
- - Fixed bug where timers would show the min limit when importing a save into a new, unsaved game
- - Fixed bug in stats values for Frenzy and Elder Frenzy
+ - Fixed bug where timers wouldn't show the min limit when importing a save into a new, unsaved game
+ - Fixed bug in stats values for Frenzy and Elder Frenzy CpS
 
 ### Version 1.3.2 - 2013/12/31
 

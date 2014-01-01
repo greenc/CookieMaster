@@ -644,6 +644,20 @@ CM.baseCps = function() {
 };
 
 /**
+ * Returns base CPC (cookies per click)
+ *
+ * @return {Integer}
+ */
+CM.baseCpc = function() {
+
+	var frenzyMod      = (Game.frenzy > 0) ? Game.frenzyPower : 1,
+		clickFrenzyMod = (Game.clickFrenzy > 0) ? 777 : 1;
+
+	return Game.mouseCps() / frenzyMod / clickFrenzyMod;
+
+};
+
+/**
  * Returns bank required for max Lucky reward
  *
  * @return {Integer}
@@ -875,7 +889,7 @@ CM.attachSettingsPanel = function() {
 		$ccComments       = this.config.ccComments,
 		$cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsButton = $('<div />').attr({'id': 'CMSettingsPanelButton', 'class': 'button'}).text('Settings'),
-		$cmSettingsTitle   = $('<h3 />').attr('class', 'title').html('CookieMaster Settings<span class="cmTitleSub">v' + this.config.version + '</span>'),
+		$cmSettingsTitle   = $('<h3 />').attr('class', 'title').html('CookieMaster Settings<span class="cmTitleSub">v.' + this.config.version + '</span>'),
 		$cmSettingsTable   = $('<table />').attr({'id': 'CMSettingsTable', 'class': 'cmTable'}),
 		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Apply Settings'),
 		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button', 'class': 'cmFont'}).text('Pause Game');
@@ -973,7 +987,7 @@ CM.attachStatsPanel = function() {
 	var $ccSectionMiddle   = this.config.ccSectionMiddle,
 		$ccComments        = this.config.ccComments,
 		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
-		$cmStatsTitle      = $('<h3 />').attr('class', 'title').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v' + this.config.version + '</span>'),
+		$cmStatsTitle      = $('<h3 />').attr('class', 'title').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v.' + this.config.version + '</span>'),
 		$cmStatsButton     = $('<div />').attr({'id': 'CMStatsPanelButton', 'class': 'button'}).text('Stats +'),
 		$cmTable = {},
 		tableHTML          = '';
@@ -1002,7 +1016,7 @@ CM.attachStatsPanel = function() {
 
 	tableHTML += '<table class="cmTable">';
 	tableHTML +=     '<tr class="cmHeader">';
-	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Heavenly Chips</th>';
+	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Prestige</th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Current Heavenly Chips:</td>';
@@ -1051,6 +1065,22 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Elder Frenzy CPS:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsElderFrenzyCPS"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Base CPC:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsBaseCPC"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Frenzy CPC:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyCPC"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Click Frenzy CPC:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsClickFrenzyCPC"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Frenzy + Click Frenzy CPC:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyClickFrenzyCPC"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Last Golden Cookie effect:</td>';
@@ -1109,9 +1139,12 @@ CM.updateStats = function() {
 
 	// Misc. stats
 	$('#CMStatsBaseCPS').html(Beautify(this.baseCps()));
-	$('#CMStatsBaseCPC').html(Beautify(this.baseCps()));
 	$('#CMStatsFrenzyCPS').html(Beautify(this.baseCps() * 7));
 	$('#CMStatsElderFrenzyCPS').html(Beautify(this.baseCps() * 666));
+	$('#CMStatsBaseCPC').html(Beautify(this.baseCpc()));
+	$('#CMStatsFrenzyCPC').html(Beautify(this.baseCpc() * 7));
+	$('#CMStatsClickFrenzyCPC').html(Beautify(this.baseCpc() * 777));
+	$('#CMStatsFrenzyClickFrenzyCPC').html(Beautify(this.baseCpc() * 777 * 7));
 	$('#CMStatsLastGC').html(lastGC);
 	$('#CMStatsMissedGC').html(Beautify(Game.missedGoldenClicks));
 
