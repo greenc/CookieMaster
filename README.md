@@ -27,7 +27,7 @@ This is a very early release and extensive browser testing has not yet been done
 What can CookieMaster do?
 ---------------------------
 
-Not a whole lot yet, as it's still fairly early in development. Here's the checklist so far:
+It's still fairly early in development, so it's not quite feature complete yet. Here's the checklist so far:
 
  - Long number shortening (convert 1,234,567,890 to 1.235 billion)
  - Show different suffix types when shortening numbers
@@ -35,26 +35,36 @@ Not a whole lot yet, as it's still fairly early in development. Here's the check
  - Clean up the game window (remove top bar, make cookie counter more visible, etc.)
  - Change game font
  - Display accurate countdown timers for game events, e.g. Next golden cookie, remaining time for buffs
- - Play an audio alert and flash the screen when Golden Cookies and Reindeer spawn
+ - Play an audio alert when Golden Cookies and Reindeer spawn
+ - Flash the screen when Golden Cookies and Reindeer spawn
+ - Display countdowns to next Golden Cookie and Reindeer in the title tab
+ - Auto-clicker for the Big Cookie with speed control
+ - Button to instantly pop all on-screen wrinklers
  - Calculate and display Heavenly Chip data
  - Calculate and display information regarding banked cookies for maximum buff payouts and other items
  - Calculate and display how many cookies wrinklers have sucked and the reward for popping them
+ - Other useful stats
  - Pause button
 
-And when it's done?
+Upcoming features
 -----------
 
  - Calculate and display the most efficient purchases and upgrades
+ - Option to have Wrinklers carry over between sessions
+ - Smart auto-clicking for Golden Cookies and Reindeer
  - Multiple save slots and easy save import/export functionality
  - Higher attainable FPS for more accurate timers without crippling your system!
 
-And when will that be?
+Release schedule
 -----------
-
-I'm currently a single developer doing this in my spare time, so updates may be erratic. Feel free to issue a pull request though ;)
+I try to update CookieMaster as often as possible, but I'm currently a single developer doing this in my spare time, so there's no fixed release schedule as such. If you're a fellow developer, or even just have a feature request or suggestion, feel free to make a pull request or open an issue in the issue tracker :)
 
 Update log
 -----------
+
+### Version 1.3.1 - 2013/12/31
+
+ - Fixed bug where clicking a Golden Cookie would sometimes not register properly
 
 ### Version 1.3.0 - 2013/12/31
 
