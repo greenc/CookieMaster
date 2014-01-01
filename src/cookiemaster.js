@@ -411,14 +411,14 @@ CM.largeNumFormat = function(num, precision) {
  */
 CM.Timer = function(type, label) {
 
-	this.type = type;
-	this.label = label;
-	this.id = 'CMTimer-' + this.type;
+	this.type      = type;
+	this.label     = label;
+	this.id        = 'CMTimer-' + this.type;
 	this.container = {};
-	this.barOuter = {};
-	this.barInner = {};
-	this.limiter = {};
-	this.counter = {};
+	this.barOuter  = {};
+	this.barInner  = {};
+	this.counter   = {};
+	this.limiter   = null; // Add only if needed
 
 	/**
 	 * Create a new timer object
@@ -432,9 +432,11 @@ CM.Timer = function(type, label) {
 			$barInner  = $('<div />'),
 			$label     = $('<div />').addClass('cmTimerLabel').text(this.label),
 			$counter   = $('<div />').addClass('cmTimerCounter').text(Math.round(timings.minCurrent)),
-			$limiter   = {}, // Not always needed, so we create it further down
+			$limiter   = null, // Not always needed, so we create it further down
 			width      = timings.minCurrent / timings.max * 100,
 			hardMin;
+
+		console.log(timings);
 
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
@@ -460,8 +462,8 @@ CM.Timer = function(type, label) {
 		this.container = $container;
 		this.barOuter  = $barOuter;
 		this.barInner  = $barInner;
-		this.limiter   = $limiter;
 		this.counter   = $counter;
+		this.limiter   = $limiter;
 
 		return $container;
 
@@ -474,11 +476,21 @@ CM.Timer = function(type, label) {
 	 */
 	this.update = function() {
 
-		var timings = this.getTimings(),
-			width = timings.minCurrent / timings.max * 100,
+		var $limiter  = this.limiter,
+			$barOuter = this.barOuter,
+			timings   = this.getTimings(),
+			width     = timings.minCurrent / timings.max * 100,
 			hardMin;
 
-		if(timings.hasOwnProperty('min') && timings.min > 0) {
+		if(timings.hasOwnProperty('min') && timings.min) {
+
+			// Add the limiter bar if it doesn't already exist
+			// (This could be the case if you import a save into a new, unsaved game)
+			if(!this.limiter) {
+				$limiter = $('<span />');
+				$barOuter.append($limiter);
+				this.limiter = $limiter;
+			}
 
 			hardMin = timings.min / timings.max * 100;
 			this.limiter.css('width', hardMin + '%');
@@ -720,7 +732,7 @@ CM.getWrinklerStats = function() {
 };
 
 /**
- * Format a time (s) to an human-readable format
+ * Format a time in seconds to a more friendly format
  *
  * @param {Integer} time
  * @param {String}  compressed  Compressed output (minutes => m, etc.)
@@ -785,16 +797,15 @@ CM.formatTime = function(time) {
  */
 CM.wrinklersExist = function() {
 
-	var exist = false,
-		i;
+	var i;
 
 	for(i in Game.wrinklers) {
 		if(Game.wrinklers[i].phase > 0) {
-			exist = true;
+			return true;
 		}
 	}
 
-	return exist;
+	return false;
 
 };
 
@@ -917,7 +928,7 @@ CM.attachSettingsPanel = function() {
 
 		}
 
-		// Build the list of items
+		// Build the table row
 		html =  '<tr class="setting setting-' + key + '">';
 		html +=     '<td>';
 		html +=         '<label for="CMSetting-' + key + '">' + this.label + '</label>';
