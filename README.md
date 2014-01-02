@@ -61,6 +61,10 @@ I try to update CookieMaster as often as possible, but I'm currently a single de
 Update log
 -----------
 
+### Version 1.4.1 - 2013/12/02
+
+ - Fixed wrong stats showing for Cookie Chain bank and CpS values
+
 ### Version 1.4.0 - 2013/12/02
 
  - Added option to choose rounding precision for large numbers

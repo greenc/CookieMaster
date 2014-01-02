@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.4.0
+    Version:      1.4.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -35,7 +35,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.4.0',
+	version:              '1.4.1',
 	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
 	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
 	cmGCAudioObject:      null,
@@ -1223,9 +1223,9 @@ CM.updateStats = function() {
 		lbText            = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
 		lfbText           = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
 		chainReward       = this.maxChainReward(),
+		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
 		nextChainBank     = this.requiredNextChainTier('bank', chainReward),
 		nextChainCPS      = this.requiredNextChainTier('cps', chainReward),
-		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
 		nextChainBankString,
 		nextChainCPSString;
 
@@ -1233,7 +1233,7 @@ CM.updateStats = function() {
 		if(Game.cookies > nextChainBank) {
 			nextChainBankString = '<span class="cmHighlight">' + Beautify(nextChainBank) + '</span>';
 		} else {
-			nextChainBankString = Beautify(nextChainCPS);
+			nextChainBankString = Beautify(nextChainBank);
 		}
 	}
 
@@ -1241,7 +1241,7 @@ CM.updateStats = function() {
 		if(Game.cookiesPs > nextChainCPS) {
 			nextChainCPSString = '<span class="cmHighlight">' + Beautify(nextChainCPS) + '</span>';
 		} else {
-			nextChainCPSString = Beautify(nextChainBank);
+			nextChainCPSString = Beautify(nextChainCPS);
 		}
 	}
 
