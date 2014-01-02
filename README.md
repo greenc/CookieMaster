@@ -1,155 +1,88 @@
 CookieMaster
 =============
 
-CookieMaster is designed to be a lighter, faster, prettier and more easily extendable alternative to Cookie Monster.
+CookieMaster is a browser plugin for [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/).
 
-It is (being) written from scratch and aims to bring rough feature parity with Cookie Monster, while offering nicer visual integration, more speed and flexibility.
+It offers many useful features, statistics and options to help you get the most out of the game. See below for a full list, as well as upcoming and planned features.
 
-New features that I think of will also be incorporated.
+Please note that CookieMaster is still in fairly early development, with stuff being added almost daily. If you find a bug or have a feature request, you are encouraged to [open an issue](https://github.com/greenc/CookieMaster/issues/new)in the [Issue Tracker](https://github.com/greenc/CookieMaster/issues/new).
 
-How to use
+
+How To Use
 ----------
+1. Paste the following code into a new bookmark in your browser:
+```javascript
+javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src', '../cookiemaster/src/cm-bootstrap.js?cb=' + Math.random().toString(36).substr(2, 5));})(document);```
+2. Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
+3. Click on your recently created bookmark
 
-1. Paste the contents of https://github.com/greenc/CookieMaster/blob/master/build/bookmarklet.js into a bookmark in your browser.
-2. Load up Cookie Clicker.
-3. Load the recently created bookmark.
 
-Browser support
-----------
-
-This is a very early release and extensive browser testing has not yet been done, however it should work in current releases of the following browsers:
-
- - Chrome
- - Firefox
- - Safari
- - IE
-
-What can CookieMaster do?
+Features
 ---------------------------
 
 It's still fairly early in development, so it's not quite feature complete yet. Here's the checklist so far:
 
- - Long number shortening (convert 1,234,567,890 to 1.235 billion)
- - Show different suffix types when shortening numbers
- - Number localization (numbers formatted to 123,456,789.0 or 123.456.789,0 depending on your preference)
- - Clean up the game window (remove top bar, make cookie counter more visible, etc.)
- - Change game font
- - Display accurate countdown timers for game events, e.g. Next golden cookie, remaining time for buffs
+ - Long number shortening, e.g. 3,476,112,098,761 can be displayed as 3.476 T
+ - Show different suffix types when shortening numbers, e.g. 26.696 Qa, 26.696 quadrillion, 26.696 P
+ - Number localization: Display a period or comma as your preferred decimal separator
+ - Clean up the game window: Remove the top bar, make the cookie counter more visible, etc.
+ - Change the game highlight font
+ - Display accurate countdown timers for game events, e.g. next Golden Cookie, remaining time for buffs
  - Play an audio alert when Golden Cookies and Reindeer spawn
  - Flash the screen when Golden Cookies and Reindeer spawn
  - Display countdowns to next Golden Cookie and Reindeer in the title tab
+ - Option to make Golden Cookies more visible when they spawn
+ - Option to increase the hitbox area for Golden Cookies, making them easier to click during Cookie Chains
  - Auto-clicker for the Big Cookie with speed control
  - Button to instantly pop all on-screen wrinklers
- - Calculate and display Heavenly Chip data
- - Calculate and display information regarding banked cookies for maximum buff payouts and other items
- - Calculate and display how many cookies wrinklers have sucked and the reward for popping them
+ - Calculate and display Heavenly Chip data, including time left and cookies left until the next one
+ - Calculate and display information about banked cookies for maximum buff payouts and other items
+ - Calculate and display your maximum Chain Cookie reward and the required bank and CpS to reach the next reward level
+ - Calculate and display how many cookies Wrinklers have sucked and the reward for popping them
  - Other useful stats
  - Pause button
 
-Upcoming features
+
+Planned and Upcoming Features
 -----------
 
  - Calculate and display the most efficient purchases and upgrades
- - Smart auto-clicking for Golden Cookies and Reindeer
- - Multiple save slots and easy save import/export functionality
- - Higher attainable FPS for more accurate timers without crippling your system!
+ - Display estimated time left until upgrades and buildings are affordable
+ - Smart auto-clicking for Golden Cookies and Reindeer to maximise your returns
+ - Multiple save slots with import/export functionality
+ - Performance optimizations to allow CookieMaster to poll and update even more rapidly
 
-Release schedule
------------
-I try to update CookieMaster as often as possible, but I'm currently a single developer doing this in my spare time, so there's no fixed release schedule as such. If you're a fellow developer, or even just have a feature request or suggestion, feel free to make a pull request or open an issue in the issue tracker :)
 
-Update log
+Releases
 -----------
 
-### Version 1.4.1 - 2013/12/02
+I try to update CookieMaster as often as possible, but I'm currently a single developer doing this in my spare time, so there's no fixed release schedule as such.
 
- - Fixed wrong stats showing for Cookie Chain bank and CpS values
+For a full release history, consult the [changelog page](https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md)
 
-### Version 1.4.0 - 2013/12/02
 
- - Added option to choose rounding precision for large numbers
- - Added option to make Golden Cookies more visible when they spawn
- - Added option to increase the clickable area of Golden Cookies to help clicking accuracy, especially during cookie chains
- - Golden Cookie clicks now register as soon as the mouse is pressed, instead of when released
- - Added more stats for CpS and CpC
- - Added stats for maximum cookie chain rewards and bank/CpS needed to advance to next chain tier
- - Reorganized some of the stats
- - Fixed crash when importing a save into a new, unsaved game
- - Fixed bug where timers wouldn't show the min limit when importing a save into a new, unsaved game
- - Fixed bug in stats for Frenzy and Elder Frenzy CpS values
+Browser Support
+----------
 
-### Version 1.3.2 - 2013/12/31
+Extensive browser has not yet been carried out, however CookieMaster should work happily in current releases of the following browsers:
 
- - Stats panel now updates instantly when opened
- - Added CookieMaster version info to Stats and Settings panels
+ - Chrome
+ - Firefox
+ - Safari
+ - Internet Explorer 10+
 
-### Version 1.3.1 - 2013/12/31
+CookieMaster uses some new web features that may not be supported in older browsers.
 
- - Fixed bug where clicking a Golden Cookie would sometimes not register properly
 
-### Version 1.3.0 - 2013/12/31
+Developers / Contributing
+----------
 
- - Integrated Stats and Settings windows into the center game panel
- - Added option to display timers at the top or bottom of the left panel
- - Added option to auto-click the big cookie (with speed control)
- - Moved button to pop all reindeer into left panel, now only displays when needed
- - Added more stats
- - Visual tweaks and improvements
- - Cleaned up some messy code
+CookieMaster uses [Node.js](http://nodejs.org/) and [Grunt](http://gruntjs.com/) for building and managing the project. Although not necessary for contributing changes, it is recommended to have these installed if you want to take advantage of the project build tasks.
 
-### Version 1.2.4 - 2013/12/31
+It is recommended to download and run Cookie Clicker locally for testing any changes you make to the plugin. All Cookie Clicker game assets are static, so just run a `wget` or your preferred equivalent on http://orteil.dashnet.org/cookieclicker/ to grab the game files. The CookieMaster source file paths assume that you have Cookie Clicker running in an adjacent directory named `/cookieclicker`.
 
- - Fixed broken bookmarklet code
-
-### Version 1.2.3 - 2013/12/30
-
- - Fixed bug where Golden Cookie audio alert would play Reindeer alert sound instead
-
-### Version 1.2.2 - 2013/12/29
-
- - Fixed bug where title bar counters would display "undefined"
- - Now using stricter linting of source files
- - Minor performance enhancements
-
-### Version 1.2.1 - 2013/12/29
-
- - Fixed bug where audio alert settings would not work correctly
- - Improved accuracy of large number formatting (still not perfect though)
- - Improved precision of time to next HC stat
-
-### Version 1.2.0 - 2013/12/29
-
- - Moderate refactoring of many methods for clarity and performance
- - Added more granular control over audio and visual alerts
- - Reduced playback volume for audio alerts
- - Added section headings to the stats panel
- - Added a button to pop all Wrinklers at once
- - Removed "s" suffix from timer countdown values
- - Minor performance tweaks
- - Improved source formatting and commenting
-
-### Version 1.1.3 - 2013/12/28
-
- - Added check to prevent loading CookieMaster more than once
- - Made some error and warning messages a little clearer
-
-### Version 1.1.2 - 2013/12/28
-
- - Removed cache buster parameter from jQuery dependency file
-
-### Version 1.1.1 - 2013/12/28
-
- - Fixed bug where top bar would remain visible when Clean UI was active
-
-### Version 1.1.0 - 2013/12/28
-
- - Ads are no longer hidden when Clean UI is active
- - Added several suffix options when shortening numbers
- - Upgrade prices now display correct number formatting
- - Moved project to Grunt
- - Bookmarklet now loads a bootstrap file that handles all dependencies
- - All external sources are now loaded in minified for speeeeed
-
-### Version 1.0.0 - 2013/12/28
-
- - First public release :)
+1. Make sure you have [Git](http://git-scm.com/), and optionally [Node.js](http://nodejs.org/) and [Grunt](http://gruntjs.com/) installed first.
+2. Fork the CookieMaster repository on GitHub and clone it to your local machine.
+3. Make your changes. All source files are located in the `src/` folder. If you are using Node/Grunt, you can run `grunt build` to create a `build/` directory with optimized files (remember to **only** include `src/` files in your commits if you issue a pull request).
+4. When you're done making changes, commit and push them up to your forked repository.
+5. You may then create a pull request from GitHub if you would like to have your changes considered for inclusion in the main CookieMaster repo.
