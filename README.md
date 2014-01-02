@@ -10,14 +10,14 @@ Please note that CookieMaster is still in fairly early development, with stuff b
 
 How To Use
 ----------
-1. Paste the following code into a new bookmark in your browser:
+* Paste the following code into a new bookmark in your browser:
 
 ```javascript
 javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//rawgithub.com/greenc/CookieMaster/master/build/cm-bootstrapmin.js?cb='+Math.random().toString(36).substr(2, 5))})(document)
 ```
 
-2. Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
-3. Click on your recently created bookmark
+* Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
+* Click on your recently created bookmark
 
 
 Features
@@ -67,9 +67,9 @@ For a full release history, consult the [changelog page](https://github.com/gree
 Browser Support
 ----------
 
-Extensive browser has not yet been carried out, however CookieMaster should work happily in current releases of the following browsers:
+Extensive browser testing has not yet been carried out, however CookieMaster should work happily in current releases of the following browsers:
 
- - Chrome
+ - Chrome (recommended)
  - Firefox
  - Safari
  - Internet Explorer 10+
