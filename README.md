@@ -17,7 +17,8 @@ javascript:(function(d){
     d.body.appendChild(d.createElement('script'))
     .setAttribute('src','//rawgithub.com/greenc/CookieMaster/master/build/cm-bootstrap.min.js?cb='
     +Math.random().toString(36).substr(2, 5))
-})(document);```
+})(document);
+```
 
 2. Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
 3. Click on your recently created bookmark
