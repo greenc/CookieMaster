@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.4.1
+    Version:      1.4.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -35,7 +35,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.4.1',
+	version:              '1.4.2',
 	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
 	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
 	cmGCAudioObject:      null,
@@ -747,7 +747,7 @@ CM.maxLuckyFrenzyReward = function() {
  */
 CM.luckyReward = function() {
 
-	return Math.min(Game.cookies * 10 + 13, this.baseCps() * 1200 + 13);
+	return Math.min(Game.cookies / 10 + 13, this.baseCps() * 1200 + 13);
 
 };
 
@@ -758,7 +758,7 @@ CM.luckyReward = function() {
  */
 CM.luckyFrenzyReward = function() {
 
-	return Math.min(Game.cookies * 10 + 13, this.baseCps() * 1200 * 7 + 13);
+	return Math.min(Game.cookies / 10 + 13, this.baseCps() * 1200 * 7 + 13);
 
 };
 

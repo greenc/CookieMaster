@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.4.2 - _2013/12/02_
+
+ - Fixed wrong stats showing for current Luck and current Frenzy + Lucky rewards when player is under the max bank required value
+
 ### Version 1.4.1 - _2013/12/02_
 
  - Fixed wrong stats showing for Cookie Chain bank and CpS values
