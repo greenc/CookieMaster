@@ -5,7 +5,7 @@ CookieMaster is a browser plugin for [Cookie Clicker](http://orteil.dashnet.org/
 
 It offers many useful features, statistics and options to help you get the most out of the game. See below for a full list, as well as upcoming and planned features.
 
-Please note that CookieMaster is still in fairly early development, with stuff being added almost daily. If you find a bug or have a feature request, you are encouraged to [open an issue](https://github.com/greenc/CookieMaster/issues/new)in the [Issue Tracker](https://github.com/greenc/CookieMaster/issues/new).
+Please note that CookieMaster is still in fairly early development, with stuff being added almost daily. If you find a bug or have a feature request, you are encouraged to [open an issue](https://github.com/greenc/CookieMaster/issues/new) in the [Issue Tracker](https://github.com/greenc/CookieMaster/issues/new).
 
 
 How To Use
