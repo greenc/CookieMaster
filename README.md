@@ -19,9 +19,13 @@ javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribu
 * Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
 * Click on your recently created bookmark
 
+Screenshot
+----------
+
+![CookieMaster Statistics and main game window](https://github.com/greenc/CookieMaster/raw/master/screenshots/cookie-master-main.jpg "CookieMaster")
 
 Features
----------------------------
+----------
 
 It's still fairly early in development, so it's not quite feature complete yet. Here's the checklist so far:
 
