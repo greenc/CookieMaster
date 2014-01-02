@@ -50,7 +50,6 @@ Upcoming features
 -----------
 
  - Calculate and display the most efficient purchases and upgrades
- - Option to have Wrinklers carry over between sessions
  - Smart auto-clicking for Golden Cookies and Reindeer
  - Multiple save slots and easy save import/export functionality
  - Higher attainable FPS for more accurate timers without crippling your system!
@@ -62,12 +61,18 @@ I try to update CookieMaster as often as possible, but I'm currently a single de
 Update log
 -----------
 
-### Version 1.3.3 - 2013/12/31
+### Version 1.4.0 - 2013/12/02
 
+ - Added option to choose rounding precision for large numbers
+ - Added option to make Golden Cookies more visible when they spawn
+ - Added option to increase the clickable area of Golden Cookies to help clicking accuracy, especially during cookie chains
+ - Golden Cookie clicks now register as soon as the mouse is pressed, instead of when released
  - Added more stats for CpS and CpC
+ - Added stats for maximum cookie chain rewards and bank/CpS needed to advance to next chain tier
+ - Reorganized some of the stats
  - Fixed crash when importing a save into a new, unsaved game
  - Fixed bug where timers wouldn't show the min limit when importing a save into a new, unsaved game
- - Fixed bug in stats values for Frenzy and Elder Frenzy CpS
+ - Fixed bug in stats for Frenzy and Elder Frenzy CpS values
 
 ### Version 1.3.2 - 2013/12/31
 

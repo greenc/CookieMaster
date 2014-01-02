@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.3.2
+    Version:      1.4.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -196,15 +196,16 @@
 }
 
 #CMGCOverlay {
-	position: absolute;
+	position: fixed;
 	font-size:32px;
 	text-shadow: 0 0 6px rgba(0, 0, 0, 1);
 	line-height: 96px;
 	text-align: center;
 	height: 96px;
 	width: 96px;
-	z-index: 10000000000;
+	z-index: 10000000001;
 	cursor: pointer;
+	border-radius: 96px;
 }
 
 .cmTable {
@@ -380,3 +381,27 @@
 	bottom: auto;
 	top: 0;
 }
+/* End Feature: timerBarBottom */
+
+/* Feature: increaseClickArea */
+.cmLargeClickArea #CMGCOverlay {
+	height: 192px;
+	width: 192px;
+	border-radius: 192px;
+	margin-left: -48px;
+	margin-top: -48px;
+	line-height: 192px;
+}
+/* End Feature: increaseClickArea */
+
+/* Feature: highVisibilityCookie */
+.cmHighVisCookie #goldenCookie {
+	border: 10px solid #FFF;
+	border-radius: 96px;
+	box-shadow: 0 0 0 10px #000, 0 0 0 20px #FFF;
+}
+
+.cmHighVisCookie #CMGCOverlay {
+	padding: 10px;
+}
+/* End Feature: highVisibilityCookie */

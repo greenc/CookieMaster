@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.3.2
+    Version:      1.4.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -35,7 +35,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.3.2',
+	version:              '1.4.0',
 	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
 	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
 	cmGCAudioObject:      null,
@@ -77,19 +77,19 @@ CM.config = {
 		cleanUI: {
 			type:    'checkbox',
 			label:   'Clean Interface:',
-			desc:    'Hide the top bar, and make other small graphical enhancements to the game interface',
+			desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
 			current: 'on'
 		},
 		showTimers: {
 			type:    'checkbox',
 			label:   'Show Timers:',
-			desc:    'Display countdown timers for game events and buffs',
+			desc:    'Display countdown timers for game events and buffs.',
 			current: 'on'
 		},
 		timerBarPosition: {
 			type:    'select',
 			label:   'Timer Bar Position:',
-			desc:    'Position the timer bar at the top or bottom of the screen',
+			desc:    'Position the timer bar at the top or bottom of the screen.',
 			options: [
 				{
 					label: 'Top',
@@ -105,7 +105,7 @@ CM.config = {
 		audioAlerts: {
 			type:    'select',
 			label:   'Audio Alerts:',
-			desc:    'Play an audio alert when Golden Cookies and Reindeer spawn',
+			desc:    'Play an audio alert when Golden Cookies and Reindeer spawn.',
 			options: [
 				{
 					label: 'Off',
@@ -129,7 +129,7 @@ CM.config = {
 		visualAlerts: {
 			type:    'select',
 			label:   'Visual Alerts:',
-			desc:    'Flash the screen when Golden Cookies and Reindeer spawn',
+			desc:    'Flash the screen when Golden Cookies and Reindeer spawn.',
 			options: [
 				{
 					label: 'Off',
@@ -153,7 +153,7 @@ CM.config = {
 		numFormat: {
 			type:  'select',
 			label: 'Number Formatting:',
-			desc:  'Sets the desired decimal and thousands separator symbols for numbers',
+			desc:  'Sets the desired decimal and thousands separator symbols for numbers.',
 			options: [
 				{
 					label: '1,234,567.890',
@@ -169,13 +169,13 @@ CM.config = {
 		shortNums: {
 			type:    'checkbox',
 			label:   'Shorten Numbers:',
-			desc:    'Shorten large numbers with suffixes',
+			desc:    'Shorten large numbers with suffixes.',
 			current: 'on'
 		},
 		suffixFormat: {
 			type:  'select',
 			label: 'Suffix Type:',
-			desc:  'Set the number suffixes to desired type',
+			desc:  'Notation type to use for shortened number suffixes.',
 			options: [
 				{
 					label: 'Mathematical',
@@ -192,10 +192,38 @@ CM.config = {
 			],
 			current: 'math'
 		},
+		precision: {
+			type:  'select',
+			label: 'Precision:',
+			desc:  'How many decimal places to show for shortened numbers.',
+			options: [
+				{
+					label: '0',
+					value: '0'
+				},
+				{
+					label: '1',
+					value: '1'
+				},
+				{
+					label: '2',
+					value: '2'
+				},
+				{
+					label: '3',
+					value: '3'
+				},
+				{
+					label: '4',
+					value: '4'
+				}
+			],
+			current: '3'
+		},
 		changeFont: {
 			type:  'select',
 			label: 'Game Font:',
-			desc:  'Set the highlight font',
+			desc:  'Set the highlight font used throughout the game.',
 			options: [
 				{
 					label: 'Kavoon (default)',
@@ -212,16 +240,28 @@ CM.config = {
 			],
 			current: 'default'
 		},
+		highVisibilityCookie: {
+			type:    'checkbox',
+			label:   'High Visibility Cookies:',
+			desc:    'Increase the contrast between Golden Cookies and the background.',
+			current: 'off'
+		},
+		increaseClickArea: {
+			type:    'checkbox',
+			label:   'Increase Cookie Hitbox:',
+			desc:    'Make the clickable area larger for Golden Cookies. Helps accuracy during chains. Requires "Show Timers" to be on.',
+			current: 'off'
+		},
 		autoClick: {
 			type:    'checkbox',
 			label:   'Auto-click Big Cookie:',
-			desc:    'Automatically click the big cookie',
+			desc:    'Automatically click the big cookie.',
 			current: 'off'
 		},
 		autoClickSpeed: {
 			type:  'range',
 			label: 'Auto-click Speed:',
-			desc:  'How many times per second to auto-click the big cookie',
+			desc:  'How many times per second to auto-click the big cookie.',
 			options: {
 				min: 1,
 				max: 100,
@@ -361,7 +401,8 @@ CM.compatibilityCheck = function(version) {
 CM.largeNumFormat = function(num, precision) {
 
 	var useShortNums = this.config.settings.shortNums.current === 'on' ? true : false,
-		notation = this.config.settings.suffixFormat.current,
+		notation     = this.config.settings.suffixFormat.current,
+		largeFloats  = this.config.settings.precision.current,
 		decSep = this.config.settings.numFormat.current === 'us' ? '.' : ',',
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
@@ -385,7 +426,7 @@ CM.largeNumFormat = function(num, precision) {
 	if(useShortNums) {
 		for(i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
-				num = Math.floor((num / ranges[i].divider) * 1000) / 1000 + ' ' + ranges[i].suffix[notation];
+				num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats) + ' ' + ranges[i].suffix[notation];
 				return num.replace('.', decimal);
 			}
 		}
@@ -435,8 +476,6 @@ CM.Timer = function(type, label) {
 			$limiter   = null, // Not always needed, so we create it further down
 			width      = timings.minCurrent / timings.max * 100,
 			hardMin;
-
-		console.log(timings);
 
 		// Add a min time indicator if necessary
 		if(timings.hasOwnProperty('min') && timings.min > 0) {
@@ -693,7 +732,7 @@ CM.maxLuckyReward = function() {
 /**
  * Returns maximum Lucky + Frenzy reward
  *
- * @return {[type]} [description]
+ * @return {Integer}
  */
 CM.maxLuckyFrenzyReward = function() {
 
@@ -715,11 +754,61 @@ CM.luckyReward = function() {
 /**
  * Returns current Lucky + Frenzy reward
  *
- * @return {[type]} [description]
+ * @return {Integer}
  */
 CM.luckyFrenzyReward = function() {
 
 	return Math.min(Game.cookies * 10 + 13, this.baseCps() * 1200 * 7 + 13);
+
+};
+
+/**
+ * Returns maximum potential  Cookie Chain reward
+ *
+ * @return {Integer}
+ */
+CM.maxChainReward = function() {
+
+	var bankLimit       = Game.cookies / 4,
+		cpsLimit        = Game.cookiesPs * 60 * 60 * 6,
+		wrath           = Game.elderWrath === 3 ? true : false,
+		chainValue      = wrath ? 77777 : 66666; // Minimum guaranteed chain amount
+
+	// Chains not possible until player has earned 100000+ cookies total
+	if(Game.cookiesEarned < 100000) {
+		return false;
+	}
+
+	while(chainValue < bankLimit && chainValue <= cpsLimit) {
+		chainValue += wrath ? '7' : '6';
+		chainValue = parseInt(chainValue, 10);
+	}
+
+	return chainValue.toString().slice(0, -1);
+
+};
+
+/**
+ * Returns bank or CpS required for next chain tier
+ *
+ * @param  {Integer} maxReward Maximum current chain reward
+ * @param  {String}  type      bank, cps
+ * @return {Integer}
+ */
+CM.requiredNextChainTier = function(type, maxReward) {
+
+	var wrath         = Game.elderWrath === 3 ? true : false,
+		digitString   = wrath ? '7' : '6',
+		minChain      = wrath ? 77777 : 66666,
+		minNextChain  = wrath ? 777777 : 666666,
+		nextChainTier = (maxReward < minChain) ? minNextChain : parseInt(maxReward + digitString, 10);
+
+	// Chains not possible until player has earned 100000+ cookies total
+	if(Game.cookiesEarned < 100000) {
+		return false;
+	}
+
+	return type === 'bank' ? nextChainTier * 4 : nextChainTier / 6 / 60 / 60;
 
 };
 
@@ -989,12 +1078,12 @@ CM.attachStatsPanel = function() {
 		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
 		$cmStatsTitle      = $('<h3 />').attr('class', 'title').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v.' + this.config.version + '</span>'),
 		$cmStatsButton     = $('<div />').attr({'id': 'CMStatsPanelButton', 'class': 'button'}).text('Stats +'),
-		$cmTable = {},
+		$cmTable           = {},
 		tableHTML          = '';
 
 	tableHTML += '<table class="cmTable">';
 	tableHTML +=     '<tr class="cmHeader">';
-	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconLucky"></span>Lucky and Frenzy Rewards</th>';
+	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconLucky"></span>Golden Cookies</th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Lucky bank required:</td>';
@@ -1011,6 +1100,26 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Lucky + Frenzy reward:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyFrenzyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Maximum Cookie Chain reward:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsMaxChainReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Bank required for next Chain tier:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsBankRequiredNextChainTier"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>CpS required for next Chain tier:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsCPSRequiredNextChainTier"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Last Golden Cookie effect:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsLastGC"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Golden Cookies Missed:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsMissedGC"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
 
@@ -1055,40 +1164,35 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconMisc"></span>Miscellaneous Stats</th>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Base CPS:</td>';
+	tableHTML +=         '<td>Base CpS:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsBaseCPS"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Frenzy CPS:</td>';
+	tableHTML +=         '<td>Frenzy CpS:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyCPS"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Elder Frenzy CPS:</td>';
+	tableHTML +=         '<td>Elder Frenzy CpS:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsElderFrenzyCPS"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Base CPC:</td>';
+	tableHTML +=         '<td>Base CpC:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsBaseCPC"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Frenzy CPC:</td>';
+	tableHTML +=         '<td>Frenzy CpC:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyCPC"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Click Frenzy CPC:</td>';
+	tableHTML +=         '<td>Click Frenzy CpC:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsClickFrenzyCPC"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Frenzy + Click Frenzy CPC:</td>';
+	tableHTML +=         '<td>Frenzy + Click Frenzy CpC:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyClickFrenzyCPC"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Last Golden Cookie effect:</td>';
-	tableHTML +=         '<td class="cmValue" id="CMStatsLastGC"></td>';
-	tableHTML +=     '</tr>';
-	tableHTML +=     '<tr>';
-	tableHTML +=         '<td>Golden Cookies Missed:</td>';
-	tableHTML +=         '<td class="cmValue" id="CMStatsMissedGC"></td>';
+	tableHTML +=         '<td colspan="2"><small>CpS = Cookies per Second, CpC = Cookies per Click</small></td>';
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
 
@@ -1113,19 +1217,44 @@ CM.attachStatsPanel = function() {
 // TO DO: Possibly cache these selectors for performance :/
 CM.updateStats = function() {
 
-	var hcStats       = this.getHCStats(),
-		wrinklerStats = this.getWrinklerStats(),
-		lastGC        = this.toTitleCase(Game.goldenCookie.last) || 'None clicked this session!',
-		lbText        = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
-		lfbText       = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank());
+	var hcStats           = this.getHCStats(),
+		wrinklerStats     = this.getWrinklerStats(),
+		lastGC            = this.toTitleCase(Game.goldenCookie.last) || '-',
+		lbText            = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
+		lfbText           = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
+		chainReward       = this.maxChainReward(),
+		nextChainBank     = this.requiredNextChainTier('bank', chainReward),
+		nextChainCPS      = this.requiredNextChainTier('cps', chainReward),
+		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
+		nextChainBankString,
+		nextChainCPSString;
 
-	// Lucky stats
+	if(nextChainBank !== false) {
+		if(Game.cookies > nextChainBank) {
+			nextChainBankString = '<span class="cmHighlight">' + Beautify(nextChainBank) + '</span>';
+		} else {
+			nextChainBankString = Beautify(nextChainCPS);
+		}
+	}
+
+	if(nextChainCPS !== false) {
+		if(Game.cookiesPs > nextChainCPS) {
+			nextChainCPSString = '<span class="cmHighlight">' + Beautify(nextChainCPS) + '</span>';
+		} else {
+			nextChainCPSString = Beautify(nextChainBank);
+		}
+	}
+
+	// Golden Cookie stats
 	$('#CMStatsLuckyRequired').html(lbText);
 	$('#CMStatsLuckyFrenzyRequired').html(lfbText);
-	$('#CMStatsLuckyReward').html(Beautify(this.luckyReward())
-		+ ' (max: ' + Beautify(this.maxLuckyReward()) + ')');
-	$('#CMStatsLuckyFrenzyReward').html(Beautify(this.luckyFrenzyReward())
-		+ ' (max: ' + Beautify(this.maxLuckyFrenzyReward()) + ')');
+	$('#CMStatsLuckyReward').html(Beautify(this.luckyReward()) + ' (max: ' + Beautify(this.maxLuckyReward()) + ')');
+	$('#CMStatsLuckyFrenzyReward').html(Beautify(this.luckyFrenzyReward()) + ' (max: ' + Beautify(this.maxLuckyFrenzyReward()) + ')');
+	$('#CMStatsMaxChainReward').html(chainRewardString);
+	$('#CMStatsBankRequiredNextChainTier').html(nextChainBankString || '-');
+	$('#CMStatsCPSRequiredNextChainTier').html(nextChainCPSString || '-');
+	$('#CMStatsLastGC').html(lastGC);
+	$('#CMStatsMissedGC').html(Beautify(Game.missedGoldenClicks));
 
 	// Heavenly Chip stats
 	$('#CMStatsHCCurrent').html(hcStats[0] + ' (' + hcStats[1] + ')');
@@ -1145,8 +1274,6 @@ CM.updateStats = function() {
 	$('#CMStatsFrenzyCPC').html(Beautify(this.baseCpc() * 7));
 	$('#CMStatsClickFrenzyCPC').html(Beautify(this.baseCpc() * 777));
 	$('#CMStatsFrenzyClickFrenzyCPC').html(Beautify(this.baseCpc() * 777 * 7));
-	$('#CMStatsLastGC').html(lastGC);
-	$('#CMStatsMissedGC').html(Beautify(Game.missedGoldenClicks));
 
 };
 
@@ -1295,15 +1422,8 @@ CM.displayGCTimer = function() {
 
 	// Reattach if it was removed at some point
 	if($('#CMGCOverlay').length === 0) {
-		this.config.ccGame.append($overlay);
+		this.config.ccBody.append($overlay);
 		this.config.cmGCOverlay = $overlay;
-
-		// Attach click handler
-		this.config.cmGCOverlay.click(function() {
-			Game.goldenCookie.click();
-			$('#CMGCOverlay').hide();
-		});
-
 	}
 
 	if($gc.is(':visible')) {
@@ -1555,6 +1675,20 @@ CM.applyUserSettings = function() {
 		this.removeVisualAlerts();
 	}
 
+	// High visibility cookie
+	if(settings.highVisibilityCookie.current === 'on') {
+		config.ccBody.addClass('cmHighVisCookie');
+	} else {
+		config.ccBody.removeClass('cmHighVisCookie');
+	}
+
+	// Increase click area
+	if(settings.increaseClickArea.current === 'on') {
+		config.ccBody.addClass('cmLargeClickArea');
+	} else {
+		config.ccBody.removeClass('cmLargeClickArea');
+	}
+
 	// Start/stop the auto-clicker
 	if (settings.autoClick.current === 'on') {
 		if(this.autoClicker) {
@@ -1708,6 +1842,12 @@ CM.setEvents = function() {
 	$('#CMPopWrinklers').click(function() {
 		Game.CollectWrinklers();
 		$('#CMPopWrinklers').hide();
+	});
+
+	// GC Overlay click handler
+	this.config.ccBody.on('mousedown', '#CMGCOverlay', function() {
+		Game.goldenCookie.click();
+		$('#CMGCOverlay').hide();
 	});
 
 };
