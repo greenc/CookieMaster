@@ -13,11 +13,7 @@ How To Use
 1. Paste the following code into a new bookmark in your browser:
 
 ```javascript
-javascript:(function(d){
-    d.body.appendChild(d.createElement('script'))
-    .setAttribute('src','//rawgithub.com/greenc/CookieMaster/master/build/cm-bootstrap.min.js?cb='
-    +Math.random().toString(36).substr(2, 5))
-})(document);
+javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//rawgithub.com/greenc/CookieMaster/master/build/cm-bootstrapmin.js?cb='+Math.random().toString(36).substr(2, 5))})(document)
 ```
 
 2. Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
