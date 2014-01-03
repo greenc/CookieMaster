@@ -264,7 +264,7 @@ CM.config = {
 			desc:  'How many times per second to auto-click the big cookie.',
 			options: {
 				min: 1,
-				max: 100,
+				max: 250,
 				step: 1
 			},
 			current: 10
