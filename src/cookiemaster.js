@@ -924,6 +924,11 @@ CM.toTitleCase = function(str) {
 	});
 };
 
+/**
+ * Styles CookieMaster popups differently while still using the native Game.Popup method
+ * @param  {String}   message
+ * @return {Function}
+ */
 CM.popup = function(message) {
 
 	return Game.Popup('<span class="cmPopupText">' + message + '</span>');
@@ -1356,7 +1361,7 @@ CM.updateTimers = function() {
 	this.displayGCTimer();
 
 	// Golden Cookie timer
-	if($('#goldenCookie').is(':hidden')) {
+	if(Game.goldenCookie.life === 0) {
 		this.gcTimer.update();
 		this.gcTimer.show();
 	} else {
@@ -1364,7 +1369,7 @@ CM.updateTimers = function() {
 	}
 
 	// Reindeer timer
-	if($('#seasonPopup').is(':hidden')) {
+	if(Game.seasonPopup.life === 0) {
 		this.reindeerTimer.update();
 		this.reindeerTimer.show();
 	} else {
@@ -1426,7 +1431,7 @@ CM.displayGCTimer = function() {
 		this.config.cmGCOverlay = $overlay;
 	}
 
-	if($gc.is(':visible')) {
+	if(Game.goldenCookie.life > 0) {
 
 		$overlay.css({
 			'top':     $gc.css('top'),
@@ -1464,7 +1469,7 @@ CM.showVisualAlerts = function() {
 	// Flash on Golden cookie notification
 	if(setting === 'gc' || setting === 'all') {
 
-		if($gc.is(':visible')) {
+		if(Game.goldenCookie.life > 0) {
 
 			if(!gcNotified) {
 				$overlay.show().fadeOut(500);
@@ -1482,7 +1487,7 @@ CM.showVisualAlerts = function() {
 	// Flash on Reindeer notification
 	if(setting === 'sp' || setting === 'all') {
 
-		if($sp.is(':visible')) {
+		if(Game.seasonPopup.life > 0) {
 
 			if(!spNotified) {
 
@@ -1531,7 +1536,7 @@ CM.playAudioAlerts = function() {
 	// Play Golden cookie notification
 	if(setting === 'gc' || setting === 'all') {
 
-		if($gc.is(':visible')) {
+		if(Game.goldenCookie.life > 0) {
 
 			if(!gcNotified) {
 				gcAlert.volume = 0.5;
@@ -1550,7 +1555,7 @@ CM.playAudioAlerts = function() {
 	// Play Reindeer notification
 	if(setting === 'sp' || setting === 'all') {
 
-		if($sp.is(':visible')) {
+		if(Game.seasonPopup.life > 0) {
 
 			if(!spNotified) {
 
