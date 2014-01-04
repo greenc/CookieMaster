@@ -251,7 +251,7 @@
 
 .cmTable input[type="range"] {
 	-webkit-appearance: none;
-	-moz-apperance: none;
+	-moz-appearance: none;
 	width: 65%;
 	height: 8px;
 	padding: 0;
@@ -261,7 +261,7 @@
 
 .cmTable input::-webkit-slider-thumb {
 	-webkit-appearance: none;
-	-moz-apperance: none;
+	-moz-appearance: none;
 	width: 10px;
 	height:25px;
 	border-radius: 10px;
