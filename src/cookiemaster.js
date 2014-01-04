@@ -633,26 +633,42 @@ CM.Timer = function(type, label) {
 };
 
 /**
+ * Get the number of Heavenly Chips from a number of cookies (all time)
+ *
+ * @param {integer} cookiesNumber
+ * @return {integer}
+ */
+CM.cookiesToHeavenly = function(cookies) {
+
+	return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
+
+};
+
+/**
+ * Get the number of cookies required to have X chips
+ *
+ * @param {integer} chipsNumber
+ * @return {integer}
+ */
+CM.heavenlyToCookies = function(chips) {
+
+	return 5 * Math.pow(10, 11) * chips * (chips + 1);
+
+};
+
+/**
  * Returns array of stats for Heavenly Chips
  *
  * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, timeToNextHC]
  */
 CM.getHCStats = function() {
 
-	function cookiesToHC(cookies) {
-		return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
-	}
-
-	function hcToCookies(hc) {
-		return 5 * Math.pow(10, 11) * hc * (hc + 1);
-	}
-
 	var stats          = [],
 		current        = Game.prestige['Heavenly chips'],
 		currentPercent = current * 2,
-		max            = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
+		max            = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
 		maxPercent     = max * 2,
-		cookiesToNext  = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
+		cookiesToNext  = this.heavenlyToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
 		timeToNext     = Math.round(cookiesToNext / Game.cookiesPs),
 		i;
 
@@ -819,78 +835,97 @@ CM.requiredNextChainTier = function(type, maxReward) {
  */
 CM.getWrinklerStats = function() {
 
-	var stats = [],
-		sucked = 0,
+	var sucked = 0,
 		rewardMultiplier = 1.1;
 
 	$.each(Game.wrinklers, function() {
 		sucked += this.sucked;
 	});
 
-	stats[0] = Beautify(sucked);
-	stats[1] = Beautify(sucked * rewardMultiplier);
-
-	return stats;
+	return [sucked, sucked * rewardMultiplier];
 
 };
 
 /**
- * Format a time in seconds to a more friendly format
+ * Get the reward for clicking on a Reindeer
+ *
+ * 1min of production or 25 cookies
+ *
+ * @return {Integer}
+ */
+CM.getReindeerReward = function() {
+
+	var multiplier = Game.Has('Ho ho ho-flavored frosting') ? 2 : 1;
+
+	return Math.max(25, Game.cookiesPs * 60) * multiplier;
+
+};
+
+/**
+ * Format a time (s) to an human-readable format
  *
  * @param {Integer} time
  * @param {String}  compressed  Compressed output (minutes => m, etc.)
+ *
  * @return {String}
  */
-// TO DO: Make this not suck
-CM.formatTime = function(time) {
+CM.formatTime = function(t, compressed) {
 
-	var units     = [' day, ', ' hour, ', ' minute, ', ' second'],
-		days      = parseInt(time / 86400) % 999,
-		hours     = parseInt(time / 3600) % 24,
-		minutes   = parseInt(time / 60) % 60,
-		seconds   = time % 60,
-		formatted = '';
+	// Compute each units separately
+	var time =Math.round(t),
+		days    = parseInt(time / 86400) % 999,
+		hours   = parseInt(time / 3600) % 24,
+		minutes = parseInt(time / 60) % 60,
+		seconds = time % 60,
+		units = [' days, ', ' hours, ', ' minutes, ', ' seconds'],
+		formatted;
+
+	if (typeof compressed === 'undefined') {
+		compressed = false;
+	}
 
 	// Take care of special cases
-	if(time === Infinity) {
+	if (time === Infinity) {
 		return 'Never';
-	} else if(time === 0) {
+	} else if (time === 0) {
 		return 'Done!';
-	} else if(time / 86400 > 1e3) {
+	} else if (time / 86400 > 1e3) {
 		return '> 1,000 days';
 	}
 
-
-	// Pluralize units if necessary
-	if(days > 1) {
-		units[0] = ' days, ';
-	}
-	if(hours > 1) {
-		units[1] = ' hours, ';
-	}
-	if(minutes > 1) {
-		units[2] = ' minutes, ';
-	}
-	if(seconds > 1) {
-		units[3] = ' seconds';
+	if (!compressed) {
+		if (days === 1) {
+			units[0] = ' day, ';
+		}
+		if (hours === 1) {
+			units[1] = ' hour, ';
+		}
+		if (minutes === 1) {
+			units[2] = ' minute, ';
+		}
+		if (seconds === 1) {
+			units[3] = ' second';
+		}
+	} else {
+		units = ['d, ', 'h, ', 'm, ', 's'];
 	}
 
 	// Create final string
-	if(seconds) {
-		formatted = seconds + units[3];
+	formatted = '';
+	if (days > 0) {
+		formatted += days + units[0];
 	}
-	if(minutes) {
-		formatted = minutes + units[2] + formatted;
+	if (days > 0 || hours > 0) {
+		formatted += hours + units[1];
 	}
-	if(hours) {
-		formatted = hours + units[1] + formatted;
+	if (days > 0 || hours > 0 || minutes > 0) {
+		formatted += minutes + units[2];
 	}
-	if(days) {
-		formatted = days + units[0] + formatted;
+	if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
+		formatted += seconds + units[3];
 	}
 
 	return formatted;
-
 };
 
 /**
@@ -962,6 +997,9 @@ CM.mainLoop = function() {
 	if(this.config.cmStatsPanel.is(':visible')) {
 		this.updateStats();
 	}
+
+	// Update building efficiency info
+	CME.updateBuildingsInformations();
 
 };
 
@@ -1105,6 +1143,10 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Lucky + Frenzy reward:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyFrenzyReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Reindeer Reward:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsReindeerReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Maximum Cookie Chain reward:</td>';
@@ -1255,6 +1297,7 @@ CM.updateStats = function() {
 	$('#CMStatsLuckyFrenzyRequired').html(lfbText);
 	$('#CMStatsLuckyReward').html(Beautify(this.luckyReward()) + ' (max: ' + Beautify(this.maxLuckyReward()) + ')');
 	$('#CMStatsLuckyFrenzyReward').html(Beautify(this.luckyFrenzyReward()) + ' (max: ' + Beautify(this.maxLuckyFrenzyReward()) + ')');
+	$('#CMStatsReindeerReward').html(Beautify(this.getReindeerReward()));
 	$('#CMStatsMaxChainReward').html(chainRewardString);
 	$('#CMStatsBankRequiredNextChainTier').html(nextChainBankString || '-');
 	$('#CMStatsCPSRequiredNextChainTier').html(nextChainCPSString || '-');
@@ -1268,8 +1311,8 @@ CM.updateStats = function() {
 	$('#CMStatsHCTimeToNext').html(hcStats[5]);
 
 	// Wrinkler stats
-	$('#CMStatsWrinklersSucked').html(wrinklerStats[0]);
-	$('#CMStatsWrinklersReward').html(wrinklerStats[1]);
+	$('#CMStatsWrinklersSucked').html(Beautify(wrinklerStats[0]));
+	$('#CMStatsWrinklersReward').html(Beautify(wrinklerStats[1]));
 
 	// Misc. stats
 	$('#CMStatsBaseCPS').html(Beautify(this.baseCps()));
@@ -1907,12 +1950,11 @@ function Beautify(what, floats) {
  * Remove the title tag update functionality from the main
  * game as we will use our own, faster update function
  */
-Game.Logic = new Function(
-	'',
+Game.Logic = new Function('',
 	Game.Logic.toString()
-	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
-	.replace(/^function[^{]+{/i, '')
-	.replace(/}[^}]*$/i, '')
+		.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
+		.replace(/^function[^{]+{/i, '')
+		.replace(/}[^}]*$/i, '')
 );
 
 /**
@@ -1926,12 +1968,14 @@ Game.Logic = new Function(
  */
 /*jshint -W020 */
 Audio = function(src) {
+
 	if(src.indexOf('soundjay') !== -1) {
 		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
 		this.play = function() {};
 	} else {
 		return new realAudio(src);
 	}
+
 };
 /*jshint +W020 */
 
