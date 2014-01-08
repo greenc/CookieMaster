@@ -78,6 +78,14 @@ module.exports = function(grunt) {
 				overwrite: true,
 				replacements: [
 					{
+						from: '../cookiemaster/assets/gc.mp3',
+						to: '//rawgithub.com/greenc/CookieMaster/master/assets/gc.mp3'
+					},
+					{
+						from: '../cookiemaster/assets/sp.mp3',
+						to: '//rawgithub.com/greenc/CookieMaster/master/assets/sp.mp3'
+					},
+					{
 						from: '../cookiemaster/src/external-methods.js',
 						to: '//rawgithub.com/greenc/CookieMaster/master/build/external-methods.min.js'
 					},

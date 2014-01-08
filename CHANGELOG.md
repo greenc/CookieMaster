@@ -1,5 +1,17 @@
 # CookieMaster Release History
 
+### Version 1.5.0 - _2013/12/08_
+
+ - Added building efficiency stats. Methods for calculating stats are derived from [Maxime Fabre's forked Cookie Monster repo](https://github.com/Anahkiasen/cookie-monster), which improves on the original Cookie Monster calculations considerably
+ - Added option to show a table with color-coded keys for building efficiency stats
+ - Audio files for Golden Cookies and Season Popup now moved into the repo
+ - Enhanced Golden Cookie stats with time remaining to reach Lucky/Lucky+Frenzy required bank
+ - Added effective CpS method and modified all relevant stats to use this when calculating time remaining
+ - Added stat to show your effective CpS
+ - Improved accuracy of certain stats
+ - Fixed Cookie Chain stats bug where normal/Wrath chain values and rewards were reversed
+ - Minor visual fixes and tweaks
+
 ### Version 1.4.2 - _2013/12/02_
 
  - Fixed wrong stats showing for current Luck and current Frenzy + Lucky rewards when player is under the max bank required value

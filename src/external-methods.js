@@ -1,17 +1,55 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version:      1.4.2
+    Date:         23/12/2013
+    GitHub:       https://github.com/greenc/CookieMaster
+    Dependencies: Cookie Clicker, jQuery
+    Author:       Chris Green
+                  c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+    The methods in this file are adapted from
+    code used in the following repo:
+
+    https://github.com/Anahkiasen/cookie-monster
+
+    All credit for the functionality behind these
+    methods goes to Maxime Fabre - ehtnam6@gmail.com
+
+================================================ */
+
 /*global CM:false */
+
+/**
+ * Create new global objects for these methods to work on
+ * @type {Object}
+ */
 var CME  = {};
 var CMEO = {};
 
-// Stored informations
-////////////////////////////////////////////////////////////////////
-
 CME.cacheStore = {};
+
 CME.informations = {
 	items    : [],
 	bonus    : [],
 	bci      : [],
 	roi      : [],
 	timeLeft : []
+};
+
+CME.milkPotentials = {
+	'Kitten helpers'            : 0.05,
+	'Kitten workers'            : 0.1,
+	'Kitten engineers'          : 0.2,
+	'Kitten overseers'          : 0.2,
+	'Santa\'s milk and cookies' : 0.05,
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -30,9 +68,10 @@ CME.informations = {
  * @return {Integer}
  */
 CME.getAchievementWorth = function(unlocked, upgradeKey, originalIncome, customMultiplier) {
+
 	var income           = 0,
-		baseMultiplier   = this.getHeavenlyMultiplier(),
 		futureMultiplier = 0,
+		baseMultiplier   = this.getHeavenlyMultiplier(),
 		milkProgress     = Game.milkProgress,
 		multiplier,
 		projectedIncome,
@@ -1002,7 +1041,7 @@ CME.cache = function(salts, callback, args) {
 };
 
 /**
- * Call a Cookie Monster method and cache it
+ * Call a CookieMaster method and cache it
  *
  * @param {String} method
  * @param {Array} args
@@ -1079,7 +1118,7 @@ CME.secondsLeft = function(object) {
 		return 0;
 	}
 
-	return Math.round(Math.abs(realPrice) / Game.cookiesPs);
+	return Math.round(Math.abs(realPrice) / CM.effectiveCps());
 };
 
 /**
@@ -1090,7 +1129,7 @@ CME.secondsLeft = function(object) {
  * @return {String}
  */
 CME.getTimeToCookies = function(cookies) {
-	return CM.formatTime(cookies / Game.cookiesPs, true);
+	return CM.formatTime(cookies / CM.effectiveCps(), true);
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -1103,7 +1142,7 @@ CME.getTimeToCookies = function(cookies) {
  * @return {Integer}
  */
 CMEO.identifier = function() {
-	return 'cookie-monster__'+this.getType()+'--'+this.id;
+	return 'cookie-master__'+this.getType()+'--'+this.id;
 };
 
 /**
@@ -1294,6 +1333,17 @@ CME.computeColorCoding = function(informations) {
 	}
 
 	return colors;
+};
+
+/**
+ * Check if an upgrade is in store
+ *
+ * @param {Array} upgrade
+ *
+ * @return {Boolean}
+ */
+CME.isInStore = function(upgrade) {
+	return Game.UpgradesInStore.indexOf(upgrade) !== -1;
 };
 
 
