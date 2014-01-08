@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.5.1
+    Version:      1.5.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.5.1',
+	version:              '1.5.2',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -318,6 +318,7 @@ CM.init = function() {
 		this.attachStatsPanel();
 		this.AddPopWrinklersButton();
 		this.setupTooltips();
+		this.preventClickBleed();
 		this.setEvents();
 
 		// This also attaches anything else we need
@@ -1026,6 +1027,47 @@ CM.appendToNative = function(native, append) {
 		native.apply(null, arguments);
 		append.apply(CM);
 	};
+};
+
+/**
+ * Execute replacements on a method's code
+ *
+ * @param {String}  code
+ * @param {Closure} replaces
+ *
+ * @return {String}
+ */
+CM.replaceCode = function(code, replaces) {
+	code = code.toString();
+
+	// Apply the various replaces
+	for (var replace in replaces) {
+		code = code.replace(replace, replaces[replace]);
+	}
+
+	return code
+		.replace(/^function[^{]+{/i, "")
+		.replace(/}[^}]*$/i, "");
+};
+
+/**
+ * Replace a native CookieClicker function with another
+ *
+ * @param {String}  native
+ * @param {Closure} replaces
+ *
+ * @return {void}
+ */
+CM.replaceNative = function(native, replaces, args) {
+
+	var newCode = Game[native];
+
+	if (typeof args === 'undefined') {
+		args = '';
+	}
+
+	Game[native] = new Function(args, this.replaceCode(newCode, replaces));
+
 };
 
 /* ================================================
@@ -1804,6 +1846,23 @@ CM.autoClickClickFrenzies = function() {
 };
 
 /**
+ * Prevents Golden Cookie and Reindeer clicks from clicking Wrinklers
+ */
+CM.preventClickBleed = function() {
+
+	$('#goldenCookie').click(function(event) {
+		event.stopPropagation();
+		Game.goldenCookie.click();
+	});
+
+	$('#seasonPopup').click(function(event) {
+		event.stopPropagation();
+		Game.seasonPopup.click();
+	});
+
+};
+
+/**
  * Clean up the game interface a little.
  *
  * @param {boolean} state active/inactive
@@ -2274,12 +2333,9 @@ function Beautify(what, floats) {
  * Remove the title tag update functionality from the main
  * game as we will use our own, faster update function
  */
-Game.Logic = new Function('',
-	Game.Logic.toString()
-		.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
-		.replace(/^function[^{]+{/i, '')
-		.replace(/}[^}]*$/i, '')
-);
+CM.replaceNative('Logic', {
+	'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': '',
+});
 
 /**
  * Fixes the game's mangled attempt at blocking hotlinked audio files from
