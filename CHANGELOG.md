@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.5.2 - _2013/12/08_
+
+ - Prevented Wrinklers getting clicked when clicking Golden Cookies and Reindeer (yay!)
+ - Cleaned up some methods
+
 ### Version 1.5.1 - _2013/12/08_
 
  - Fixed incorrect audio file URLs in build directory
