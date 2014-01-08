@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.5.2
+    Version:      1.5.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.5.2',
+	version:              '1.5.1',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -318,7 +318,7 @@ CM.init = function() {
 		this.attachStatsPanel();
 		this.AddPopWrinklersButton();
 		this.setupTooltips();
-		this.preventClickBleed();
+		//this.preventClickBleed();
 		this.setEvents();
 
 		// This also attaches anything else we need
@@ -1856,6 +1856,7 @@ CM.preventClickBleed = function() {
 	});
 
 	$('#seasonPopup').click(function(event) {
+		event.preventDefault();
 		event.stopPropagation();
 		Game.seasonPopup.click();
 	});
