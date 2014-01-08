@@ -1855,6 +1855,9 @@ CM.preventClickBleed = function() {
 	$('#seasonPopup')[0].onclick = null;
 
 	// Rebind with stopPropagation()
+	// This prevents the event bubbling up to document
+	// where Game.Click gets set to 1, which causes
+	// Wrinklers to take damage
 	$('#goldenCookie').click(function(event) {
 		event.stopPropagation();
 		Game.goldenCookie.click();

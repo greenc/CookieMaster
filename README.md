@@ -32,6 +32,8 @@ It's still fairly early in development, so it's not quite feature complete yet. 
  - Long number shortening, e.g. 3,476,112,098,761 can be displayed as 3.476 T
  - Show different suffix types when shortening numbers, e.g. 26.696 Qa, 26.696 quadrillion, 26.696 P
  - Number localization: Display a period or comma as your preferred decimal separator
+ - Calculate and display the most efficient purchases and upgrades
+ - Display estimated time left until upgrades and buildings are affordable
  - Clean up the game window: Remove the top bar, make the cookie counter more visible, etc.
  - Change the game highlight font
  - Display accurate countdown timers for game events, e.g. next Golden Cookie, remaining time for buffs
@@ -41,11 +43,13 @@ It's still fairly early in development, so it's not quite feature complete yet. 
  - Option to make Golden Cookies more visible when they spawn
  - Option to increase the hitbox area for Golden Cookies, making them easier to click during Cookie Chains
  - Auto-clicker for the Big Cookie with speed control
+ - Ability to set auto-clicker only during Click Frenzies
  - Button to instantly pop all on-screen wrinklers
  - Calculate and display Heavenly Chip data, including time left and cookies left until the next one
  - Calculate and display information about banked cookies for maximum buff payouts and other items
  - Calculate and display your maximum Chain Cookie reward and the required bank and CpS to reach the next reward level
  - Calculate and display how many cookies Wrinklers have sucked and the reward for popping them
+ - Clicking Golden Cookies and Reindeer no longer pops Wrinklers that lie beneath them
  - Other useful stats
  - Pause button
 
@@ -53,8 +57,6 @@ It's still fairly early in development, so it's not quite feature complete yet. 
 Planned and Upcoming Features
 -----------
 
- - Calculate and display the most efficient purchases and upgrades
- - Display estimated time left until upgrades and buildings are affordable
  - Smart auto-clicking for Golden Cookies and Reindeer to maximise your returns
  - Multiple save slots with import/export functionality
  - Performance optimizations to allow CookieMaster to poll and update even more rapidly
@@ -90,6 +92,6 @@ It is recommended to download and run Cookie Clicker locally for testing any cha
 
 1. Make sure you have [Git](http://git-scm.com/), and optionally [Node.js](http://nodejs.org/) and [Grunt](http://gruntjs.com/) installed first.
 2. Fork the CookieMaster repository on GitHub and clone it to your local machine.
-3. Make your changes. All source files are located in the `src/` folder. If you are using Node/Grunt, you can run `grunt build` to create a `build/` directory with optimized files (remember to **only** include `src/` files in your commits if you issue a pull request).
+3. Make your changes. All source files are located in the `src/` folder. If you are using Node/Grunt, you can run `grunt build` to create a `build/` directory with optimized files for local testing (remember to **only** include `src/` files in your commits if you issue a pull request).
 4. When you're done making changes, commit and push them up to your forked repository.
 5. You may then create a pull request from GitHub if you would like to have your changes considered for inclusion in the main CookieMaster repo.
