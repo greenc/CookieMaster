@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.5.1 - _2013/12/08_
+
+ - Fixed incorrect audio file URLs in build directory
+
 ### Version 1.5.0 - _2013/12/08_
 
  - Added building efficiency stats. Methods for calculating stats are derived from [Maxime Fabre's forked Cookie Monster repo](https://github.com/Anahkiasen/cookie-monster), which improves on the original Cookie Monster calculations considerably

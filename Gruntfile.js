@@ -74,7 +74,7 @@ module.exports = function(grunt) {
 		 */
 		replace: {
 			sources: {
-				src: ['build/cm-bootstrap.min.js', 'build/bookmarklet.js'],
+				src: ['build/cm-bootstrap.min.js', 'build/bookmarklet.js', 'build/cookiemaster.min.js'],
 				overwrite: true,
 				replacements: [
 					{
