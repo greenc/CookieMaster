@@ -12,6 +12,7 @@
  - Enhanced Golden Cookie stats with time remaining to reach Lucky/Lucky+Frenzy required bank
  - Added effective CpS method and modified all relevant stats to use this when calculating time remaining
  - Added stat to show your effective CpS
+ - Added stat to show reward for clicking Reindeer
  - Improved accuracy of certain stats
  - Fixed Cookie Chain stats bug where normal/Wrath chain values and rewards were reversed
  - Minor visual fixes and tweaks
