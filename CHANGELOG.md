@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.5.3 - _2013/12/08_
+
+ - Fixed bug in webkit browsers where audio alerts would only play once
+ - Added volume slider for audio alerts
+
 ### Version 1.5.2 - _2013/12/08_
 
  - Prevented Wrinklers getting clicked when clicking Golden Cookies and Reindeer (yay!)

@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.5.2
+    Version:      1.5.3
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.5.2',
+	version:              '1.5.3',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -127,6 +127,17 @@ CM.config = {
 				}
 			],
 			current: 'all'
+		},
+		audioVolume: {
+			type:  'range',
+			label: 'Audio Alert Volume:',
+			desc:  'Adjust the playback volume of the audio alerts.',
+			options: {
+				min: 0,
+				max: 1,
+				step: 0.1
+			},
+			current: 0.4
 		},
 		visualAlerts: {
 			type:    'select',
@@ -1748,7 +1759,8 @@ CM.playAudioAlerts = function() {
 		spAlert    = this.config.cmSPAudioObject,
 		gcNotified = this.config.cmAudioGCNotified,
 		spNotified = this.config.cmAudioSPNotified,
-		setting    = this.config.settings.audioAlerts.current;
+		setting    = this.config.settings.audioAlerts.current,
+		volume     = this.config.settings.audioVolume.current;
 
 	// Play Golden cookie notification
 	if(setting === 'gc' || setting === 'all') {
@@ -1756,7 +1768,8 @@ CM.playAudioAlerts = function() {
 		if(Game.goldenCookie.life > 0) {
 
 			if(!gcNotified) {
-				gcAlert.volume = 0.5;
+				gcAlert.load();
+				gcAlert.volume = volume;
 				gcAlert.play();
 				this.config.cmAudioGCNotified = true;
 			}
@@ -1776,7 +1789,8 @@ CM.playAudioAlerts = function() {
 
 			if(!spNotified) {
 
-				spAlert.volume = 0.2;
+				spAlert.load();
+				spAlert.volume = volume;
 				spAlert.play();
 				this.config.cmAudioSPNotified = true;
 

@@ -27,7 +27,7 @@ Screenshot
 Features
 ----------
 
-It's still fairly early in development, so it's not quite feature complete yet. Here's the checklist so far:
+It's still fairly early in development. Here's the checklist so far:
 
  - Long number shortening, e.g. 3,476,112,098,761 can be displayed as 3.476 T
  - Show different suffix types when shortening numbers, e.g. 26.696 Qa, 26.696 quadrillion, 26.696 P
@@ -37,7 +37,7 @@ It's still fairly early in development, so it's not quite feature complete yet. 
  - Clean up the game window: Remove the top bar, make the cookie counter more visible, etc.
  - Change the game highlight font
  - Display accurate countdown timers for game events, e.g. next Golden Cookie, remaining time for buffs
- - Play an audio alert when Golden Cookies and Reindeer spawn
+ - Play audio alerts when Golden Cookies and Reindeer spawn (with volume control)
  - Flash the screen when Golden Cookies and Reindeer spawn
  - Display countdowns to next Golden Cookie and Reindeer in the title tab
  - Option to make Golden Cookies more visible when they spawn
