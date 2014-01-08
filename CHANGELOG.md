@@ -8,6 +8,7 @@
 
  - Added building efficiency stats. Methods for calculating stats are derived from [Maxime Fabre's forked Cookie Monster repo](https://github.com/Anahkiasen/cookie-monster), which improves on the original Cookie Monster calculations considerably
  - Added option to show a table with color-coded keys for building efficiency stats
+ - Added option to auto-click the Golden Cookie during Click Frenzies
  - Audio files for Golden Cookies and Season Popup now moved into the repo
  - Enhanced Golden Cookie stats with time remaining to reach Lucky/Lucky+Frenzy required bank
  - Added effective CpS method and modified all relevant stats to use this when calculating time remaining
