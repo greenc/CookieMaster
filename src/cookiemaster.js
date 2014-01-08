@@ -17,6 +17,8 @@
 
 ================================================ */
 
+/*global CME:false,CMEO:false */
+
 /**
  * We will expose all methods and properties of CookieMaster
  * through a single parent object, for easy extendability
@@ -36,8 +38,8 @@ CM.config = {
 	///////////////////////////////////////////////
 
 	version:              '1.4.2',
-	cmGCAudioAlertURL:    'http://www.freesound.org/data/previews/103/103236_829608-lq.mp3',
-	cmSPAudioAlertURL:    'http://www.freesound.org/data/previews/121/121099_2193266-lq.mp3',
+	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
+	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
 	cmSPAudioObject:      null,
 	cmAudioGCNotified:    false,
@@ -220,6 +222,12 @@ CM.config = {
 			],
 			current: '3'
 		},
+		showEfficiencyKey: {
+			type:    'checkbox',
+			label:   'Show Efficiency Key:',
+			desc:    'Display building efficiency color key in the right panel.',
+			current: 'on'
+		},
 		changeFont: {
 			type:  'select',
 			label: 'Game Font:',
@@ -253,9 +261,23 @@ CM.config = {
 			current: 'off'
 		},
 		autoClick: {
-			type:    'checkbox',
+			type:    'select',
 			label:   'Auto-click Big Cookie:',
 			desc:    'Automatically click the big cookie.',
+			options: [
+				{
+					label: 'Off',
+					value: 'off'
+				},
+				{
+					label: 'During Click Frenzies',
+					value: 'clickFrenzies'
+				},
+				{
+					label: 'All the time',
+					value: 'on'
+				}
+			],
 			current: 'off'
 		},
 		autoClickSpeed: {
@@ -295,10 +317,17 @@ CM.init = function() {
 		this.attachSettingsPanel();
 		this.attachStatsPanel();
 		this.AddPopWrinklersButton();
+		this.setupTooltips();
 		this.setEvents();
 
 		// This also attaches anything else we need
 		this.applyUserSettings();
+
+		// Refresh tooltips when drawn
+		Game.tooltip.draw = this.appendToNative(Game.tooltip.draw, CM.updateTooltips);
+		// Refresh tooltips on store rebuild
+		Game.RebuildStore = this.appendToNative(Game.RebuildStore, CM.updateTooltips);
+
 
 		// Start the main loop
 		setInterval(function() {self.mainLoop();}, refreshRate);
@@ -633,27 +662,43 @@ CM.Timer = function(type, label) {
 };
 
 /**
+ * Get the number of Heavenly Chips from a number of cookies (all time)
+ *
+ * @param {integer} cookiesNumber
+ * @return {integer}
+ */
+CM.cookiesToHeavenly = function(cookies) {
+
+	return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
+
+};
+
+/**
+ * Get the number of cookies required to have X chips
+ *
+ * @param {integer} chipsNumber
+ * @return {integer}
+ */
+CM.heavenlyToCookies = function(chips) {
+
+	return 5 * Math.pow(10, 11) * chips * (chips + 1);
+
+};
+
+/**
  * Returns array of stats for Heavenly Chips
  *
  * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, timeToNextHC]
  */
 CM.getHCStats = function() {
 
-	function cookiesToHC(cookies) {
-		return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
-	}
-
-	function hcToCookies(hc) {
-		return 5 * Math.pow(10, 11) * hc * (hc + 1);
-	}
-
 	var stats          = [],
 		current        = Game.prestige['Heavenly chips'],
 		currentPercent = current * 2,
-		max            = cookiesToHC(Game.cookiesReset + Game.cookiesEarned),
+		max            = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
 		maxPercent     = max * 2,
-		cookiesToNext  = hcToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
-		timeToNext     = Math.round(cookiesToNext / Game.cookiesPs),
+		cookiesToNext  = this.heavenlyToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
+		timeToNext     = Math.round(cookiesToNext / this.effectiveCps()),
 		i;
 
 	stats = [
@@ -679,6 +724,20 @@ CM.baseCps = function() {
 	var frenzyMod = (Game.frenzy > 0) ? Game.frenzyPower : 1;
 
 	return Game.cookiesPs / frenzyMod;
+
+};
+
+/**
+ * Returns current effective CPS (factors in auto clicking if enabled)
+ *
+ * @return {Integer}
+ */
+CM.effectiveCps = function() {
+
+	var settings = this.config.settings,
+		clickModifier = settings.autoClick.current === 'on' ? settings.autoClickSpeed.current * Game.mouseCps() : 0;
+
+	return clickModifier + Game.cookiesPs;
 
 };
 
@@ -772,7 +831,7 @@ CM.maxChainReward = function() {
 	var bankLimit       = Game.cookies / 4,
 		cpsLimit        = Game.cookiesPs * 60 * 60 * 6,
 		wrath           = Game.elderWrath === 3 ? true : false,
-		chainValue      = wrath ? 77777 : 66666; // Minimum guaranteed chain amount
+		chainValue      = wrath ? 66666 : 77777; // Minimum guaranteed chain amount
 
 	// Chains not possible until player has earned 100000+ cookies total
 	if(Game.cookiesEarned < 100000) {
@@ -780,7 +839,7 @@ CM.maxChainReward = function() {
 	}
 
 	while(chainValue < bankLimit && chainValue <= cpsLimit) {
-		chainValue += wrath ? '7' : '6';
+		chainValue += wrath ? '6' : '7';
 		chainValue = parseInt(chainValue, 10);
 	}
 
@@ -798,9 +857,9 @@ CM.maxChainReward = function() {
 CM.requiredNextChainTier = function(type, maxReward) {
 
 	var wrath         = Game.elderWrath === 3 ? true : false,
-		digitString   = wrath ? '7' : '6',
-		minChain      = wrath ? 77777 : 66666,
-		minNextChain  = wrath ? 777777 : 666666,
+		digitString   = wrath ? '6' : '7',
+		minChain      = wrath ? 66666 : 77777,
+		minNextChain  = wrath ? 666666 : 777777,
 		nextChainTier = (maxReward < minChain) ? minNextChain : parseInt(maxReward + digitString, 10);
 
 	// Chains not possible until player has earned 100000+ cookies total
@@ -819,78 +878,97 @@ CM.requiredNextChainTier = function(type, maxReward) {
  */
 CM.getWrinklerStats = function() {
 
-	var stats = [],
-		sucked = 0,
+	var sucked = 0,
 		rewardMultiplier = 1.1;
 
 	$.each(Game.wrinklers, function() {
 		sucked += this.sucked;
 	});
 
-	stats[0] = Beautify(sucked);
-	stats[1] = Beautify(sucked * rewardMultiplier);
-
-	return stats;
+	return [sucked, sucked * rewardMultiplier];
 
 };
 
 /**
- * Format a time in seconds to a more friendly format
+ * Get the reward for clicking on a Reindeer
+ *
+ * 1min of production or 25 cookies
+ *
+ * @return {Integer}
+ */
+CM.getReindeerReward = function() {
+
+	var multiplier = Game.Has('Ho ho ho-flavored frosting') ? 2 : 1;
+
+	return Math.max(25, Game.cookiesPs * 60) * multiplier;
+
+};
+
+/**
+ * Format a time (s) to an human-readable format
  *
  * @param {Integer} time
  * @param {String}  compressed  Compressed output (minutes => m, etc.)
+ *
  * @return {String}
  */
-// TO DO: Make this not suck
-CM.formatTime = function(time) {
+CM.formatTime = function(t, compressed) {
 
-	var units     = [' day, ', ' hour, ', ' minute, ', ' second'],
-		days      = parseInt(time / 86400) % 999,
-		hours     = parseInt(time / 3600) % 24,
-		minutes   = parseInt(time / 60) % 60,
-		seconds   = time % 60,
-		formatted = '';
+	// Compute each units separately
+	var time =Math.round(t),
+		days    = parseInt(time / 86400) % 999,
+		hours   = parseInt(time / 3600) % 24,
+		minutes = parseInt(time / 60) % 60,
+		seconds = time % 60,
+		units = [' days, ', ' hours, ', ' minutes, ', ' seconds'],
+		formatted;
+
+	if (typeof compressed === 'undefined') {
+		compressed = false;
+	}
 
 	// Take care of special cases
-	if(time === Infinity) {
+	if (time === Infinity) {
 		return 'Never';
-	} else if(time === 0) {
+	} else if (time === 0) {
 		return 'Done!';
-	} else if(time / 86400 > 1e3) {
+	} else if (time / 86400 > 1e3) {
 		return '> 1,000 days';
 	}
 
-
-	// Pluralize units if necessary
-	if(days > 1) {
-		units[0] = ' days, ';
-	}
-	if(hours > 1) {
-		units[1] = ' hours, ';
-	}
-	if(minutes > 1) {
-		units[2] = ' minutes, ';
-	}
-	if(seconds > 1) {
-		units[3] = ' seconds';
+	if (!compressed) {
+		if (days === 1) {
+			units[0] = ' day, ';
+		}
+		if (hours === 1) {
+			units[1] = ' hour, ';
+		}
+		if (minutes === 1) {
+			units[2] = ' minute, ';
+		}
+		if (seconds === 1) {
+			units[3] = ' second';
+		}
+	} else {
+		units = ['d, ', 'h, ', 'm, ', 's'];
 	}
 
 	// Create final string
-	if(seconds) {
-		formatted = seconds + units[3];
+	formatted = '';
+	if (days > 0) {
+		formatted += days + units[0];
 	}
-	if(minutes) {
-		formatted = minutes + units[2] + formatted;
+	if (days > 0 || hours > 0) {
+		formatted += hours + units[1];
 	}
-	if(hours) {
-		formatted = hours + units[1] + formatted;
+	if (days > 0 || hours > 0 || minutes > 0) {
+		formatted += minutes + units[2];
 	}
-	if(days) {
-		formatted = days + units[0] + formatted;
+	if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
+		formatted += seconds + units[3];
 	}
 
 	return formatted;
-
 };
 
 /**
@@ -935,6 +1013,20 @@ CM.popup = function(message) {
 
 };
 
+/**
+ * Append a piece of code to native code
+ *
+ * @param {String}  native
+ * @param {Closure} append
+ *
+ * @return {Void}
+ */
+CM.appendToNative = function(native, append) {
+	return function() {
+		native.apply(null, arguments);
+		append.apply(CM);
+	};
+};
 
 /* ================================================
 	NON-RETURNING METHODS
@@ -959,9 +1051,16 @@ CM.mainLoop = function() {
 		this.showVisualAlerts();
 	}
 
+	// Auto click for Click Frenzies if set
+	this.autoClickClickFrenzies();
+
 	if(this.config.cmStatsPanel.is(':visible')) {
 		this.updateStats();
 	}
+
+	// Update building efficiency info
+	CME.updateBuildingsInformations();
+	this.updateTooltips();
 
 };
 
@@ -1107,6 +1206,10 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<td class="cmValue" id="CMStatsLuckyFrenzyReward"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Reindeer Reward:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsReindeerReward"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Maximum Cookie Chain reward:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsMaxChainReward"></td>';
 	tableHTML +=     '</tr>';
@@ -1173,6 +1276,10 @@ CM.attachStatsPanel = function() {
 	tableHTML +=         '<td class="cmValue" id="CMStatsBaseCPS"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Effective CpS:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsEffectiveCPS"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Frenzy CpS:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsFrenzyCPS"></td>';
 	tableHTML +=     '</tr>';
@@ -1217,6 +1324,70 @@ CM.attachStatsPanel = function() {
 };
 
 /**
+ * Attach a key to show color coding meanings
+ */
+CM.attachEfficiencyKey = function() {
+
+	var $cmEfficiencyKey = $('<table />').attr({'id': 'CMEfficiencyTable', 'class': 'cmTable'}),
+		tableHTML;
+
+	// Only attach it if it's not already in DOM
+	if($('#CMEfficiencyTable').length === 0) {
+
+		tableHTML +=     '<tr class="cmHeader">';
+		tableHTML +=         '<th colspan="2" class="cmFont">Efficiency Key:</th>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-cyan"></span></td>';
+		tableHTML +=         '<td class="cmValue">(Upgrades) This item has a better BCI than any building</td>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-purple"></span></td>';
+		tableHTML +=         '<td class="cmValue">(Upgrades) This item has a worse BCI than any building</td>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-greyLight"></span></td>';
+		tableHTML +=         '<td class="cmValue">(Upgrades) This item has not been calculated and/or cannot be calculated due to no definitive worth.</td>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-green"></span></td>';
+		tableHTML +=         '<td class="cmValue">This item has the best BCI</td>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-yellow"></span></td>';
+		tableHTML +=         '<td class="cmValue">This item is not the best, but it is closer to best than it is to worst</td>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-orange"></span></td>';
+		tableHTML +=         '<td class="cmValue">This item is not the worst, but it is closer to worst than it is to best</td>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td><span class="cmSample background-red"></span></td>';
+		tableHTML +=         '<td class="cmValue">This item has the worst BCI</td>';
+		tableHTML +=     '</tr>';
+
+		$cmEfficiencyKey.html(tableHTML);
+		$('#store').after($cmEfficiencyKey);
+
+	}
+
+};
+
+/**
+ * Remove Efficiency Key panel
+ */
+CM.removeEfficiencyKey = function() {
+
+	// Only remove it if it exists in DOM
+	if($('#CMEfficiencyTable').length) {
+
+		$('#CMEfficiencyTable').remove();
+
+	}
+
+};
+
+/**
  * Populates the stats panel with the latest game stats
  */
 // TO DO: Possibly cache these selectors for performance :/
@@ -1226,7 +1397,9 @@ CM.updateStats = function() {
 		wrinklerStats     = this.getWrinklerStats(),
 		lastGC            = this.toTitleCase(Game.goldenCookie.last) || '-',
 		lbText            = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
+		lbtr              = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
 		lfbText           = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
+		lfbtr             = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
 		chainReward       = this.maxChainReward(),
 		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
 		nextChainBank     = this.requiredNextChainTier('bank', chainReward),
@@ -1244,17 +1417,18 @@ CM.updateStats = function() {
 
 	if(nextChainCPS !== false) {
 		if(Game.cookiesPs > nextChainCPS) {
-			nextChainCPSString = '<span class="cmHighlight">' + Beautify(nextChainCPS) + '</span>';
+			nextChainCPSString = '<span class="cmHighlight">' + Beautify(nextChainCPS, 1) + '</span>';
 		} else {
-			nextChainCPSString = Beautify(nextChainCPS);
+			nextChainCPSString = Beautify(nextChainCPS, 1);
 		}
 	}
 
 	// Golden Cookie stats
-	$('#CMStatsLuckyRequired').html(lbText);
-	$('#CMStatsLuckyFrenzyRequired').html(lfbText);
+	$('#CMStatsLuckyRequired').html(lbText + lbtr);
+	$('#CMStatsLuckyFrenzyRequired').html(lfbText + lfbtr);
 	$('#CMStatsLuckyReward').html(Beautify(this.luckyReward()) + ' (max: ' + Beautify(this.maxLuckyReward()) + ')');
 	$('#CMStatsLuckyFrenzyReward').html(Beautify(this.luckyFrenzyReward()) + ' (max: ' + Beautify(this.maxLuckyFrenzyReward()) + ')');
+	$('#CMStatsReindeerReward').html(Beautify(this.getReindeerReward()));
 	$('#CMStatsMaxChainReward').html(chainRewardString);
 	$('#CMStatsBankRequiredNextChainTier').html(nextChainBankString || '-');
 	$('#CMStatsCPSRequiredNextChainTier').html(nextChainCPSString || '-');
@@ -1268,13 +1442,14 @@ CM.updateStats = function() {
 	$('#CMStatsHCTimeToNext').html(hcStats[5]);
 
 	// Wrinkler stats
-	$('#CMStatsWrinklersSucked').html(wrinklerStats[0]);
-	$('#CMStatsWrinklersReward').html(wrinklerStats[1]);
+	$('#CMStatsWrinklersSucked').html(Beautify(wrinklerStats[0]));
+	$('#CMStatsWrinklersReward').html(Beautify(wrinklerStats[1]));
 
 	// Misc. stats
-	$('#CMStatsBaseCPS').html(Beautify(this.baseCps()));
-	$('#CMStatsFrenzyCPS').html(Beautify(this.baseCps() * 7));
-	$('#CMStatsElderFrenzyCPS').html(Beautify(this.baseCps() * 666));
+	$('#CMStatsBaseCPS').html(Beautify(this.baseCps(), 1));
+	$('#CMStatsEffectiveCPS').html(Beautify(this.effectiveCps(), 1));
+	$('#CMStatsFrenzyCPS').html(Beautify(this.baseCps() * 7, 1));
+	$('#CMStatsElderFrenzyCPS').html(Beautify(this.baseCps() * 666, 1));
 	$('#CMStatsBaseCPC').html(Beautify(this.baseCpc()));
 	$('#CMStatsFrenzyCPC').html(Beautify(this.baseCpc() * 7));
 	$('#CMStatsClickFrenzyCPC').html(Beautify(this.baseCpc() * 777));
@@ -1605,6 +1780,30 @@ CM.updateTitleTicker = function() {
 };
 
 /**
+ * Set up an auto-clicker when Click Frenzy is active
+ */
+CM.autoClickClickFrenzies = function() {
+
+	if (this.config.settings.autoClick.current === 'clickFrenzies') {
+		if(Game.clickFrenzy > 0) {
+			if(this.autoClicker) {
+				clearInterval(this.autoClicker);
+			}
+			this.autoClicker = setInterval(
+				function() {
+					Game.ClickCookie();
+				}, 1000 / CM.config.settings.autoClickSpeed.current
+			);
+		} else {
+			if(this.autoClicker) {
+				clearInterval(this.autoClicker);
+			}
+		}
+	}
+
+};
+
+/**
  * Clean up the game interface a little.
  *
  * @param {boolean} state active/inactive
@@ -1678,6 +1877,13 @@ CM.applyUserSettings = function() {
 	// (It will automatically reattach itself when activated)
 	if(settings.visualAlerts.current === 'off') {
 		this.removeVisualAlerts();
+	}
+
+	// Efficiency Key
+	if(settings.showEfficiencyKey.current === 'on') {
+		this.attachEfficiencyKey();
+	} else {
+		this.removeEfficiencyKey();
 	}
 
 	// High visibility cookie
@@ -1878,6 +2084,167 @@ CM.alertMessage = function(msg) {
 
 };
 
+/**
+ * Create a tooltip for a type of object
+ *
+ * @param {Object} object
+ *
+ * @return {Void}
+ */
+CM.makeTooltip = function(object) {
+	var identifier = object.identifier();
+
+	object.desc += '' +
+		'<div class="cm-tooltip__contents" id="' + identifier + '"></div>' +
+		'<div class="cm-tooltip__warnings" id="' + identifier + 'note_div">'+
+			'<div id="' + identifier + 'note_div_warning" class="cmTooltipWarningLucky">' +
+				'<strong>Lucky deficit if purchased:</strong><br />' +
+				'<span id="' + identifier + 'warning_amount"></span>' +
+			'</div>' +
+			'<div id="' + identifier + 'note_div_caution" class="cmTooltipWarningLuckyFrenzy">' +
+				'<strong>Lucky+Frenzy deficit if purchased:</strong><br />' +
+				'<span id="' + identifier + 'caution_amount"></span>' +
+			'</div>' +
+		'</div>';
+
+	// Update store
+	Game.RebuildUpgrades();
+};
+
+/**
+ * Update a Building/Upgrade tooltip
+ *
+ * @param {Object} object
+ * @param {Array}  colors
+ *
+ * @return {void}
+ */
+CM.updateTooltip = function(object, colors) {
+
+	var informations = [object.getWorth(true), object.getBaseCostPerIncome(), object.getTimeLeft()],
+	deficits     = CME.getLuckyAlerts(object),
+	identifier   = '#' + object.identifier(),
+	$object      = $(identifier);
+
+	// Create tooltip if it doesn't exist
+	if (!object.matches(object.identifier())) {
+		this.makeTooltip(object);
+	}
+
+	// Cancel if we're not in this particular tooltip at the moment
+	if ($object.length !== 1 || $object.css('display') === 'none') {
+		return;
+	}
+
+	// Update informations
+	$object
+	.attr('class', 'cm-tooltip__contents border-'+colors[0])
+	.html(
+		'<table class="cmTable">' +
+			'<tr>' +
+				'<td>Bonus Income:</td>' +
+				'<td class="cmValue">' + Beautify(informations[0], 1) + '</td>' +
+			'</tr>' +
+			'<tr>' +
+				'<td>BCI:</td>' +
+				'<td class="cmValue text-' +colors[0] + '">' + Beautify(informations[1], 1) + '</td>' +
+			'</tr>' +
+			'<tr>' +
+				'<td>Time Left:</td>' +
+				'<td class="cmValue text-' + colors[1] + '">' + CM.formatTime(informations[2], true) + '</td>' +
+			'</tr>' +
+		'</table>'
+	);
+
+	$(identifier+'warning_amount').html(Beautify(deficits[0]) + ' (' +CME.getTimeToCookies(deficits[0]) + ')');
+	$(identifier+'caution_amount').html(Beautify(deficits[1]) + ' (' +CME.getTimeToCookies(deficits[1]) + ')');
+
+	$(identifier+'note_div_warning').toggle(deficits[0] > 0);
+	$(identifier+'note_div_caution').toggle(deficits[1] > 0);
+
+};
+
+/**
+ * Create the DOM for all tooltips
+ *
+ * @return {void}
+ */
+CM.setupTooltips = function() {
+	this.updateTooltips();
+
+	// Rebuild game elements
+	Game.RebuildUpgrades();
+	Game.RebuildStore();
+};
+
+/**
+ * Update one or more types of tooltips
+ *
+ * @param {string} which [upgrades,objects,all]
+ *
+ * @return {void}
+ */
+CM.updateTooltips = function(which) {
+	if (typeof which === 'undefined') {
+		which = 'all';
+	}
+
+	// Upgrades
+	if (which === 'all' || which === 'upgrades') {
+		Game.UpgradesById.forEach(function (upgrade) {
+			CM.manageUpgradeTooltips(upgrade);
+		});
+	}
+
+	// Buildings
+	if (which === 'all' || which === 'objects') {
+		Game.ObjectsById.forEach(function (building) {
+			CM.manageBuildingTooltip(building);
+		});
+	}
+};
+
+/**
+ * Handles the creation/update of an upgrade's tooltip
+ *
+ * @param {Object} upgrade
+ *
+ * @return {void}
+ */
+CM.manageUpgradeTooltips = function(upgrade) {
+
+	var colors   = upgrade.getColors();
+
+	// Cancel if the upgrade isn't in the store
+	if (!CME.isInStore(upgrade)) {
+		return;
+	}
+
+	// Colorize upgrade icon
+	$('#upgrade' + Game.UpgradesInStore.indexOf(upgrade)).html('<div class="cmUpgrade background-' + colors[0] + '"></div>');
+
+	return this.updateTooltip(upgrade, colors);
+};
+
+/**
+ * Handles the creation/update of a building's tooltip
+ *
+ * @param {Object} building
+ *
+ * @return {void}
+ */
+CM.manageBuildingTooltip = function(building) {
+	var colors = building.getColors(),
+		//color = this.config.settings.efficiencyCalc.current === 'roi' ? colors[2] : colors[0];
+		color = colors[0];
+
+	// Colorize building price
+	$('.price', '#product' + building.id).attr('class', 'price text-' + color);
+
+	return this.updateTooltip(building, colors);
+};
+
+
 /* ================================================
 	END NON-RETURNING METHODS
 ================================================ */
@@ -1907,12 +2274,11 @@ function Beautify(what, floats) {
  * Remove the title tag update functionality from the main
  * game as we will use our own, faster update function
  */
-Game.Logic = new Function(
-	'',
+Game.Logic = new Function('',
 	Game.Logic.toString()
-	.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
-	.replace(/^function[^{]+{/i, '')
-	.replace(/}[^}]*$/i, '')
+		.replace('if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';', '')
+		.replace(/^function[^{]+{/i, '')
+		.replace(/}[^}]*$/i, '')
 );
 
 /**
@@ -1926,12 +2292,14 @@ Game.Logic = new Function(
  */
 /*jshint -W020 */
 Audio = function(src) {
+
 	if(src.indexOf('soundjay') !== -1) {
 		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
 		this.play = function() {};
 	} else {
 		return new realAudio(src);
 	}
+
 };
 /*jshint +W020 */
 

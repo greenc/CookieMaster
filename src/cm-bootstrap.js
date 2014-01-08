@@ -28,21 +28,28 @@ if(typeof CM === 'undefined') {
 
 		var version = '1.4.2',
 			jquery = document.createElement('script'),
+			cmex = document.createElement('script'),
 			cmjs = document.createElement('script'),
 			cmcss = document.createElement('link'),
 			sources = [
 				'//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
+				'../cookiemaster/src/external-methods.js?v=' + version,
 				'../cookiemaster/src/cookiemaster.js?v=' + version,
 				'../cookiemaster/src/cookiemaster.css?v=' + version
 			];
 
 		cmcss.rel  = 'stylesheet';
 		cmcss.type = 'text/css';
-		cmcss.href = sources[2];
+		cmcss.href = sources[3];
 
-		// Load cookiemaster script once jQuery is loaded
+		// Load external script once jQuery is loaded
 		jquery.onload = function() {
-			document.body.appendChild(document.createElement('script')).setAttribute('src', sources[1]);
+			document.body.appendChild(cmex).setAttribute('src', sources[1]);
+		};
+
+		// Load cookiemaster script once external script is loaded
+		cmex.onload = function() {
+			document.body.appendChild(cmjs).setAttribute('src', sources[2]);
 		};
 
 		document.head.appendChild(cmcss);

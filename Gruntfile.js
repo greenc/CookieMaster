@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 			build: {
 				files: {
 					'build/cm-bootstrap.min.js': 'src/cm-bootstrap.js',
+					'build/external-methods.min.js': 'src/external-methods.js',
 					'build/cookiemaster.min.js': 'src/cookiemaster.js'
 				}
 			}
@@ -65,7 +66,7 @@ module.exports = function(grunt) {
 				prefix: '[^\\-][Vv]ersion[\'"]?\\s*[:=]\\s*[\'"]?'
 			},
 			defaults: {
-				src: ['src/cookiemaster.js', 'src/cookiemaster.css', 'src/cm-bootstrap.js']
+				src: ['src/external-methods.js', 'src/cookiemaster.js', 'src/cookiemaster.css', 'src/cm-bootstrap.js']
 			},
 		},
 		/**
@@ -76,6 +77,18 @@ module.exports = function(grunt) {
 				src: ['build/cm-bootstrap.min.js', 'build/bookmarklet.js'],
 				overwrite: true,
 				replacements: [
+					{
+						from: '../cookiemaster/assets/gc.mp3',
+						to: '//rawgithub.com/greenc/CookieMaster/master/assets/gc.mp3'
+					},
+					{
+						from: '../cookiemaster/assets/sp.mp3',
+						to: '//rawgithub.com/greenc/CookieMaster/master/assets/sp.mp3'
+					},
+					{
+						from: '../cookiemaster/src/external-methods.js',
+						to: '//rawgithub.com/greenc/CookieMaster/master/build/external-methods.min.js'
+					},
 					{
 						from: '../cookiemaster/src/cookiemaster.js',
 						to: '//rawgithub.com/greenc/CookieMaster/master/build/cookiemaster.min.js'
