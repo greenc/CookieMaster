@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.5.3
+    Version:      1.6.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -17,7 +17,7 @@
 
 ================================================ */
 
-/*global CME:false,CMEO:false */
+/*global CME:false,CMEO:false,google:false */
 
 /**
  * We will expose all methods and properties of CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.5.3',
+	version:              '1.6.0',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -50,6 +50,11 @@ CM.config = {
 	cmFastRefreshRate:    200,
 	ccURL:                'http://dev:8080/cookieclicker/',
 	ccCompatibleVersions: ['1.0402', '1.0403'],
+	cmStatsLoggingReady:  false, // Becomes true when chart APIs are loaded
+	cmStatsData:          null, // Set when a new logging session starts
+	cmStatsChart:         null, // Set when a new logging session stats
+	cmStatsLogStart:      null, // Set when a new logging session starts
+	cmStatsLogTimer:      null, // Set when a new logging sessions starts
 
 	///////////////////////////////////////////////
 	// Common Selectors
@@ -301,6 +306,12 @@ CM.config = {
 				step: 1
 			},
 			current: 10
+		},
+		enableLogging: {
+			type:  'checkbox',
+			label: 'Enable logging (BETA):',
+			desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
+			current: 'off'
 		}
 	},
 
@@ -340,7 +351,6 @@ CM.init = function() {
 		// Refresh tooltips on store rebuild
 		Game.RebuildStore = this.appendToNative(Game.RebuildStore, CM.updateTooltips);
 
-
 		// Start the main loop
 		setInterval(function() {self.mainLoop();}, refreshRate);
 
@@ -354,7 +364,6 @@ CM.init = function() {
 			}
 
 		}, fastRefreshRate);
-
 
 		// All done :)
 		this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!');
@@ -942,8 +951,6 @@ CM.formatTime = function(t, compressed) {
 	// Take care of special cases
 	if (time === Infinity) {
 		return 'Never';
-	} else if (time === 0) {
-		return 'Done!';
 	} else if (time / 86400 > 1e3) {
 		return '> 1,000 days';
 	}
@@ -1233,9 +1240,16 @@ CM.attachStatsPanel = function() {
 	var $ccSectionMiddle   = this.config.ccSectionMiddle,
 		$ccComments        = this.config.ccComments,
 		$cmStatsPanel      = $('<div />').attr('id', 'CMStatsPanel'),
-		$cmStatsTitle      = $('<h3 />').attr('class', 'title').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v.' + this.config.version + '</span>'),
+		$cmStatsTitle      = $('<h3 />').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v.' + this.config.version + '</span>'),
 		$cmStatsButton     = $('<div />').attr({'id': 'CMStatsPanelButton', 'class': 'button'}).text('Stats +'),
 		$cmTable           = {},
+		$cmStatsChartCont  = $('<div />').attr('id', 'CMChartCont'),
+		$cmStatsChartTitle = $('<h3 />').attr('class', 'title').html('Stat Logging'),
+		$cmStatsChartIntro = $('<p />').html('This feature currently allows you to log and track your base and effective CpS stats over time. Stats are logged at 30 second intervals as long as logging is on, and logs are persistent though page refreshes, game resets and save imports unless cleared manually.<br />Please note that this feature is still in beta, and may behave unexpectedly!'),
+		$cmStatsChart      = $('<div />').attr('id', 'CMChart'),
+		$cmStatsChartBtnY  = $('<button />').attr({'id': 'CMChartY', 'type': 'button', 'class': 'cmFont'}).text('Start logging'),
+		$cmStatsChartBtnN  = $('<button />').attr({'id': 'CMChartN', 'type': 'button', 'class': 'cmFont'}).text('Stop logging'),
+		$cmStatsChartBtnC  = $('<button />').attr({'id': 'CMChartC', 'type': 'button', 'class': 'cmFont'}).text('Clear log'),
 		tableHTML          = '';
 
 	tableHTML += '<table class="cmTable">';
@@ -1363,8 +1377,16 @@ CM.attachStatsPanel = function() {
 
 	$cmTable = $(tableHTML);
 
+	$cmStatsChartCont.append(
+		$cmStatsChartTitle,
+		$cmStatsChartIntro,
+		$cmStatsChartBtnY,
+		$cmStatsChartBtnN,
+		$cmStatsChartBtnC,
+		$cmStatsChart
+	);
 
-	$cmStatsPanel.append($cmStatsTitle, $cmTable);
+	$cmStatsPanel.append($cmStatsTitle, $cmTable, $cmStatsChartCont);
 
 	// Attach to DOM
 	$ccSectionMiddle.append($cmStatsPanel);
@@ -1885,6 +1907,162 @@ CM.preventClickBleed = function() {
 };
 
 /**
+ * Starts logging stats at a predetermined interval
+ */
+CM.startLogging = function() {
+
+	var self = this,
+		startTime = CM.config.cmStatsLogStart || localStorage.getItem('CMStatsStartTime');
+
+	// Set a new start time if none exists already
+	if(!startTime) {
+		startTime = new Date().getTime();
+	}
+	localStorage.setItem('CMStatsStartTime', startTime);
+	CM.config.cmStatsLogStart = startTime;
+
+	// Log stats every 30 seconds
+	CM.logData();
+	CM.config.cmStatsLogTimer = setInterval(function() {CM.logData();}, 30000);
+	localStorage.setItem('CMStatsLoggingActive', 'true');
+	CM.popup('Logging data!');
+
+	$('#CMChartY').hide();
+	$('#CMChartN').show();
+
+};
+
+/**
+ * Stops logging stats
+ */
+CM.stopLogging = function() {
+
+	// Stop logging stats
+	if(this.config.cmStatsLogTimer) {
+		clearInterval(this.config.cmStatsLogTimer);
+		localStorage.setItem('CMStatsLoggingActive', 'false');
+
+		this.popup('Stopped logging data!');
+	}
+
+	$('#CMChartN').hide();
+	$('#CMChartY').show();
+
+};
+
+/**
+ * Clears the current stats log
+ */
+CM.clearLogSesion = function() {
+
+	// Clear current stored and cached logs
+	this.config.cmStatsData = null;
+	localStorage.removeItem('CMStatsData');
+
+	// Reset log start time
+	this.config.cmStatsLogStart = new Date().getTime();
+	localStorage.setItem('CMStatsStartTime', this.config.cmStatsLogStart);
+
+	// Clear the chart and redraw empty
+	this.config.cmStatsChart.clearChart();
+	this.logData();
+
+	this.popup('Log cleared!');
+
+};
+
+/**
+ * Logs base CpS and effective CpS against a timestamp
+ */
+CM.logData = function() {
+
+	var startTime    = this.config.cmStatsLogStart, // ms
+		currentTime  = new Date().getTime(), // ms
+		relativetime = this.formatTime(Math.round((currentTime - startTime) / 1000), true), // s
+		currentData  = this.config.cmStatsData,
+		newData      = [
+			Math.round(this.baseCps() * 10) / 10,
+			Math.round(this.effectiveCps() * 10) / 10
+		];
+
+	// Retrieve session data from local storage if not already set
+	if(!currentData) {
+		currentData = JSON.parse(localStorage.getItem('CMStatsData')) || {};
+	}
+
+	// Add the new data to the set
+	currentData[relativetime] = newData;
+
+	// Save the new set to local storage
+	localStorage.setItem('CMStatsData', JSON.stringify(currentData));
+
+	// Cache the new data set in the config
+	this.config.cmStatsData = currentData;
+
+	// Redraw chart if visible
+	if(this.config.cmStatsPanel.is(':visible')) {
+		this.drawChart();
+	}
+
+};
+
+/**
+ * Draws the chart for logged stats
+ */
+CM.drawChart = function() {
+
+	var data = CM.config.cmStatsData || JSON.parse(localStorage.getItem('CMStatsData')) || {"0s": [Math.round(this.baseCps() * 10) / 10, Math.round(this.effectiveCps() * 10) / 10]},
+		chartData = [['Time', 'CpS', 'Effective CpS']],
+		formattedData,
+		options = {
+			chartArea: {
+				width: '100%',
+				height: '100%'
+			},
+			legend: {
+				position: 'in',
+				textStyle: {
+					color: '#FFF'
+				}
+			},
+			axisTitlesPosition: 'in',
+			hAxis: {
+				textPosition: 'none',
+				title: 'Time',
+				textStyle: {
+					color: '#DDD'
+				}
+			},
+			vAxis: {
+				gridlines: {
+					color: '#444'
+				},
+				textPosition: 'in',
+				title: 'CpS',
+				textStyle: {
+					color: '#DDD'
+				}
+			},
+			backgroundColor: 'transparent',
+			fontSize: '12'
+		};
+
+	// Format our data to Google's liking
+	$.each(data, function(key, value) {
+		chartData.push([key, value[0], value[1]]);
+	});
+	formattedData = google.visualization.arrayToDataTable(chartData);
+
+	// Create the chart is it doesn't exist
+	if(!CM.config.cmStatsChart) {
+		CM.config.cmStatsChart = new google.visualization.LineChart(document.getElementById('CMChart'));
+	}
+	// Draw it
+	CM.config.cmStatsChart.draw(formattedData, options);
+
+};
+
+/**
  * Clean up the game interface a little.
  *
  * @param {boolean} state active/inactive
@@ -1937,7 +2115,9 @@ CM.changeFont = function(font) {
 CM.applyUserSettings = function() {
 
 	var config = this.config,
-		settings = this.config.settings;
+		settings = this.config.settings,
+		loggingActive = localStorage.getItem('CMStatsLoggingActive'),
+		loggingCallback;
 
 	this.cleanUI(settings.cleanUI.current === 'on');
 	this.changeFont(settings.changeFont.current);
@@ -1995,6 +2175,47 @@ CM.applyUserSettings = function() {
 		if(this.autoClicker) {
 			clearInterval(this.autoClicker);
 		}
+	}
+
+	// Logging
+	if(settings.enableLogging.current === 'on') {
+
+		// Only load the API if not already loaded
+		if(typeof google.visualization === 'undefined') {
+
+			// Set the required callback action
+			if(loggingActive === 'true') {
+				loggingCallback = CM.startLogging;
+			} else {
+				loggingCallback = CM.drawChart;
+				$('#CMChartN').hide();
+			}
+
+			// Load the chart APIs and call the ready function when done
+			google.load('visualization', '1', {'callback': loggingCallback, 'packages':['corechart']});
+
+		} else {
+
+			// Perform required action
+			if(!config.cmStatsLogTimer && loggingActive === 'true') {
+				this.startLogging();
+			} else {
+				this.drawChart();
+				$('#CMChartN').hide();
+			}
+
+		}
+
+		$('#CMChartCont').show();
+
+	} else {
+
+		// Stop any current logging, clear the chart and hide the panel
+		this.stopLogging();
+		config.cmStatsData = null;
+		localStorage.setItem('CMStatsLoggingActive', 'false');
+		$('#CMChartCont').hide();
+
 	}
 
 
@@ -2093,6 +2314,10 @@ CM.setEvents = function() {
 			$settingsPanel.hide();
 			$('#rows').hide();
 			$game.addClass('onCMMenu');
+			// Redraw chart if it's enabled
+			if(self.config.settings.enableLogging.current === 'on') {
+				self.drawChart();
+			}
 		} else {
 			$statsPanel.hide();
 			$settingsPanel.hide();
@@ -2140,6 +2365,21 @@ CM.setEvents = function() {
 	this.config.ccBody.on('mousedown', '#CMGCOverlay', function() {
 		Game.goldenCookie.click();
 		$('#CMGCOverlay').hide();
+	});
+
+	// Stat logging actions
+	$('#CMChartY').click(function() {
+		self.startLogging();
+		$(this).hide();
+		$('#CMChartN').show();
+	});
+	$('#CMChartN').click(function() {
+		self.stopLogging();
+		$(this).hide();
+		$('#CMChartY').show();
+	});
+	$('#CMChartC').click(function() {
+		self.clearLogSesion();
 	});
 
 };

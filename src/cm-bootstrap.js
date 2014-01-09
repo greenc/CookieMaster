@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.5.3
+    Version:      1.6.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -17,6 +17,8 @@
 
 ================================================ */
 
+/*global CM:false,google:false*/
+
 /**
  * This file acts as a bootstrap to load the CookieMaster dependencies and scripts.
  * It enables us to request the latest version of all files without users having
@@ -26,35 +28,36 @@ if(typeof CM === 'undefined') {
 
 	(function() {
 
-		var version = '1.5.3',
-			jquery  = document.createElement('script'),
-			cmex    = document.createElement('script'),
-			cmjs    = document.createElement('script'),
+		var version = '1.6.0',
 			cmcss   = document.createElement('link'),
-			sources = [
-				'//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
-				'../cookiemaster/src/external-methods.js?v=' + version,
-				'../cookiemaster/src/cookiemaster.js?v='     + version,
-				'../cookiemaster/src/cookiemaster.css?v='    + version
-			];
+			jquery  = document.createElement('script'),
+			jsapi   = document.createElement('script'),
+			cmex    = document.createElement('script'),
+			cmjs    = document.createElement('script');
 
 		// Set CSS file attributes
 		cmcss.rel  = 'stylesheet';
 		cmcss.type = 'text/css';
-		cmcss.href = sources[3];
+		cmcss.href = '../cookiemaster/src/cookiemaster.css?v=' + version;
 
-		// Load external script once jQuery is loaded
-		jquery.onload = function() {
-			document.body.appendChild(cmex).setAttribute('src', sources[1]);
-		};
+		// Set async on scripts
+		jquery.async = false;
+		jsapi.async  = false;
+		cmex.async   = false;
+		cmjs.async   = false;
 
-		// Load cookiemaster script once external script is loaded
-		cmex.onload = function() {
-			document.body.appendChild(cmjs).setAttribute('src', sources[2]);
-		};
+		// Set script sources
+		jquery.src = '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js';
+		jsapi.src  = '//www.google.com/jsapi';
+		cmex.src   = '../cookiemaster/src/external-methods.js?v=' + version;
+		cmjs.src   = '../cookiemaster/src/cookiemaster.js?v='     + version;
 
+		// Add to DOM
 		document.head.appendChild(cmcss);
-		document.body.appendChild(jquery).setAttribute('src', sources[0]);
+		document.body.appendChild(jquery);
+		document.body.appendChild(jsapi);
+		document.body.appendChild(cmex);
+		document.body.appendChild(cmjs);
 
 	})();
 

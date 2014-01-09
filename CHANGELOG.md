@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.6.0 - _2013/12/09_
+
+ - Added persistent stat logging. You can now track your base and effective CpS across your session(s) (Currently in BETA)
+ - Massive and wildly unncecessary refactoring of the bootstrap file :(
+
 ### Version 1.5.3 - _2013/12/08_
 
  - Fixed bug in webkit browsers where audio alerts would only play once

@@ -52,6 +52,7 @@ It's still fairly early in development. Here's the checklist so far:
  - Clicking Golden Cookies and Reindeer no longer pops Wrinklers that lie beneath them
  - Other useful stats
  - Pause button
+ - BETA: Persistent stat logging for tracking your CpS through your sessions
 
 
 Planned and Upcoming Features
