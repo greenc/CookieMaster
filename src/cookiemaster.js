@@ -2011,7 +2011,7 @@ CM.logData = function() {
  */
 CM.drawChart = function() {
 
-	var data = CM.config.cmStatsData || JSON.parse(localStorage.getItem('CMStatsData')) || {"0s": [Math.round(this.baseCps() * 10) / 10, Math.round(this.effectiveCps() * 10) / 10]},
+	var data = CM.config.cmStatsData || JSON.parse(localStorage.getItem('CMStatsData')) || {"0s": [Math.round(CM.baseCps() * 10) / 10, Math.round(CM.effectiveCps() * 10) / 10]},
 		chartData = [['Time', 'CpS', 'Effective CpS']],
 		formattedData,
 		options = {
