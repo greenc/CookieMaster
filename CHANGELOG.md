@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.6.1 - _2013/12/09_
+
+ - Fixed some logic with logging when ssaving user settings and reloading the page
+
 ### Version 1.6.0 - _2013/12/09_
 
  - Added persistent stat logging. You can now track your base and effective CpS across your session(s) (Currently in BETA)

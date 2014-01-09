@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.6.0
+    Version:      1.6.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.6.0',
+	version:              '1.6.1',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -2177,35 +2177,58 @@ CM.applyUserSettings = function() {
 		}
 	}
 
-	// Logging
+	// Logging logic (arghh!)
 	if(settings.enableLogging.current === 'on') {
 
-		// Only load the API if not already loaded
-		if(typeof google.visualization === 'undefined') {
+		// Not currently logging
+		if(!config.cmStatsLogTimer) {
 
-			// Set the required callback action
-			if(loggingActive === 'true') {
-				loggingCallback = CM.startLogging;
+			// API isn't loaded
+			if(typeof google.visualization === 'undefined') {
+
+				// Should be logging
+				if(loggingActive === 'true') {
+
+					// Load the chart APIs and begin logging when done
+					google.load('visualization', '1', {'callback': CM.startLogging, 'packages':['corechart']});
+
+				} else {
+
+					// Load the chart APIs and draw chart once when done
+					google.load('visualization', '1', {'callback': CM.drawChart, 'packages':['corechart']});
+					$('#CMChartN').hide();
+					$('#CMChartY').show();
+
+				}
+
 			} else {
-				loggingCallback = CM.drawChart;
-				$('#CMChartN').hide();
-			}
 
-			// Load the chart APIs and call the ready function when done
-			google.load('visualization', '1', {'callback': loggingCallback, 'packages':['corechart']});
+				// API is loaded
+				if(loggingActive === 'true') {
+
+					// Start logging directly
+					this.startLogging();
+
+				} else {
+
+					// Just update the static chart
+					this.drawChart();
+					$('#CMChartN').hide();
+					$('#CMChartY').show();
+
+				}
+
+			}
 
 		} else {
 
-			// Perform required action
-			if(!config.cmStatsLogTimer && loggingActive === 'true') {
-				this.startLogging();
-			} else {
-				this.drawChart();
-				$('#CMChartN').hide();
-			}
+			// Is currently logging, hide the start button
+			$('#CMChartY').hide();
+			$('#CMChartN').show();
 
 		}
 
+		// Make sure the chart pane is visible
 		$('#CMChartCont').show();
 
 	} else {
