@@ -206,6 +206,18 @@ CM.config = {
 				{
 					label: 'Standard',
 					value: 'standard'
+				},
+				{
+					label: 'Scientific',
+					value: 'scientific'
+				},
+				{
+					label: 'Scientific (e-notation)',
+					value: 'e'
+				},
+				{
+					label: 'Scientific (compact)',
+					value: 'compact'
 				}
 			],
 			current: 'math'
@@ -461,13 +473,13 @@ CM.largeNumFormat = function(num, precision) {
 		parts,
 		i,
 		ranges = [
-			{divider: 1e24, suffix: {math: 'Sp', si: 'Y', standard: 'septillion'}},
-			{divider: 1e21, suffix: {math: 'Sx', si: 'Z', standard: 'sextillion'}},
-			{divider: 1e18, suffix: {math: 'Qi', si: 'E', standard: 'quintillion'}},
-			{divider: 1e15, suffix: {math: 'Qa', si: 'P', standard: 'quadrillion'}},
-			{divider: 1e12, suffix: {math: 'T',  si: 'T', standard: 'trillion'}},
-			{divider: 1e9,  suffix: {math: 'B',  si: 'G', standard: 'billion'}},
-			{divider: 1e6,  suffix: {math: 'M',  si: 'M', standard: 'million'}}
+			{divider: 1e24, suffix: {math: ' Sp', si: ' Y', standard: ' septillion',  e: 'e24', scientific: ' &times; 10&sup2;&#8308;', compact: '*10&sup2;&#8308;'}},
+			{divider: 1e21, suffix: {math: ' Sx', si: ' Z', standard: ' sextillion',  e: 'e21', scientific: ' &times; 10&sup2;sup1;',   compact: '*10&sup2;sup1;'}},
+			{divider: 1e18, suffix: {math: ' Qi', si: ' E', standard: ' quintillion', e: 'e18', scientific: ' &times; 10&sup1;&#8312;', compact: '*10&sup1;&#8312;'}},
+			{divider: 1e15, suffix: {math: ' Qa', si: ' P', standard: ' quadrillion', e: 'e15', scientific: ' &times; 10&sup1;&#8309;', compact: '*10&sup1;&#8309;'}},
+			{divider: 1e12, suffix: {math: ' T',  si: ' T', standard: ' trillion',    e: 'e12', scientific: ' &times; 10&sup1;&sup2;',  compact: '*10&sup1;&sup2;'}},
+			{divider: 1e9,  suffix: {math: ' B',  si: ' G', standard: ' billion',     e: 'e9',  scientific: ' &times; 10&#8313;',       compact: '*10&#8313;'}},
+			{divider: 1e6,  suffix: {math: ' M',  si: ' M', standard: ' million',     e: 'e6',  scientific: ' &times; 10&#8310;',       compact: '*10&#8310;'}}
 		];
 
 	if(num === Number.POSITIVE_INFINITY || num === Number.NEGATIVE_INFINITY) {
@@ -481,7 +493,7 @@ CM.largeNumFormat = function(num, precision) {
 	if(useShortNums) {
 		for(i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
-				num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats) + ' ' + ranges[i].suffix[notation];
+				num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats) + ranges[i].suffix[notation];
 				return qualifier + num.replace('.', decimal);
 			}
 		}
