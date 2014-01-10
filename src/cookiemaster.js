@@ -457,6 +457,7 @@ CM.largeNumFormat = function(num, precision) {
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
 		floats = precision || 0,
+		qualifier    = num < 0 ? '-' : '',
 		parts,
 		i,
 		ranges = [
@@ -473,11 +474,15 @@ CM.largeNumFormat = function(num, precision) {
 		return 'Infinity';
 	}
 
+	// Force positive int for working on it
+	num = Math.abs(num);
+
+	// Format the very largew numbers
 	if(useShortNums) {
 		for(i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
 				num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats) + ' ' + ranges[i].suffix[notation];
-				return num.replace('.', decimal);
+				return qualifier + num.replace('.', decimal);
 			}
 		}
 	}
@@ -489,7 +494,7 @@ CM.largeNumFormat = function(num, precision) {
 	parts = num.toString().split('.');
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
 
-	return parts.join(decimal);
+	return qualifier + parts.join(decimal);
 
 };
 
