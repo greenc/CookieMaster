@@ -330,7 +330,9 @@ CM.init = function() {
 
 	// Cache the audio alert sound files
 	this.config.cmGCAudioObject = new Audio(this.config.cmGCAudioAlertURL);
+	this.config.cmGCAudioObject.load();
 	this.config.cmSPAudioObject = new Audio(this.config.cmSPAudioAlertURL);
+	this.config.cmSPAudioObject.load();
 
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
@@ -1790,9 +1792,9 @@ CM.playAudioAlerts = function() {
 		if(Game.goldenCookie.life > 0) {
 
 			if(!gcNotified) {
-				gcAlert.load();
 				gcAlert.volume = volume;
 				gcAlert.play();
+	      setTimeout(function() { gcAlert.load() }, 1500);
 				this.config.cmAudioGCNotified = true;
 			}
 
@@ -1811,9 +1813,9 @@ CM.playAudioAlerts = function() {
 
 			if(!spNotified) {
 
-				spAlert.load();
 				spAlert.volume = volume;
 				spAlert.play();
+	      setTimeout(function() { spAlert.load() }, 1500);
 				this.config.cmAudioSPNotified = true;
 
 			}
