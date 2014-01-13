@@ -1790,9 +1790,9 @@ CM.playAudioAlerts = function() {
 		if(Game.goldenCookie.life > 0) {
 
 			if(!gcNotified) {
-				gcAlert.load();
 				gcAlert.volume = volume;
 				gcAlert.play();
+	      setTimeout(function() { gcAlert.load() }, 1500);
 				this.config.cmAudioGCNotified = true;
 			}
 
@@ -1811,9 +1811,9 @@ CM.playAudioAlerts = function() {
 
 			if(!spNotified) {
 
-				spAlert.load();
 				spAlert.volume = volume;
 				spAlert.play();
+	      setTimeout(function() { spAlert.load() }, 1500);
 				this.config.cmAudioSPNotified = true;
 
 			}
