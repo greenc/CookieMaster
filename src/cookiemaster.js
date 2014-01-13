@@ -330,7 +330,9 @@ CM.init = function() {
 
 	// Cache the audio alert sound files
 	this.config.cmGCAudioObject = new Audio(this.config.cmGCAudioAlertURL);
+	this.config.cmGCAudioObject.load();
 	this.config.cmSPAudioObject = new Audio(this.config.cmSPAudioAlertURL);
+	this.config.cmSPAudioObject.load();
 
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
