@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.6.3 - _2013/12/14_
+
+ - Fixed typo that prevented Reindeer audio alert from playing (oops!)
+
 ### Version 1.6.2 - _2013/12/14_
 
  - Added more number formatting options (scientific, scientific "e" notation and compact scientific notation)

@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.6.2
+    Version:      1.6.3
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.6.2',
+	version:              '1.6.3',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -1832,7 +1832,7 @@ CM.playAudioAlerts = function() {
 
 				spAlert.volume = volume;
 				spAlert.play();
-				setTimeout(function() {gcAlert.load();}, 1500);
+				setTimeout(function() {spAlert.load();}, 1500);
 				this.config.cmAudioSPNotified = true;
 
 			}
