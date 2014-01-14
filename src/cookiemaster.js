@@ -493,7 +493,8 @@ CM.largeNumFormat = function(num, precision) {
 	if(useShortNums) {
 		for(i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
-				num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats) + ranges[i].suffix[notation];
+				num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats);
+				num = num.toFixed(largeFloats) + ranges[i].suffix[notation];
 				return qualifier + num.replace('.', decimal);
 			}
 		}
