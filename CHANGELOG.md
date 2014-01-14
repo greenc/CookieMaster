@@ -1,8 +1,14 @@
 # CookieMaster Release History
 
+### Version 1.6.2 - _2013/12/14_
+
+ - Added more number formatting options (scientific, scientific "e" notation and compact scientific notation)
+ - CpS chart now shows a logarithmic scale with a zero baseline for easy of use
+ - Fixed delay on Golden Cookie and Reindeer alert sounds (credit to Jesper Öqvist - https://github.com/llbit)
+
 ### Version 1.6.1 - _2013/12/09_
 
- - Fixed some logic with logging when ssaving user settings and reloading the page
+ - Fixed some logic with logging when saving user settings and reloading the page
 
 ### Version 1.6.0 - _2013/12/09_
 

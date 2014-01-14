@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.6.1
+    Version:      1.6.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.6.1',
+	version:              '1.6.2',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -1807,10 +1807,12 @@ CM.playAudioAlerts = function() {
 		if(Game.goldenCookie.life > 0) {
 
 			if(!gcNotified) {
-				gcAlert.load();
+
 				gcAlert.volume = volume;
 				gcAlert.play();
+				setTimeout(function() {gcAlert.load();}, 1500);
 				this.config.cmAudioGCNotified = true;
+
 			}
 
 		} else {
@@ -1828,9 +1830,9 @@ CM.playAudioAlerts = function() {
 
 			if(!spNotified) {
 
-				spAlert.load();
 				spAlert.volume = volume;
 				spAlert.play();
+				setTimeout(function() {gcAlert.load();}, 1500);
 				this.config.cmAudioSPNotified = true;
 
 			}
@@ -2045,17 +2047,17 @@ CM.drawChart = function() {
 			axisTitlesPosition: 'in',
 			hAxis: {
 				textPosition: 'none',
-				title: 'Time',
 				textStyle: {
 					color: '#DDD'
 				}
 			},
 			vAxis: {
+				logScale: true,
+				baseline: 0,
 				gridlines: {
 					color: '#444'
 				},
 				textPosition: 'in',
-				title: 'CpS',
 				textStyle: {
 					color: '#DDD'
 				}
