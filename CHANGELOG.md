@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.6.4 - _2013/12/14_
+
+ - Moved CookieMaster to GitHub pages as we've been booted off of rawgithub :/
+
 ### Version 1.6.3 - _2013/12/14_
 
  - Fixed typo that prevented Reindeer audio alert from playing (oops!)
