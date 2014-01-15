@@ -79,27 +79,27 @@ module.exports = function(grunt) {
 				replacements: [
 					{
 						from: '../cookiemaster/assets/gc.mp3',
-						to: '//rawgithub.com/greenc/CookieMaster/master/assets/gc.mp3'
+						to: '//greenc.github.io/CookieMaster/assets/gc.mp3'
 					},
 					{
 						from: '../cookiemaster/assets/sp.mp3',
-						to: '//rawgithub.com/greenc/CookieMaster/master/assets/sp.mp3'
+						to: '//greenc.github.io/CookieMaster/assets/sp.mp3'
 					},
 					{
 						from: '../cookiemaster/src/external-methods.js',
-						to: '//rawgithub.com/greenc/CookieMaster/master/build/external-methods.min.js'
+						to: '//greenc.github.io/CookieMaster/build/external-methods.min.js'
 					},
 					{
 						from: '../cookiemaster/src/cookiemaster.js',
-						to: '//rawgithub.com/greenc/CookieMaster/master/build/cookiemaster.min.js'
+						to: '//greenc.github.io/CookieMaster/build/cookiemaster.min.js'
 					},
 					{
 						from: '../cookiemaster/src/cookiemaster.css',
-						to: '//rawgithub.com/greenc/CookieMaster/master/build/cookiemaster.min.css'
+						to: '//greenc.github.io/CookieMaster/build/cookiemaster.min.css'
 					},
 					{
 						from: '../cookiemaster/src/cm-bootstrap.js',
-						to: '//rawgithub.com/greenc/CookieMaster/master/build/cm-bootstrap.min.js'
+						to: '//greenc.github.io/CookieMaster/build/cm-bootstrap.min.js'
 					}
 				]
 			},
