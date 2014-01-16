@@ -430,7 +430,7 @@ CM.integrityCheck = function() {
 		this.alertMessage("Warning: New or unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)");
 	}
 
-	return error ? false : true;
+	return !error;
 };
 
 /**
