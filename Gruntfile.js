@@ -79,27 +79,27 @@ module.exports = function(grunt) {
 				replacements: [
 					{
 						from: '../cookiemaster/assets/gc.mp3',
-						to: '//greenc.github.io/CookieMaster/assets/gc.mp3'
+						to: 'http://cookiemaster.vaskemaskine.co.uk/assets/gc.mp3'
 					},
 					{
 						from: '../cookiemaster/assets/sp.mp3',
-						to: '//greenc.github.io/CookieMaster/assets/sp.mp3'
+						to: 'http://cookiemaster.vaskemaskine.co.uk/assets/sp.mp3'
 					},
 					{
 						from: '../cookiemaster/src/external-methods.js',
-						to: '//greenc.github.io/CookieMaster/build/external-methods.min.js'
+						to: 'http://cookiemaster.vaskemaskine.co.uk/build/external-methods.min.js'
 					},
 					{
 						from: '../cookiemaster/src/cookiemaster.js',
-						to: '//greenc.github.io/CookieMaster/build/cookiemaster.min.js'
+						to: 'http://cookiemaster.vaskemaskine.co.uk/build/cookiemaster.min.js'
 					},
 					{
 						from: '../cookiemaster/src/cookiemaster.css',
-						to: '//greenc.github.io/CookieMaster/build/cookiemaster.min.css'
+						to: 'http://cookiemaster.vaskemaskine.co.uk/build/cookiemaster.min.css'
 					},
 					{
 						from: '../cookiemaster/src/cm-bootstrap.js',
-						to: '//greenc.github.io/CookieMaster/build/cm-bootstrap.min.js'
+						to: 'http://cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js'
 					}
 				]
 			},
