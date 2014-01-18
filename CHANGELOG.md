@@ -2,7 +2,7 @@
 
 ### Version 1.6.5 - _2013/12/17_
 
- - Moved CookieMaster to new (and final) host that should be super fast (seriously, it's got SSDs n stuff)
+ - Moved CookieMaster to new (and final) host that should be super fast (seriously, it's got SSDs and stuff)
  - Added long written notation for those who prefer milliards and billiards
  - Fixed bug so now all shortened numbers respect your number rounding precision value
  - Minor code refactoring

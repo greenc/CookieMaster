@@ -5,23 +5,20 @@
 	</head>
 	<body>
 		<h1>CookieMaster</h1>
-		<p>CookieMaster is a browser plugin for <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>.</p>
+		<p><strong>CookieMaster is a browser plugin for <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>.</strong></p>
 		<p>It offers many useful features, statistics and options to help you get the most out of the game. See below for a full list, as well as upcoming and planned features.</p>
-		<p>CookieMaster is currently being actively developed, with stuff being added almost daily. If you find a bug or have a feature request, you are encouraged to <a href="https://github.com/greenc/CookieMaster/issues/new">open an issue</a> in the <a href="https://github.com/greenc/CookieMaster/issues">Issue Tracker</a>.</p>
+		<p>CookieMaster is currently being actively developed, with stuff being added almost daily. If you find a bug or have a feature request, you are encouraged to <a href="https://github.com/greenc/CookieMaster/issues/new">open an issue</a> in the <a href="https://github.com/greenc/CookieMaster/issues">Issue Tracker</a> on GitHub.</p>
 
 		<h2>How To Use</h2>
 		<ol>
 			<li>
 				<p>
-					<a href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)">Drag this link into your bookmarks bar/folder</a>
+					<a name="CookieMaster" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)">Drag this link into your bookmarks bar/folder</a>
 				</p>
 				<p><strong>or...</strong></p>
-				<p>
-					Paste the following code into a new bookmark in your browser:
-					<pre>
-						<code>javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)</code>
-					</pre>
-				</p>
+				<p>Paste the following code into a new bookmark in your browser:</p>
+				<textarea cols="80" rows="4">javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)</textarea>
+
 			</li>
 			<li>
 				<p>Load up <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></p>
@@ -86,7 +83,7 @@
 		<ol>
 			<li>Make sure you have <a href="http://git-scm.com/">Git</a>, and optionally <a href="http://nodejs.org/">Node.js</a> and [<a href="http://gruntjs.com/">Grunt</a> installed first.</li>
 			<li>Fork the <a href="https://github.com/greenc/CookieMaster">CookieMaster repository on GitHub</a> and clone it to your local machine.</li>
-			<li>Make your changes. All source files are located in the <em>src/</em> folder. If you are using Node/Grunt, you can run <code>grunt build</code> to create a <em>build/</em> directory with optimized files for local testing (remember to **only** include <em>src/</em> files in your commits if you issue a pull request).</li>
+			<li>Make your changes. All source files are located in the <em>src/</em> folder. If you are using Node/Grunt, you can run <code>grunt build</code> to create a <em>build/</em> directory with optimized files for local testing (remember to <strong>only</strong> include <em>src/</em> files in your commits if you issue a pull request).</li>
 			<li>When you're done making changes, commit and push them up to your forked repository.</li>
 			<li>You may then create a pull request from GitHub if you would like to have your changes considered for inclusion in the main CookieMaster repo.</li>
 		</ol>
