@@ -13,7 +13,7 @@ How To Use
 * Paste the following code into a new bookmark in your browser:
 
 ```javascript
-javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//greenc.github.io/CookieMaster/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)
+javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)
 ```
 
 * Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
@@ -96,3 +96,10 @@ It is recommended to download and run Cookie Clicker locally for testing any cha
 3. Make your changes. All source files are located in the `src/` folder. If you are using Node/Grunt, you can run `grunt build` to create a `build/` directory with optimized files for local testing (remember to **only** include `src/` files in your commits if you issue a pull request).
 4. When you're done making changes, commit and push them up to your forked repository.
 5. You may then create a pull request from GitHub if you would like to have your changes considered for inclusion in the main CookieMaster repo.
+
+Contributers
+----------
+
+[Chris Green](https://github.com/greenc) - original author
+[Jesper Öqvist](https://github.com/llbit)
+[Kyle Garrison](https://github.com/kgarrison343)

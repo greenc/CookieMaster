@@ -1,6 +1,14 @@
 # CookieMaster Release History
 
-### Version 1.6.4 - _2013/12/14_
+### Version 1.6.5 - _2013/12/17_
+
+ - Moved CookieMaster to new (and final) host that should be super fast (seriously, it's got SSDs n stuff)
+ - Added long written notation for those who prefer milliards and billiards
+ - Fixed bug so now all shortened numbers respect your number rounding precision value
+ - Minor code refactoring
+ - Added contributers section to the readme - shout out to those helping to make CookieMaster even more awesome!
+
+### Version 1.6.4 - _2013/12/15_
 
  - Moved CookieMaster to GitHub pages as we've been booted off of rawgithub :/
 
