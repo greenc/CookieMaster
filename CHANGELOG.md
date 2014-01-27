@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.8.1 - _2014/1/27_
+
+ - Segregated settings into sections
+ - Cleaned up some methods
+
 ### Version 1.8.0 - _2014/1/27_
 
  - Added color blind setting
