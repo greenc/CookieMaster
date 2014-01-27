@@ -27,8 +27,6 @@ Screenshot
 Features
 ----------
 
-It's still fairly early in development. Here's the checklist so far:
-
  - Long number shortening, e.g. 3,476,112,098,761 can be displayed as 3.476 T
  - Show different suffix types when shortening numbers, e.g. 26.696 Qa, 26.696 quadrillion, 26.696 P
  - Number localization: Display a period or comma as your preferred decimal separator
@@ -43,16 +41,20 @@ It's still fairly early in development. Here's the checklist so far:
  - Option to make Golden Cookies more visible when they spawn
  - Option to increase the hitbox area for Golden Cookies, making them easier to click during Cookie Chains
  - Auto-clicker for the Big Cookie with speed control
- - Ability to set auto-clicker only during Click Frenzies
+ - Ability to set auto-clicker during Frenzies, Click Frenzies or continuously
+ - Ability to auto-click Golden Cookies and Reindeer
  - Button to instantly pop all on-screen wrinklers
  - Calculate and display Heavenly Chip data, including time left and cookies left until the next one
  - Calculate and display information about banked cookies for maximum buff payouts and other items
  - Calculate and display your maximum Chain Cookie reward and the required bank and CpS to reach the next reward level
  - Calculate and display how many cookies Wrinklers have sucked and the reward for popping them
+ - Display missing achievements and shadow achievements
  - Clicking Golden Cookies and Reindeer no longer pops Wrinklers that lie beneath them
  - Other useful stats
  - Pause button
  - BETA: Persistent stat logging for tracking your CpS through your sessions
+ - BETA: Ability to export your logged stats as a CSV file
+ - True Neverclick helper - prevents you accidentally clicking Big Cookie while getting the achievement
 
 
 Planned and Upcoming Features
