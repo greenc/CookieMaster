@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.7.0
+    Version:      1.8.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.7.0',
+	version:              '1.8.0',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -292,6 +292,30 @@ CM.config = {
 			desc:    'Make the clickable area larger for Golden Cookies. Helps accuracy during chains. Requires "Show Timers" to be on.',
 			current: 'off'
 		},
+		autoClickPopups: {
+			type:    'select',
+			label:   'Auto-click Popups:',
+			desc:    'Automatically click Golden Cookies and Reindeer when they spawn.',
+			options: [
+				{
+					label: 'Off',
+					value: 'off'
+				},
+				{
+					label: 'Golden Cookies',
+					value: 'gc'
+				},
+				{
+					label: 'Reindeer',
+					value: 'sp'
+				},
+				{
+					label: 'All',
+					value: 'all'
+				}
+			],
+			current: 'off'
+		},
 		autoClick: {
 			type:    'select',
 			label:   'Auto-click Big Cookie:',
@@ -304,6 +328,10 @@ CM.config = {
 				{
 					label: 'During Click Frenzies',
 					value: 'clickFrenzies'
+				},
+				{
+					label: 'During All Frenzies',
+					value: 'allFrenzies'
 				},
 				{
 					label: 'All the time',
@@ -328,8 +356,20 @@ CM.config = {
 			label: 'Enable logging (BETA):',
 			desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
 			current: 'off'
+		},
+		trueNeverclick: {
+			type:  'checkbox',
+			label: 'True Neverclick helper:',
+			desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
+			current: 'off'
+		},
+		colorBlind: {
+			type:    'checkbox',
+			label:   'Color Blind Mode:',
+			desc:    'Alternate color scheme that is color-blind friendly.',
+			current: 'off'
 		}
-	},
+	}
 
 };
 
@@ -1133,8 +1173,13 @@ CM.mainLoop = function() {
 		this.showVisualAlerts();
 	}
 
-	// Auto click for Click Frenzies if set
-	this.autoClickClickFrenzies();
+	// Auto click popups if set
+	if(settings.autoClickPopups.current !== 'off') {
+		this.autoClickPopups();
+	}
+
+	// Handle auto-clickers
+	this.manageAutoClicker();
 
 	if(this.config.cmStatsPanel.is(':visible')) {
 		this.updateStats();
@@ -1267,12 +1312,16 @@ CM.attachStatsPanel = function() {
 		$cmTable           = {},
 		$cmStatsChartCont  = $('<div />').attr('id', 'CMChartCont'),
 		$cmStatsChartTitle = $('<h3 />').attr('class', 'title').html('Stat Logging'),
-		$cmStatsChartIntro = $('<p />').html('This feature currently allows you to log and track your base and effective CpS stats over time. Stats are logged at 30 second intervals as long as logging is on, and logs are persistent though page refreshes, game resets and save imports unless cleared manually.<br />Please note that this feature is still in beta, and may behave unexpectedly!'),
+		$cmStatsChartIntro = $('<p />').html('This feature currently allows you to log and track your base and effective CpS stats over time. Stats are logged at 30 second intervals as long as logging is on, and logs are persistent though page refreshes, game resets and save imports unless cleared manually.<br />Please note that this feature is still in beta, and may behave unexpectedly!<br />Download as CSV is currently only supported in recent versions of Chrome and Firefox.'),
 		$cmStatsChart      = $('<div />').attr('id', 'CMChart'),
 		$cmStatsChartBtnY  = $('<button />').attr({'id': 'CMChartY', 'type': 'button', 'class': 'cmFont'}).text('Start logging'),
 		$cmStatsChartBtnN  = $('<button />').attr({'id': 'CMChartN', 'type': 'button', 'class': 'cmFont'}).text('Stop logging'),
 		$cmStatsChartBtnC  = $('<button />').attr({'id': 'CMChartC', 'type': 'button', 'class': 'cmFont'}).text('Clear log'),
-		tableHTML          = '';
+		$cmStatsChartBtnD  = $('<button />').attr({'id': 'CMChartD', 'type': 'button', 'class': 'cmFont'}).text('Download CSV'),
+		tableHTML          = '',
+		missingA = [],
+		missingS = [],
+		a, i, j;
 
 	tableHTML += '<table class="cmTable">';
 	tableHTML +=     '<tr class="cmHeader">';
@@ -1397,6 +1446,60 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
 
+	/**
+	 * Show missing achievements
+	 */
+
+	// Get the missing achievements
+	for(a in Game.Achievements) {
+		if(Game.Achievements[a].category === 'none' && Game.Achievements[a].won ===0) {
+			if(Game.Achievements[a].hide !== 3) {
+				missingA.push(a);
+			}
+			if(Game.Achievements[a].hide === 3) {
+				missingS.push(a);
+			}
+		}
+	}
+
+	// Non-shadow achievements
+	tableHTML += '<table class="cmTable" id="CMAchTable">';
+	tableHTML +=     '<tr class="cmHeader">';
+	tableHTML +=         '<th colspan="2" class="cmFont">Missing Achievements<span class="cmFloatRight cmShowAsLink" id="CMToggleAch">Show/Hide</span></th>';
+	tableHTML +=     '</tr>';
+	if(missingA.length) {
+		for(i = 0; i < missingA.length; i++) {
+			tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
+			tableHTML +=     '<td>' + missingA[i] + '</td>';
+			tableHTML +=     '<td class="cmValue">' + Game.Achievements[missingA[i]].desc + '</td>';
+			tableHTML += '</tr>';
+		}
+	} else {
+		tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
+		tableHTML +=     '<td colspan="2">All achievements unlocked. Go you!</td>';
+		tableHTML += '</tr>';
+	}
+	tableHTML += '</table>';
+
+	// Shadow achievements
+	tableHTML += '<table class="cmTable" id="CMShaTable">';
+	tableHTML +=     '<tr class="cmHeader">';
+	tableHTML +=         '<th colspan="2" class="cmFont">Missing Shadow Achievements<span class="cmFloatRight cmShowAsLink" id="CMToggleSha">Show/Hide</span></th>';
+	tableHTML +=     '</tr>';
+	if(missingS.length) {
+		for(j = 0; j < missingS.length; j++) {
+			tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
+			tableHTML +=     '<td>' + missingS[j] + '</td>';
+			tableHTML +=     '<td class="cmValue">' + Game.Achievements[missingS[j]].desc + '</td>';
+			tableHTML += '</tr>';
+		}
+	} else {
+		tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
+		tableHTML +=     '<td colspan="2">All shadow achievements unlocked. Go outside!</td>';
+		tableHTML += '</tr>';
+	}
+	tableHTML += '</table>';
+
 	$cmTable = $(tableHTML);
 
 	$cmStatsChartCont.append(
@@ -1405,6 +1508,7 @@ CM.attachStatsPanel = function() {
 		$cmStatsChartBtnY,
 		$cmStatsChartBtnN,
 		$cmStatsChartBtnC,
+		$cmStatsChartBtnD,
 		$cmStatsChart
 	);
 
@@ -1433,6 +1537,9 @@ CM.attachEfficiencyKey = function() {
 
 		tableHTML +=     '<tr class="cmHeader">';
 		tableHTML +=         '<th colspan="2" class="cmFont">Efficiency Key:</th>';
+		tableHTML +=     '</tr>';
+		tableHTML +=     '<tr>';
+		tableHTML +=         '<td colspan="2">BCI = Base Cost per Income (Item cost divided by CpS increase)</td>';
 		tableHTML +=     '</tr>';
 		tableHTML +=     '<tr>';
 		tableHTML +=         '<td><span class="cmSample background-cyan"></span></td>';
@@ -1719,6 +1826,30 @@ CM.displayGCTimer = function() {
 
 };
 
+CM.autoClickPopups = function() {
+
+	var setting = this.config.settings.autoClickPopups.current;
+
+	// Auto click Golden Cookie
+	if(setting === 'gc' || setting === 'all') {
+
+		if(Game.goldenCookie.life > 0) {
+			Game.goldenCookie.click();
+		}
+
+	}
+
+	// Auto click Reindeer
+	if(setting === 'sp' || setting === 'all') {
+
+		if(Game.seasonPopup.life > 0) {
+			Game.seasonPopup.click();
+		}
+
+	}
+
+};
+
 /**
  * Flash the screen when Golden Cookies and Reindeer spawn
  */
@@ -1882,25 +2013,99 @@ CM.updateTitleTicker = function() {
 };
 
 /**
- * Set up an auto-clicker when Click Frenzy is active
+ * Prevent Big Cookie clicks when going for True Neverclick
  */
-CM.autoClickClickFrenzies = function() {
+CM.setTrueNeverclick = function() {
 
-	if (this.config.settings.autoClick.current === 'clickFrenzies') {
-		if(Game.clickFrenzy > 0) {
-			if(this.autoClicker) {
-				clearInterval(this.autoClicker);
+	if(this.config.settings.trueNeverclick.current === 'on') {
+
+		// Only set if achievement isn't already unlocked
+		if(!Game.HasAchiev('True Neverclick')) {
+
+			// Warn if Big Cookie has already been clicked
+			if(Game.cookieClicks > 0) {
+				alert('Warning: True Neverclick not possible as Big Cookie has already been clicked ' + Game.cookieClicks + ' times this session.');
 			}
-			this.autoClicker = setInterval(
-				function() {
+
+			// Unbind and remove all click handlers
+			$('#bigCookie')[0].removeEventListener('click', Game.ClickCookie);
+			$('#bigCookie').unbind('click');
+
+			// Reattach our own
+			$('#bigCookie').click(function(event) {
+				if(!Game.HasAchiev('True Neverclick')) {
+					CM.popup('Click prevented!');
+				} else {
 					Game.ClickCookie();
-				}, 1000 / CM.config.settings.autoClickSpeed.current
-			);
+				}
+			});
+
 		} else {
-			if(this.autoClicker) {
-				clearInterval(this.autoClicker);
-			}
+			alert('True Neverclick is already unlocked.')
 		}
+
+	} else {
+
+		// Unbind and remove all click handlers
+		$('#bigCookie')[0].removeEventListener('click', Game.ClickCookie);
+		$('#bigCookie').unbind('click');
+
+		// Reattach original handler
+		AddEvent(l('bigCookie'), 'click', Game.ClickCookie);
+	}
+
+};
+
+/**
+ * Starts an auto-clicker using click speed in settings
+ */
+CM.startAutoClicker = function() {
+
+	this.clearAutoClicker();
+	this.autoClicker = setInterval(
+		function() {
+			Game.ClickCookie();
+		}, 1000 / CM.config.settings.autoClickSpeed.current
+	);
+
+};
+
+/**
+ * Clears active auto-clicker
+ */
+CM.clearAutoClicker = function() {
+
+	if(this.autoClicker) {
+		clearInterval(this.autoClicker);
+	}
+
+};
+
+/**
+ * Sets and clears the auto-clicker during frenzies
+ */
+CM.manageAutoClicker = function() {
+
+	var when        = this.config.settings.autoClick.current,
+		clickFrenzy = Game.clickFrenzy > 0,
+		frenzy      = Game.frenzy > 0 && Game.frenzyPower > 1;
+
+	if(when === 'allFrenzies') {
+
+		if(frenzy || clickFrenzy) {
+			this.startAutoClicker();
+		} else {
+			this.clearAutoClicker();
+		}
+
+	} else if(when === 'clickFrenzies') {
+
+		if(clickFrenzy) {
+			this.startAutoClicker();
+		} else {
+			this.clearAutoClicker();
+		}
+
 	}
 
 };
@@ -1987,9 +2192,8 @@ CM.clearLogSesion = function() {
 	this.config.cmStatsLogStart = new Date().getTime();
 	localStorage.setItem('CMStatsStartTime', this.config.cmStatsLogStart);
 
-	// Clear the chart and redraw empty
+	// Clear the chart
 	this.config.cmStatsChart.clearChart();
-	this.logData();
 
 	this.popup('Log cleared!');
 
@@ -2035,7 +2239,7 @@ CM.logData = function() {
  */
 CM.drawChart = function() {
 
-	var data = CM.config.cmStatsData || JSON.parse(localStorage.getItem('CMStatsData')) || {"0s": [Math.round(CM.baseCps() * 10) / 10, Math.round(CM.effectiveCps() * 10) / 10]},
+	var data = CM.config.cmStatsData || JSON.parse(localStorage.getItem('CMStatsData')),
 		chartData = [['Time', 'CpS', 'Effective CpS']],
 		formattedData,
 		options = {
@@ -2071,18 +2275,63 @@ CM.drawChart = function() {
 			fontSize: '12'
 		};
 
-	// Format our data to Google's liking
-	$.each(data, function(key, value) {
-		chartData.push([key, value[0], value[1]]);
-	});
-	formattedData = google.visualization.arrayToDataTable(chartData);
+	if(data) {
 
-	// Create the chart is it doesn't exist
-	if(!CM.config.cmStatsChart) {
-		CM.config.cmStatsChart = new google.visualization.LineChart(document.getElementById('CMChart'));
+		// Format our data to Google's liking
+		$.each(data, function(key, value) {
+			chartData.push([key, value[0], value[1]]);
+		});
+		formattedData = google.visualization.arrayToDataTable(chartData);
+
+		// Create the chart is it doesn't exist
+		if(!CM.config.cmStatsChart) {
+			CM.config.cmStatsChart = new google.visualization.LineChart(document.getElementById('CMChart'));
+		}
+		// Draw it
+		CM.config.cmStatsChart.draw(formattedData, options);
+
 	}
-	// Draw it
-	CM.config.cmStatsChart.draw(formattedData, options);
+
+};
+
+/**
+ * Creates and downloads logged stats as a CSV
+ */
+CM.downloadCSV = function() {
+
+	var data = this.config.cmStatsData || JSON.parse(localStorage.getItem('CMStatsData')),
+		output = [['Time', 'CpS', 'Effective  CpS']],
+		csvRows = [],
+		csvString,
+		key,
+		a,
+		i,
+		l;
+
+	if(data) {
+
+		for(key in data) {
+			output.push([key.replace(new RegExp(',', 'g'), ';'), data[key][0], data[key][1]]);
+		}
+
+		for(i = 0, l = output.length; i < l; ++i) {
+			csvRows.push(output[i].join(','));
+		}
+
+		csvString  = csvRows.join("%0A");
+		a          = document.createElement('a');
+		a.href     = 'data:attachment/csv,' + csvString;
+		a.target   = '_blank';
+		a.download = 'stats.csv';
+
+		document.body.appendChild(a);
+		a.click();
+
+	} else {
+
+		alert('No logged data to download :(');
+
+	}
 
 };
 
@@ -2185,20 +2434,11 @@ CM.applyUserSettings = function() {
 		config.ccBody.removeClass('cmLargeClickArea');
 	}
 
-	// Start/stop the auto-clicker
-	if (settings.autoClick.current === 'on') {
-		if(this.autoClicker) {
-			clearInterval(this.autoClicker);
-		}
-		this.autoClicker = setInterval(
-			function() {
-				Game.ClickCookie();
-			}, 1000 / CM.config.settings.autoClickSpeed.current
-		);
+	// Set the auto-clicker
+	if(settings.autoClick.current === 'on') {
+		this.startAutoClicker();
 	} else {
-		if(this.autoClicker) {
-			clearInterval(this.autoClicker);
-		}
+		this.clearAutoClicker();
 	}
 
 	// Logging logic (arghh!)
@@ -2265,6 +2505,15 @@ CM.applyUserSettings = function() {
 
 	}
 
+	// Color blind mode
+	if (settings.colorBlind.current === 'on') {
+		config.ccBody.addClass('cmCB');
+	} else {
+		config.ccBody.removeClass('cmCB');
+	}
+
+	// True Neverclick
+	this.setTrueNeverclick();
 
 	// Refresh the game panels
 	Game.RebuildStore();
@@ -2427,6 +2676,17 @@ CM.setEvents = function() {
 	});
 	$('#CMChartC').click(function() {
 		self.clearLogSesion();
+	});
+	$('#CMChartD').click(function() {
+		self.downloadCSV();
+	});
+
+	// Show/hide missing achievements tables
+	$('#CMToggleAch').click(function(){
+		$('#CMAchTable .cmICantThinkOfAGoodClassNameForThis').toggle();
+	});
+	$('#CMToggleSha').click(function(){
+		$('#CMShaTable .cmICantThinkOfAGoodClassNameForThis').toggle();
 	});
 
 };

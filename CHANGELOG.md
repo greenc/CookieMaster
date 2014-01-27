@@ -1,6 +1,16 @@
 # CookieMaster Release History
 
-### Version 1.6.5 - _2013/12/17_
+### Version 1.8.0 - _2013/12/27_
+
+ - Added color blind setting
+ - Added True Neverclick setting to prevent you accidentally clicking the Big Cookie while attempting to get the achievement
+ - Added auto-clicker for Golden Cookies and Reindeer.
+ - Added setting for Big Cookie auto-clicker to click during all Frenzies
+ - Added ability to download logged stats as a CSV (currently only supported in Chrome and Firefox)
+ - Added stats showing your missing achievements and shadow achievements along with their descriptions
+ - Cleaned up a few bugs with logging
+
+### Version 1.7.0 - _2013/12/17_
 
  - Moved CookieMaster to new (and final) host that should be super fast (seriously, it's got SSDs and stuff)
  - Added long written notation for those who prefer milliards and billiards

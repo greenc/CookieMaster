@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.7.0
+    Version:      1.8.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -107,7 +107,8 @@
 #CMSettingsPause,
 #CMChartY,
 #CMChartN,
-#CMChartC {
+#CMChartC,
+#CMChartD {
 	cursor: pointer;
 	border: 1px solid #6CA01E;
 	background-color: #588811;
@@ -133,9 +134,15 @@
 	background-color: #8D0000;
 }
 
+#CMChartD {
+	background-color: #0083C5;
+	border: 1px solid #30A0D8;
+}
+
 #CMChartY,
 #CMChartN,
-#CMChartC {
+#CMChartC,
+#CMChartD {
 	margin-left: 0;
 	margin-right: 10px;
 }
@@ -153,6 +160,10 @@
 #CMChartN:hover {
 	border: 1px solid #B60000;
 	background-color: #A20000;
+}
+
+#CMChartD:hover {
+	background-color: #048FD5;
 }
 
 #CMTimerPanel {
@@ -339,6 +350,27 @@
 
 .cmFont { font-family: "Kavoon", Georgia, serif; }
 
+.cmFloatRight { float: right; }
+
+.cmShowAsLink {
+	color: #6CF;
+	font-family: Tahoma,Arial,sans-serif;
+	font-weight: normal;
+	font-size: 12px;
+	cursor: pointer;
+}
+.cmShowAsLink:hover { text-decoration: underline; }
+
+.cmICantThinkOfAGoodClassNameForThis { display: none; }
+
+#CMAchTable .cmValue,
+#CMShaTable .cmValue {
+	width: 70%;
+	color: #FFF;
+	font-weight: bold;
+}
+
+
 #game.onCMMenu #sectionMiddle {
 	background: #000 url(http://orteil.dashnet.org/cookieclicker/img/darkNoise.png);
 }
@@ -392,11 +424,11 @@
 
 #CMEfficiencyTable td {
 	vertical-align: top;
-	border-bottom: 1px dashed #616161;;
+	border-bottom: 1px dashed #616161;
+	padding: 5px;
 }
 
 #CMEfficiencyTable .cmValue {
-	padding-right: 5px;
 	width: 265px;
 	font-weight: normal;
 }
@@ -405,8 +437,6 @@
 	display: block;
 	height: 18px;
 	width: 18px;
-	margin: 0 5px;
-
 }
 
 /* Stats Chart */
@@ -439,6 +469,11 @@
 .background-green { background: #6f6 !important; }
 .text-green { color: #6f6 !important; }
 .border-green { border-color: #6f6 !important; }
+
+/* Color blind */
+.cmCB .background-green { background: #37BEFF !important; }
+.cmCB .text-green { color: #37BEFF !important; }
+.cmCB .border-green { border-color: #37BEFF !important; }
 
 .background-orange { background: #ff7f00 !important; }
 .text-orange { color: #ff7f00 !important; }
