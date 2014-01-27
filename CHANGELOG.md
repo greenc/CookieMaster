@@ -1,6 +1,6 @@
 # CookieMaster Release History
 
-### Version 1.8.0 - _2013/12/27_
+### Version 1.8.0 - _2014/1/27_
 
  - Added color blind setting
  - Added True Neverclick setting to prevent you accidentally clicking the Big Cookie while attempting to get the achievement
@@ -10,7 +10,7 @@
  - Added stats showing your missing achievements and shadow achievements along with their descriptions
  - Cleaned up a few bugs with logging
 
-### Version 1.7.0 - _2013/12/17_
+### Version 1.7.0 - _2014/1/17_
 
  - Moved CookieMaster to new (and final) host that should be super fast (seriously, it's got SSDs and stuff)
  - Added long written notation for those who prefer milliards and billiards
@@ -18,44 +18,44 @@
  - Minor code refactoring
  - Added contributers section to the readme - shout out to those helping to make CookieMaster even more awesome!
 
-### Version 1.6.4 - _2013/12/15_
+### Version 1.6.4 - _2014/1/15_
 
  - Moved CookieMaster to GitHub pages as we've been booted off of rawgithub :/
 
-### Version 1.6.3 - _2013/12/14_
+### Version 1.6.3 - _2014/1/14_
 
  - Fixed typo that prevented Reindeer audio alert from playing (oops!)
 
-### Version 1.6.2 - _2013/12/14_
+### Version 1.6.2 - _2014/1/14_
 
  - Added more number formatting options (scientific, scientific "e" notation and compact scientific notation)
  - CpS chart now shows a logarithmic scale with a zero baseline for easy of use
  - Fixed delay on Golden Cookie and Reindeer alert sounds (credit to Jesper Öqvist - https://github.com/llbit)
 
-### Version 1.6.1 - _2013/12/09_
+### Version 1.6.1 - _2014/1/09_
 
  - Fixed some logic with logging when saving user settings and reloading the page
 
-### Version 1.6.0 - _2013/12/09_
+### Version 1.6.0 - _2014/1/09_
 
  - Added persistent stat logging. You can now track your base and effective CpS across your session(s) (Currently in BETA)
  - Massive and wildly unncecessary refactoring of the bootstrap file :(
 
-### Version 1.5.3 - _2013/12/08_
+### Version 1.5.3 - _2014/1/08_
 
  - Fixed bug in webkit browsers where audio alerts would only play once
  - Added volume slider for audio alerts
 
-### Version 1.5.2 - _2013/12/08_
+### Version 1.5.2 - _2014/1/08_
 
  - Prevented Wrinklers getting clicked when clicking Golden Cookies and Reindeer (yay!)
  - Cleaned up some methods
 
-### Version 1.5.1 - _2013/12/08_
+### Version 1.5.1 - _2014/1/08_
 
  - Fixed incorrect audio file URLs in build directory
 
-### Version 1.5.0 - _2013/12/08_
+### Version 1.5.0 - _2014/1/08_
 
  - Added building efficiency stats. Methods for calculating stats are derived from [Maxime Fabre's forked Cookie Monster repo](https://github.com/Anahkiasen/cookie-monster), which improves on the original Cookie Monster calculations considerably
  - Added option to show a table with color-coded keys for building efficiency stats
@@ -69,15 +69,15 @@
  - Fixed Cookie Chain stats bug where normal/Wrath chain values and rewards were reversed
  - Minor visual fixes and tweaks
 
-### Version 1.4.2 - _2013/12/02_
+### Version 1.4.2 - _2014/1/02_
 
  - Fixed wrong stats showing for current Luck and current Frenzy + Lucky rewards when player is under the max bank required value
 
-### Version 1.4.1 - _2013/12/02_
+### Version 1.4.1 - _2014/1/02_
 
  - Fixed wrong stats showing for Cookie Chain bank and CpS values
 
-### Version 1.4.0 - _2013/12/02_
+### Version 1.4.0 - _2014/1/02_
 
  - Added option to choose rounding precision for large numbers
  - Added option to make Golden Cookies more visible when they spawn

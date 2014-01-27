@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.8.0
+    Version:      1.8.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.8.0',
+	version:              '1.8.1',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -80,20 +80,31 @@ CM.config = {
 	// Settings panel settings
 	///////////////////////////////////////////////
 
+	settingsGroups: {
+		general: 'General',
+		numbers: 'Numbers',
+		alerts:  'Timers & Alerts',
+		ui:      'Interface',
+		cheats:  'I\'m a dirty rotten cheater'
+	},
+
 	settings: {
 		cleanUI: {
+			group:   'ui',
 			type:    'checkbox',
 			label:   'Clean Interface:',
 			desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
 			current: 'on'
 		},
 		showTimers: {
+			group:   'alerts',
 			type:    'checkbox',
 			label:   'Show Timers:',
 			desc:    'Display countdown timers for game events and buffs.',
 			current: 'on'
 		},
 		timerBarPosition: {
+			group:   'alerts',
 			type:    'select',
 			label:   'Timer Bar Position:',
 			desc:    'Position the timer bar at the top or bottom of the screen.',
@@ -110,6 +121,7 @@ CM.config = {
 			current: 'bottom'
 		},
 		audioAlerts: {
+			group:   'alerts',
 			type:    'select',
 			label:   'Audio Alerts:',
 			desc:    'Play an audio alert when Golden Cookies and Reindeer spawn.',
@@ -134,6 +146,7 @@ CM.config = {
 			current: 'all'
 		},
 		audioVolume: {
+			group: 'alerts',
 			type:  'range',
 			label: 'Audio Alert Volume:',
 			desc:  'Adjust the playback volume of the audio alerts.',
@@ -145,6 +158,7 @@ CM.config = {
 			current: 0.4
 		},
 		visualAlerts: {
+			group:   'alerts',
 			type:    'select',
 			label:   'Visual Alerts:',
 			desc:    'Flash the screen when Golden Cookies and Reindeer spawn.',
@@ -169,6 +183,7 @@ CM.config = {
 			current: 'all'
 		},
 		numFormat: {
+			group: 'numbers',
 			type:  'select',
 			label: 'Number Formatting:',
 			desc:  'Sets the desired decimal and thousands separator symbols for numbers.',
@@ -185,12 +200,14 @@ CM.config = {
 			current: 'us'
 		},
 		shortNums: {
+			group:   'numbers',
 			type:    'checkbox',
 			label:   'Shorten Numbers:',
 			desc:    'Shorten large numbers with suffixes.',
 			current: 'on'
 		},
 		suffixFormat: {
+			group: 'numbers',
 			type:  'select',
 			label: 'Suffix Type:',
 			desc:  'Notation type to use for shortened number suffixes.',
@@ -227,6 +244,7 @@ CM.config = {
 			current: 'math'
 		},
 		precision: {
+			group: 'numbers',
 			type:  'select',
 			label: 'Precision:',
 			desc:  'How many decimal places to show for shortened numbers.',
@@ -255,12 +273,14 @@ CM.config = {
 			current: '3'
 		},
 		showEfficiencyKey: {
+			group:   'ui',
 			type:    'checkbox',
 			label:   'Show Efficiency Key:',
 			desc:    'Display building efficiency color key in the right panel.',
 			current: 'on'
 		},
 		changeFont: {
+			group: 'ui',
 			type:  'select',
 			label: 'Game Font:',
 			desc:  'Set the highlight font used throughout the game.',
@@ -281,18 +301,21 @@ CM.config = {
 			current: 'default'
 		},
 		highVisibilityCookie: {
+			group:   'ui',
 			type:    'checkbox',
 			label:   'High Visibility Cookies:',
 			desc:    'Increase the contrast between Golden Cookies and the background.',
 			current: 'off'
 		},
 		increaseClickArea: {
+			group:   'ui',
 			type:    'checkbox',
 			label:   'Increase Cookie Hitbox:',
 			desc:    'Make the clickable area larger for Golden Cookies. Helps accuracy during chains. Requires "Show Timers" to be on.',
 			current: 'off'
 		},
 		autoClickPopups: {
+			group:   'cheats',
 			type:    'select',
 			label:   'Auto-click Popups:',
 			desc:    'Automatically click Golden Cookies and Reindeer when they spawn.',
@@ -317,6 +340,7 @@ CM.config = {
 			current: 'off'
 		},
 		autoClick: {
+			group:   'cheats',
 			type:    'select',
 			label:   'Auto-click Big Cookie:',
 			desc:    'Automatically click the big cookie.',
@@ -341,6 +365,7 @@ CM.config = {
 			current: 'off'
 		},
 		autoClickSpeed: {
+			group: 'cheats',
 			type:  'range',
 			label: 'Auto-click Speed:',
 			desc:  'How many times per second to auto-click the big cookie.',
@@ -352,18 +377,21 @@ CM.config = {
 			current: 10
 		},
 		enableLogging: {
+			group: 'general',
 			type:  'checkbox',
 			label: 'Enable logging (BETA):',
 			desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
 			current: 'off'
 		},
 		trueNeverclick: {
+			group: 'general',
 			type:  'checkbox',
 			label: 'True Neverclick helper:',
 			desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
 			current: 'off'
 		},
 		colorBlind: {
+			group:   'ui',
 			type:    'checkbox',
 			label:   'Color Blind Mode:',
 			desc:    'Alternate color scheme that is color-blind friendly.',
@@ -1200,89 +1228,107 @@ CM.mainLoop = function() {
 CM.attachSettingsPanel = function() {
 
 	var self     = this,
-		items    = [],
 		options  = [],
 		control  = [],
 		current  = '',
 		selected = '',
 		html     = '',
+		groups   = this.config.settingsGroups,
 		settings = this.config.settings,
+		group,
+		setting,
+		thisSetting,
+		thisOption,
+		option,
 
 		$ccSectionMiddle  = this.config.ccSectionMiddle,
 		$ccComments       = this.config.ccComments,
 		$cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
 		$cmSettingsButton = $('<div />').attr({'id': 'CMSettingsPanelButton', 'class': 'button'}).text('Settings'),
-		$cmSettingsTitle   = $('<h3 />').attr('class', 'title').html('CookieMaster Settings<span class="cmTitleSub">v.' + this.config.version + '</span>'),
-		$cmSettingsTable   = $('<table />').attr({'id': 'CMSettingsTable', 'class': 'cmTable'}),
+		$cmSettingsTitle  = $('<h3 />').attr('class', 'title').html('CookieMaster Settings<span class="cmTitleSub">v.' + this.config.version + '</span>'),
+		$cmSettingsTables = $('<div />').attr('id', 'CMSettingsTables'),
 		$cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Apply Settings'),
 		$cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button', 'class': 'cmFont'}).text('Pause Game');
 
-	// Build each setting item
-	$.each(settings, function(key, value) {
 
-		// Reset these for each loop
-		options = [];
-		current = this.current;
+	// Loop over each settings group
+	for(group in groups) {
 
-		if(this.type === 'select') { // Build a select box
+		// Create a table for each group
+		html += '<table class="cmTable">';
+		html +=     '<tr class="cmHeader">';
+		html +=        '<th colspan="2" class="cmFont">' + groups[group] + '</th>';
+		html +=     '</tr>';
 
-			$.each(this.options, function() {
+		// Then loop over each setting
+		for(setting in settings) {
 
-				selected = (current === this.value.toString()) ? ' selected="selected"' : '';
-				options.push('<option value="' + this.value + '"' + selected + '>' + this.label + '</option>');
+			thisSetting = settings[setting];
 
-			});
+			// Build the setting if it's part of the group we are currently in
+			if(thisSetting.group === group) {
 
-			control =  '<select id="CMSetting-' + key + '">';
-			control += options.join('');
-			control += '</select>';
+				// Reset these for each loop
+				options = [];
+				option  = {};
+				current = thisSetting.current;
 
-			// Add event handler for change event
-			$cmSettingsTable.on('change', '.setting-' + key + ' select', function() {
-				settings[key].current = $(this).find(":selected").val();
-			});
+				if(thisSetting.type === 'select') { // Build a select box
 
-		} else if(this.type === 'checkbox') { // Build a checkbox
+					for(option in thisSetting.options) {
 
-			selected = (current === 'on') ? ' checked="checked"' : '';
-			control  = '<input type="checkbox" id="CMSetting-' + key + '"' + selected + ' />';
+						thisOption = thisSetting.options[option];
 
-			// Add event handler for change event
-			$cmSettingsTable.on('change', '.setting-' + key + ' input', function() {
-				settings[key].current = $(this).prop('checked') ? 'on' : 'off';
-			});
+						selected = (current === thisOption.value.toString()) ? ' selected="selected"' : '';
+						options.push('<option value="' + thisOption.value + '"' + selected + '>' + thisOption.label + '</option>');
 
-		} else if(this.type === 'range') { // Build a range slider
+					}
 
-			control  = '<span class="currentValue">' + this.current + '</span>';
-			control += '<input type="range" value="'+ this.current + '" min="' + this.options.min + '" max="' + this.options.max + '" step="' + this.options.step + '" id="CMSetting-' + key + '" />';
+					control =  '<select data-name="' + setting + '">';
+					control += options.join('');
+					control += '</select>';
 
-			// Add event handler for change event
-			$cmSettingsTable.on('change', '.setting-' + key + ' input', function() {
-				$(this).siblings('.currentValue').text($(this).val());
-				settings[key].current = $(this).val();
-			});
+				} else if(thisSetting.type === 'checkbox') { // Build a checkbox
+
+					selected = (current === 'on') ? ' checked="checked"' : '';
+					control  = '<input type="checkbox" data-name="' + setting + '"' + selected + ' />';
+
+				} else if(thisSetting.type === 'range') { // Build a range slider
+
+					control  = '<span class="currentValue">' + thisSetting.current + '</span>';
+					control += '<input ' +
+									'type="range" ' +
+									'value="'+ thisSetting.current      + '" ' +
+									'min="'  + thisSetting.options.min  + '" ' +
+									'max="'  + thisSetting.options.max  + '" ' +
+									'step="' + thisSetting.options.step + '" ' +
+									'data-name="' + setting + '" ' +
+								'/>';
+
+				}
+
+				// Build the table row
+				html += '<tr class="setting setting-' + setting + '">';
+				html +=     '<td>';
+				html +=         '<label for="CMSetting-' + setting + '">' + thisSetting.label + '</label>';
+				html +=         '<small>' + thisSetting.desc + '</small>';
+				html +=          '</td>';
+				html +=     '<td class="cmValue">' + control + '</td>';
+				html += '</tr>';
+
+			}
 
 		}
 
-		// Build the table row
-		html =  '<tr class="setting setting-' + key + '">';
-		html +=     '<td>';
-		html +=         '<label for="CMSetting-' + key + '">' + this.label + '</label>';
-		html +=         '<small>' + this.desc + '</small>';
-		html +=          '</td>';
-		html +=     '<td class="cmValue">' + control + '</td>';
-		html += '</tr>';
+		html += '</table>';
 
-		items.push(html);
-
-	});
+	}
 
 	// Glue it together
-	$cmSettingsTable.append(items.join(''));
+	$cmSettingsTables.append(html);
 	$cmSettingsPanel.append(
 		$cmSettingsTitle,
-		$cmSettingsTable,
+		$cmSettingsTables,
 		$cmSettingsSave,
 		$cmSettingsPause
 	);
@@ -1293,15 +1339,6 @@ CM.attachSettingsPanel = function() {
 
 	// Cache the selector
 	this.config.cmSettingsPanel = $cmSettingsPanel;
-
-	// Set event handlers
-	$cmSettingsSave.click(function() {
-		self.saveUserSettings();
-		self.applyUserSettings();
-	});
-	$cmSettingsPause.click(function() {
-		alert('Game paused. Click OK to resume.');
-	});
 
 };
 
@@ -2588,18 +2625,39 @@ CM.loadUserSettings = function() {
 };
 
 /**
- * Set event handlers for non-setting specific actions
- * (Setting-specific actions should have their event handlers
+ * Set event handlers for non-feature specific actions
+ * (Feature-specific actions should have their event handlers
  * set and destroyed in their respective creation/removal methods)
  */
 CM.setEvents = function() {
 
 	// TO DO: Cache selectors and clean this up
-	var self           = this,
-		$game          = this.config.ccGame,
-		$statsPanel    = this.config.cmStatsPanel,
-		$settingsPanel = this.config.cmSettingsPanel,
-		$sectionLeft   = this.config.ccSectionLeft;
+	var self              = this,
+		$game             = this.config.ccGame,
+		$statsPanel       = this.config.cmStatsPanel,
+		$settingsPanel    = this.config.cmSettingsPanel,
+		$sectionLeft      = this.config.ccSectionLeft,
+		$cmSettingsTables = $('#CMSettingsTables');
+
+	// Handlers for the settings panel
+	$cmSettingsTables.on('change', 'input, select', function() {
+		var setting = $(this).data('name');
+		if($(this).is('select')) {
+			self.config.settings[setting].current = $(this).find(":selected").val();
+		} else if($(this).is('[type="checkbox"]')) {
+			self.config.settings[setting].current = $(this).prop('checked') ? 'on' : 'off';
+		}
+		if($(this).is('[type="range"]')) {
+			$(this).siblings('.currentValue').text($(this).val());
+		}
+	});
+	$('#CMSettingsSave').click(function() {
+		self.saveUserSettings();
+		self.applyUserSettings();
+	});
+	$('#CMSettingsPause').click(function() {
+		alert('Game paused. Click OK to resume.');
+	});
 
 	// Set some click handlers for the menu buttons
 	$('#statsButton, #prefsButton, #logButton').click(function() {

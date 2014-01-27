@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.8.0
+    Version:      1.8.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -80,16 +80,14 @@
 	font-weight: normal;
 }
 
-#CMSettingsTable { border-top: 1px dashed #3A3A3A; }
-
-#CMSettingsTable small {
+#CMSettingsTables small {
 	display: block;
 	line-height: 14px;
 	font-size: 11px;
 	color: #666;
 }
 
-#CMSettingsTable .cmValue {
+#CMSettingsTables .cmValue {
 	vertical-align: middle;
 	text-align: right;
 }
