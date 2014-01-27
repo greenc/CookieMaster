@@ -100,6 +100,6 @@ It is recommended to download and run Cookie Clicker locally for testing any cha
 Contributers
 ----------
 
-[Chris Green](https://github.com/greenc) - original author
-[Jesper Öqvist](https://github.com/llbit)
-[Kyle Garrison](https://github.com/kgarrison343)
+ - [Chris Green](https://github.com/greenc) - original author
+ - [Jesper Öqvist](https://github.com/llbit)
+ - [Kyle Garrison](https://github.com/kgarrison343)
