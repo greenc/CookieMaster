@@ -1118,10 +1118,13 @@ CM.appendToNative = function(native, append) {
  * @return {String}
  */
 CM.replaceCode = function(code, replaces) {
+
+	var replace;
+
 	code = code.toString();
 
 	// Apply the various replaces
-	for (var replace in replaces) {
+	for(replace in replaces) {
 		code = code.replace(replace, replaces[replace]);
 	}
 
@@ -2041,7 +2044,7 @@ CM.setTrueNeverclick = function() {
 			});
 
 		} else {
-			alert('True Neverclick is already unlocked.')
+			alert('True Neverclick is already unlocked.');
 		}
 
 	} else {
