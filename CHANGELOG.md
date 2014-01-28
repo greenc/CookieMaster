@@ -1,5 +1,11 @@
 # CookieMaster Release History
 
+### Version 1.9.0 - _2014/1/28_
+
+ - Added option to specify custom audio alerts
+ - Added stats for missing upgrades
+ - Fixed bug where stats for missing achievements would not update once populated
+
 ### Version 1.8.2 - _2014/1/28_
 
  - Fixed bug where range sliders would not save selected value correctly

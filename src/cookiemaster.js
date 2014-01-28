@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.8.2
+    Version:      1.9.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,24 +37,31 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.8.2',
-	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
-	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
-	cmGCAudioObject:      null,
-	cmSPAudioObject:      null,
-	cmAudioGCNotified:    false,
-	cmAudioSPNotified:    false,
-	cmVisualGCNotified:   false,
-	cmVisualSPNotified:   false,
-	cmRefreshRate:        1000,
-	cmFastRefreshRate:    200,
-	ccURL:                'http://dev:8080/cookieclicker/',
-	ccCompatibleVersions: ['1.0402', '1.0403'],
+	version:              '1.9.0',                          // Current version of CookieMaster
+	ccURL:                'http://dev:8080/cookieclicker/', // Cookie Clicker URL
+	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
+	cmRefreshRate:        1000,                             // Refresh rate for main game loop
+	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
+	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',  // Default Golden Cookie audio soundbyte
+	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',  // Default Reindeer audio soundbyte
+
+	///////////////////////////////////////////////
+	// Internal settings used by the plugin
+	///////////////////////////////////////////////
+
+	cmGCActualAlertURL:   null,  // Actual Golden Cookie audio soundbyte (default may be overridden by custom)
+	cmSPActualAlertURL:   null,  // Actual Reindeer audio soundbyte (default may be overridden by custom)
+	cmGCAudioObject:      null,  // Set when applying user settings
+	cmSPAudioObject:      null,  // Set when applying user settings
+	cmAudioGCNotified:    false, // Flag gets set to true when audio alert has played once per spawm
+	cmAudioSPNotified:    false, // Flag gets set to true when audio alert has played once per spawm
+	cmVisualGCNotified:   false, // Flag gets set to true when visual alert has played once per spawm
+	cmVisualSPNotified:   false, // Flag gets set to true when visual alert has played once per spawm
 	cmStatsLoggingReady:  false, // Becomes true when chart APIs are loaded
-	cmStatsData:          null, // Set when a new logging session starts
-	cmStatsChart:         null, // Set when a new logging session stats
-	cmStatsLogStart:      null, // Set when a new logging session starts
-	cmStatsLogTimer:      null, // Set when a new logging sessions starts
+	cmStatsData:          null,  // Set when a new logging session starts
+	cmStatsChart:         null,  // Set when a new logging session stats
+	cmStatsLogStart:      null,  // Set when a new logging session starts
+	cmStatsLogTimer:      null,  // Set when a new logging sessions starts
 
 	///////////////////////////////////////////////
 	// Common Selectors
@@ -77,15 +84,117 @@ CM.config = {
 	cmGCOverlay:     null, // Set when GC overlay is created
 
 	///////////////////////////////////////////////
-	// Settings panel settings
+	// Long number formatting settings
+	///////////////////////////////////////////////
+
+	cmNumFormatRanges: [
+		{
+			divider: 1e24,
+			suffix: {
+				math:       ' Sp',
+				si:         ' Y',
+				standard:   ' septillion',
+				longscale:  ' quadrillion',
+				e:          'e24',
+				scientific: ' &times; 10&sup2;&#8308;',
+				compact:    '*10&sup2;&#8308;'
+			}
+		},
+		{
+			divider: 1e21,
+			suffix: {
+				math:       ' Sx',
+				si:         ' Z',
+				standard:   ' sextillion',
+				longscale:  ' trilliard',
+				e:          'e21',
+				scientific: ' &times; 10&sup2;sup1;',
+				compact:    '*10&sup2;sup1;'
+			}
+		},
+		{
+			divider: 1e18,
+			suffix: {
+				math:       ' Qi',
+				si:         ' E',
+				standard:   ' quintillion',
+				longscale:  ' trillion',
+				e:          'e18',
+				scientific: ' &times; 10&sup1;&#8312;',
+				compact:    '*10&sup1;&#8312;'
+			}
+		}, {
+			divider: 1e15,
+			suffix: {
+				math:       ' Qa',
+				si:         ' P',
+				standard:   ' quadrillion',
+				longscale:  ' billiard',
+				e:          'e15',
+				scientific: ' &times; 10&sup1;&#8309;',
+				compact:    '*10&sup1;&#8309;'
+			}
+		}, {
+			divider: 1e12,
+			suffix: {
+				math:       ' T',
+				si:         ' T',
+				standard:   ' trillion',
+				longscale:  ' billion',
+				e:          'e12',
+				scientific: ' &times; 10&sup1;&sup2;',
+				compact:    '*10&sup1;&sup2;'
+			}
+		}, {
+			divider: 1e9,
+			suffix: {
+				math:       ' B',
+				si:         ' G',
+				standard:   ' billion',
+				longscale:  ' milliard',
+				e:          'e9',
+				scientific: ' &times; 10&#8313;',
+				compact:    '*10&#8313;'
+			}
+		}, {
+			divider: 1e6,
+			suffix: {
+				math:       ' M',
+				si:         ' M',
+				standard:   ' million',
+				longscale:  ' million',
+				e:          'e6',
+				scientific: ' &times; 10&#8310;',
+				compact:    '*10&#8310;'
+			}
+		}
+	],
+
+	///////////////////////////////////////////////
+	// User settings panel options
 	///////////////////////////////////////////////
 
 	settingsGroups: {
-		general: 'General',
-		numbers: 'Numbers',
-		alerts:  'Timers & Alerts',
-		ui:      'Interface',
-		cheats:  'I\'m a dirty rotten cheater'
+		general: {
+			title: 'General',
+			desc:  ''
+		},
+		numbers: {
+			title: 'Numbers',
+			desc:  ''
+		},
+		alerts:  {
+			title: 'Timers & Alerts',
+			desc:  '<p class="cmNotice"><strong>Notice:</strong>If you want to use custom audio alerts, please be mindful to link to non-copyrighted audio files on sites that explicitly allow hotlinking to avoid http://orteil.dashnet.org getting blacklisted!<br />Links to soundjay.com files are blocked as per the main game code.</p>'
+		},
+		ui:      {
+			title: 'Interface',
+			desc:  ''
+		},
+		cheats:  {
+			title: 'I\'m a dirty rotten cheater',
+			desc:  ''
+		}
 	},
 
 	settings: {
@@ -119,6 +228,31 @@ CM.config = {
 				}
 			],
 			current: 'bottom'
+		},
+		visualAlerts: {
+			group:   'alerts',
+			type:    'select',
+			label:   'Visual Alerts:',
+			desc:    'Flash the screen when Golden Cookies and Reindeer spawn.',
+			options: [
+				{
+					label: 'Off',
+					value: 'off'
+				},
+				{
+					label: 'Golden Cookie',
+					value: 'gc'
+				},
+				{
+					label: 'Reindeer',
+					value: 'sp'
+				},
+				{
+					label: 'All',
+					value: 'all'
+				}
+			],
+			current: 'all'
 		},
 		audioAlerts: {
 			group:   'alerts',
@@ -157,30 +291,21 @@ CM.config = {
 			},
 			current: 0.4
 		},
-		visualAlerts: {
-			group:   'alerts',
-			type:    'select',
-			label:   'Visual Alerts:',
-			desc:    'Flash the screen when Golden Cookies and Reindeer spawn.',
-			options: [
-				{
-					label: 'Off',
-					value: 'off'
-				},
-				{
-					label: 'Golden Cookie',
-					value: 'gc'
-				},
-				{
-					label: 'Reindeer',
-					value: 'sp'
-				},
-				{
-					label: 'All',
-					value: 'all'
-				}
-			],
-			current: 'all'
+		customGCAlert: {
+			group:       'alerts',
+			type:        'text',
+			label:       'Custom Golden Cookie Alert URL:',
+			desc:        'Specify your own audio alert for Golden Cookie notifications. URL should link to an MP3 file with a max play time of 2 seconds.',
+			placeholder: 'http://example.com/file.mp3',
+			current:     ''
+		},
+		customSPAlert: {
+			group:       'alerts',
+			type:        'text',
+			label:       'Custom Reindeer Alert URL:',
+			desc:        'Specify your own audio alert for Reindeer notifications. URL should link to an MP3 file with a max play time of 2 seconds.',
+			placeholder: 'http://example.com/file.mp3',
+			current:     ''
 		},
 		numFormat: {
 			group: 'numbers',
@@ -379,14 +504,14 @@ CM.config = {
 		enableLogging: {
 			group: 'general',
 			type:  'checkbox',
-			label: 'Enable logging (BETA):',
+			label: 'Enable Logging (BETA):',
 			desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
 			current: 'off'
 		},
 		trueNeverclick: {
 			group: 'general',
 			type:  'checkbox',
-			label: 'True Neverclick helper:',
+			label: 'True Neverclick Helper:',
 			desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
 			current: 'off'
 		},
@@ -412,22 +537,21 @@ CM.init = function() {
 		refreshRate = this.config.cmRefreshRate,
 		fastRefreshRate = this.config.cmFastRefreshRate;
 
-	// Cache the audio alert sound files
-	this.config.cmGCAudioObject = new Audio(this.config.cmGCAudioAlertURL);
-	this.config.cmSPAudioObject = new Audio(this.config.cmSPAudioAlertURL);
-
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
 
-		this.loadUserSettings();
-		this.attachSettingsPanel();
-		this.attachStatsPanel();
-		this.AddPopWrinklersButton();
-		this.setupTooltips();
-		this.preventClickBleed();
-		this.setEvents();
+		this.loadUserSettings();      // Load current user settings from cookie
+		this.attachSettingsPanel();   // Attach the settings panel to the DOM
+		this.attachStatsPanel();      // Attach the stats panel to the DOM
+		this.AddPopWrinklersButton(); // Attach the Pop Wrinklers button to the DOM
+		this.setupTooltips();         // Configures the custom tooltips that overwrite the native ones
+		this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
+		this.setEvents();             // Set up general event handlers
 
-		// This also attaches anything else we need
+		/**
+		 * Performs more setup routines based on current user settings
+		 * This also gets called whenever user saves settings
+		 */
 		this.applyUserSettings();
 
 		// Refresh tooltips when drawn
@@ -435,10 +559,15 @@ CM.init = function() {
 		// Refresh tooltips on store rebuild
 		Game.RebuildStore = this.appendToNative(Game.RebuildStore, CM.updateTooltips);
 
-		// Start the main loop
+		/**
+		 * Initialize the main game loop
+		 */
 		setInterval(function() {self.mainLoop();}, refreshRate);
 
-		// Title updates and audio alerts get their own loop which updates faster
+		/**
+		 * Initialize secondary, faster loop for the title bar ticker
+		 * and audio alert notifications
+		 */
 		setInterval(function() {
 
 			self.updateTitleTicker();
@@ -450,7 +579,7 @@ CM.init = function() {
 		}, fastRefreshRate);
 
 		// All done :)
-		this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!');
+		this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'info');
 
 	} else {
 
@@ -538,21 +667,13 @@ CM.largeNumFormat = function(num, precision) {
 		notation     = this.config.settings.suffixFormat.current,
 		largeFloats  = this.config.settings.precision.current,
 		decSep = this.config.settings.numFormat.current === 'us' ? '.' : ',',
+		ranges = this.config.cmNumFormatRanges,
 		decimal = decSep === '.' ? '.' : ',',
 		comma = decSep === '.' ? ',' : '.',
 		floats = precision || 0,
 		qualifier    = num < 0 ? '-' : '',
 		parts,
-		i,
-		ranges = [
-			{divider: 1e24, suffix: {math: ' Sp', si: ' Y', standard: ' septillion',  longscale: ' quadrillion', e: 'e24', scientific: ' &times; 10&sup2;&#8308;', compact: '*10&sup2;&#8308;'}},
-			{divider: 1e21, suffix: {math: ' Sx', si: ' Z', standard: ' sextillion',  longscale: ' trilliard',   e: 'e21', scientific: ' &times; 10&sup2;sup1;',   compact: '*10&sup2;sup1;'}},
-			{divider: 1e18, suffix: {math: ' Qi', si: ' E', standard: ' quintillion', longscale: ' trillion',    e: 'e18', scientific: ' &times; 10&sup1;&#8312;', compact: '*10&sup1;&#8312;'}},
-			{divider: 1e15, suffix: {math: ' Qa', si: ' P', standard: ' quadrillion', longscale: ' billiard',    e: 'e15', scientific: ' &times; 10&sup1;&#8309;', compact: '*10&sup1;&#8309;'}},
-			{divider: 1e12, suffix: {math: ' T',  si: ' T', standard: ' trillion',    longscale: ' billion',     e: 'e12', scientific: ' &times; 10&sup1;&sup2;',  compact: '*10&sup1;&sup2;'}},
-			{divider: 1e9,  suffix: {math: ' B',  si: ' G', standard: ' billion',     longscale: ' milliard',    e: 'e9',  scientific: ' &times; 10&#8313;',       compact: '*10&#8313;'}},
-			{divider: 1e6,  suffix: {math: ' M',  si: ' M', standard: ' million',     longscale: ' million',     e: 'e6',  scientific: ' &times; 10&#8310;',       compact: '*10&#8310;'}}
-		];
+		i;
 
 	if(num === Number.POSITIVE_INFINITY || num === Number.NEGATIVE_INFINITY) {
 		return 'Infinity';
@@ -933,7 +1054,7 @@ CM.luckyFrenzyReward = function() {
 };
 
 /**
- * Returns maximum potential  Cookie Chain reward
+ * Returns maximum potential Cookie Chain reward
  *
  * @return {Integer}
  */
@@ -1003,7 +1124,7 @@ CM.getWrinklerStats = function() {
 /**
  * Get the reward for clicking on a Reindeer
  *
- * 1min of production or 25 cookies
+ * 1 min of production or 25 cookies
  *
  * @return {Integer}
  */
@@ -1100,6 +1221,55 @@ CM.wrinklersExist = function() {
 };
 
 /**
+ * Returns array of missing upgrades
+ *
+ * @return {Array}
+ */
+CM.getMissingUpgrades = function() {
+
+	var missing = [],
+		a;
+
+	for(a in Game.Upgrades) {
+		if(Game.Upgrades[a].debug !== 1 && Game.Upgrades[a].unlocked === 0) {
+			missing.push(a);
+		}
+	}
+
+	return missing;
+
+};
+
+/**
+ * Returns array of missing achievements
+ *
+ * @param  {Boolean} shadow Returns shadow achievements if true
+ * @return {Array}
+ */
+CM.getMissingAchievements = function(shadow) {
+
+	var missing = [],
+		a;
+
+	for(a in Game.Achievements) {
+		if(Game.Achievements[a].category === 'none' && Game.Achievements[a].won === 0) {
+			if(shadow) {
+				if(Game.Achievements[a].hide === 3) {
+					missing.push(a);
+				}
+			} else {
+				if(Game.Achievements[a].hide !== 3) {
+					missing.push(a);
+				}
+			}
+		}
+	}
+
+	return missing;
+
+};
+
+/**
  * Capitalize the first letter of each word
  *
  * @param  {String} str String to process
@@ -1113,12 +1283,16 @@ CM.toTitleCase = function(str) {
 
 /**
  * Styles CookieMaster popups differently while still using the native Game.Popup method
+ *
  * @param  {String}   message
+ * @param  {String}   type    optional [info|warning|error]
  * @return {Function}
  */
-CM.popup = function(message) {
+CM.popup = function(message, type) {
 
-	return Game.Popup('<span class="cmPopupText">' + message + '</span>');
+	var typeClass = this.toTitleCase(type) || 'Info';
+
+	return Game.Popup('<span class="cmPopupText cmPopup' + typeClass + '">' + message + '</span>');
 
 };
 
@@ -1257,8 +1431,17 @@ CM.attachSettingsPanel = function() {
 		// Create a table for each group
 		html += '<table class="cmTable">';
 		html +=     '<tr class="cmHeader">';
-		html +=        '<th colspan="2" class="cmFont">' + groups[group] + '</th>';
+		html +=        '<th colspan="2" class="cmFont">' + groups[group].title + '</th>';
 		html +=     '</tr>';
+
+		// Show group description
+		if(groups[group].desc) {
+
+			html +=     '<tr class="cmDesc">';
+			html +=        '<td colspan="2">' + groups[group].desc + '</td>';
+			html +=     '</tr>';
+
+		}
 
 		// Then loop over each setting
 		for(setting in settings) {
@@ -1273,7 +1456,11 @@ CM.attachSettingsPanel = function() {
 				option  = {};
 				current = thisSetting.current;
 
-				if(thisSetting.type === 'select') { // Build a select box
+				if(thisSetting.type === 'select') {
+
+					/**
+					 * Build a select box
+					 */
 
 					for(option in thisSetting.options) {
 
@@ -1284,25 +1471,46 @@ CM.attachSettingsPanel = function() {
 
 					}
 
-					control =  '<select data-name="' + setting + '">';
+					control =  '<select name="' + setting + '">';
 					control += options.join('');
 					control += '</select>';
 
-				} else if(thisSetting.type === 'checkbox') { // Build a checkbox
+				} else if(thisSetting.type === 'checkbox') {
+
+					/**
+					 * Build a checkbox
+					 */
 
 					selected = (current === 'on') ? ' checked="checked"' : '';
-					control  = '<input type="checkbox" data-name="' + setting + '"' + selected + ' />';
+					control  = '<input type="checkbox" name="' + setting + '"' + selected + ' />';
 
-				} else if(thisSetting.type === 'range') { // Build a range slider
+				} else if(thisSetting.type === 'range') {
+
+					/**
+					 * Build a range slider
+					 */
 
 					control  = '<span class="currentValue">' + thisSetting.current + '</span>';
 					control += '<input ' +
 									'type="range" ' +
-									'value="'+ thisSetting.current      + '" ' +
-									'min="'  + thisSetting.options.min  + '" ' +
-									'max="'  + thisSetting.options.max  + '" ' +
-									'step="' + thisSetting.options.step + '" ' +
-									'data-name="' + setting + '" ' +
+									'name="'        + setting                  + '" ' +
+									'value="'       + thisSetting.current      + '" ' +
+									'min="'         + thisSetting.options.min  + '" ' +
+									'max="'         + thisSetting.options.max  + '" ' +
+									'step="'        + thisSetting.options.step + '" ' +
+								'/>';
+
+				} else if(thisSetting.type === 'text') {
+
+					/**
+					 * Build a text field
+					 */
+
+					control = '<input ' +
+									'type="text" ' +
+									'name="'       + setting                 + '" ' +
+									'value="'      + thisSetting.current     + '" ' +
+									'placeholder="'+ thisSetting.placeholder + '" ' +
 								'/>';
 
 				}
@@ -1350,6 +1558,12 @@ CM.attachStatsPanel = function() {
 		$cmStatsTitle      = $('<h3 />').attr('class', 'title').html('CookieMaster Statistics<span class="cmTitleSub">v.' + this.config.version + '</span>'),
 		$cmStatsButton     = $('<div />').attr({'id': 'CMStatsPanelButton', 'class': 'button'}).text('Stats +'),
 		$cmTable           = {},
+		$cmUpgTitle        = $('<h3 />').attr('class', 'cmFont cmSubTitle').html('Missing Upgrades<span class="cmFloatRight cmShowAsLink" id="CMToggleUpg">Show/Hide</span>'),
+		$cmAchTitle        = $('<h3 />').attr('class', 'cmFont cmSubTitle').html('Missing Achievements<span class="cmFloatRight cmShowAsLink" id="CMToggleAch">Show/Hide</span>'),
+		$cmShaTitle        = $('<h3 />').attr('class', 'cmFont cmSubTitle').html('Missing Shadow Achievements<span class="cmFloatRight cmShowAsLink" id="CMToggleSha">Show/Hide</span>'),
+		$cmUpgCont         = $('<div />').attr('id', 'CMUpgCont'),
+		$cmAchCont         = $('<div />').attr('id', 'CMAchCont'),
+		$cmShaCont         = $('<div />').attr('id', 'CMShaCont'),
 		$cmStatsChartCont  = $('<div />').attr('id', 'CMChartCont'),
 		$cmStatsChartTitle = $('<h3 />').attr('class', 'title').html('Stat Logging'),
 		$cmStatsChartIntro = $('<p />').html('This feature currently allows you to log and track your base and effective CpS stats over time. Stats are logged at 30 second intervals as long as logging is on, and logs are persistent though page refreshes, game resets and save imports unless cleared manually.<br />Please note that this feature is still in beta, and may behave unexpectedly!<br />Download as CSV is currently only supported in recent versions of Chrome and Firefox.'),
@@ -1358,10 +1572,7 @@ CM.attachStatsPanel = function() {
 		$cmStatsChartBtnN  = $('<button />').attr({'id': 'CMChartN', 'type': 'button', 'class': 'cmFont'}).text('Stop logging'),
 		$cmStatsChartBtnC  = $('<button />').attr({'id': 'CMChartC', 'type': 'button', 'class': 'cmFont'}).text('Clear log'),
 		$cmStatsChartBtnD  = $('<button />').attr({'id': 'CMChartD', 'type': 'button', 'class': 'cmFont'}).text('Download CSV'),
-		tableHTML          = '',
-		missingA = [],
-		missingS = [],
-		a, i, j;
+		tableHTML          = '';
 
 	tableHTML += '<table class="cmTable">';
 	tableHTML +=     '<tr class="cmHeader">';
@@ -1486,60 +1697,6 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
 
-	/**
-	 * Show missing achievements
-	 */
-
-	// Get the missing achievements
-	for(a in Game.Achievements) {
-		if(Game.Achievements[a].category === 'none' && Game.Achievements[a].won ===0) {
-			if(Game.Achievements[a].hide !== 3) {
-				missingA.push(a);
-			}
-			if(Game.Achievements[a].hide === 3) {
-				missingS.push(a);
-			}
-		}
-	}
-
-	// Non-shadow achievements
-	tableHTML += '<table class="cmTable" id="CMAchTable">';
-	tableHTML +=     '<tr class="cmHeader">';
-	tableHTML +=         '<th colspan="2" class="cmFont">Missing Achievements<span class="cmFloatRight cmShowAsLink" id="CMToggleAch">Show/Hide</span></th>';
-	tableHTML +=     '</tr>';
-	if(missingA.length) {
-		for(i = 0; i < missingA.length; i++) {
-			tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
-			tableHTML +=     '<td>' + missingA[i] + '</td>';
-			tableHTML +=     '<td class="cmValue">' + Game.Achievements[missingA[i]].desc + '</td>';
-			tableHTML += '</tr>';
-		}
-	} else {
-		tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
-		tableHTML +=     '<td colspan="2">All achievements unlocked. Go you!</td>';
-		tableHTML += '</tr>';
-	}
-	tableHTML += '</table>';
-
-	// Shadow achievements
-	tableHTML += '<table class="cmTable" id="CMShaTable">';
-	tableHTML +=     '<tr class="cmHeader">';
-	tableHTML +=         '<th colspan="2" class="cmFont">Missing Shadow Achievements<span class="cmFloatRight cmShowAsLink" id="CMToggleSha">Show/Hide</span></th>';
-	tableHTML +=     '</tr>';
-	if(missingS.length) {
-		for(j = 0; j < missingS.length; j++) {
-			tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
-			tableHTML +=     '<td>' + missingS[j] + '</td>';
-			tableHTML +=     '<td class="cmValue">' + Game.Achievements[missingS[j]].desc + '</td>';
-			tableHTML += '</tr>';
-		}
-	} else {
-		tableHTML += '<tr class="cmICantThinkOfAGoodClassNameForThis">';
-		tableHTML +=     '<td colspan="2">All shadow achievements unlocked. Go outside!</td>';
-		tableHTML += '</tr>';
-	}
-	tableHTML += '</table>';
-
 	$cmTable = $(tableHTML);
 
 	$cmStatsChartCont.append(
@@ -1552,7 +1709,17 @@ CM.attachStatsPanel = function() {
 		$cmStatsChart
 	);
 
-	$cmStatsPanel.append($cmStatsTitle, $cmTable, $cmStatsChartCont);
+	$cmStatsPanel.append(
+		$cmStatsTitle,
+		$cmTable,
+		$cmUpgTitle,
+		$cmUpgCont,
+		$cmAchTitle,
+		$cmAchCont,
+		$cmShaTitle,
+		$cmShaCont,
+		$cmStatsChartCont
+	);
 
 	// Attach to DOM
 	$ccSectionMiddle.append($cmStatsPanel);
@@ -1648,8 +1815,16 @@ CM.updateStats = function() {
 		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
 		nextChainBank     = this.requiredNextChainTier('bank', chainReward),
 		nextChainCPS      = this.requiredNextChainTier('cps', chainReward),
+		missingU          = this.getMissingUpgrades(),
+		missingA          = this.getMissingAchievements(),
+		missingS          = this.getMissingAchievements(true),
+		upgHTML           = '',
+		aHTML             = '',
+		sHTML             = '',
 		nextChainBankString,
-		nextChainCPSString;
+		nextChainCPSString,
+		i,
+		j;
 
 	if(nextChainBank !== false) {
 		if(Game.cookies > nextChainBank) {
@@ -1698,6 +1873,44 @@ CM.updateStats = function() {
 	$('#CMStatsFrenzyCPC').html(Beautify(this.baseCpc() * 7));
 	$('#CMStatsClickFrenzyCPC').html(Beautify(this.baseCpc() * 777));
 	$('#CMStatsFrenzyClickFrenzyCPC').html(Beautify(this.baseCpc() * 777 * 7));
+
+	// Missing upgrades
+	upgHTML += '<table class="cmTable">';
+	if(missingU.length) {
+		for(i = 0; i < missingU.length; i++) {
+			upgHTML += '<tr><td colspan ="2">' + missingU[i] + '</td></tr>';
+		}
+	} else {
+		upgHTML += '<tr><td colspan="2">All upgrades purchased. Well done!</td></tr>';
+	}
+	upgHTML += '</table>';
+
+	// Missing achievements
+	aHTML += '<table class="cmTable">';
+	if(missingA.length) {
+		for(i = 0; i < missingA.length; i++) {
+			aHTML += '<tr><td>' + missingA[i] + '</td><td class="cmValue">' + Game.Achievements[missingA[i]].desc + '</td></tr>';
+		}
+	} else {
+		aHTML += '<tr><td colspan="2">All achievements unlocked. Go you!</td></tr>';
+	}
+	aHTML += '</table>';
+
+	// Missing shadow achievements
+	sHTML += '<table class="cmTable">';
+	if(missingS.length) {
+		for(j = 0; j < missingS.length; j++) {
+			sHTML += '<tr><td>' + missingS[j] + '</td><td class="cmValue">' + Game.Achievements[missingS[j]].desc + '</td></tr>';
+		}
+	} else {
+		sHTML += '<tr><td colspan="2">All shadow achievements unlocked. Go outside!</td></tr>';
+	}
+	sHTML += '</table>';
+
+	// Insert into tables
+	$('#CMUpgCont').html(upgHTML);
+	$('#CMAchCont').html(aHTML);
+	$('#CMShaCont').html(sHTML);
 
 };
 
@@ -2008,7 +2221,7 @@ CM.playAudioAlerts = function() {
 
 				spAlert.volume = volume;
 				spAlert.play();
-				setTimeout(function() {spAlert.load();}, 1500);
+				setTimeout(function() {spAlert.load();}, 2500);
 				this.config.cmAudioSPNotified = true;
 
 			}
@@ -2074,7 +2287,7 @@ CM.setTrueNeverclick = function() {
 			// Reattach our own
 			$('#bigCookie').click(function(event) {
 				if(!Game.HasAchiev('True Neverclick')) {
-					CM.popup('Click prevented!');
+					CM.popup('Click prevented!', 'warning');
 				} else {
 					Game.ClickCookie();
 				}
@@ -2194,7 +2407,7 @@ CM.startLogging = function() {
 	CM.logData();
 	CM.config.cmStatsLogTimer = setInterval(function() {CM.logData();}, 30000);
 	localStorage.setItem('CMStatsLoggingActive', 'true');
-	CM.popup('Logging data!');
+	CM.popup('Logging data!', 'info');
 
 	$('#CMChartY').hide();
 	$('#CMChartN').show();
@@ -2211,7 +2424,7 @@ CM.stopLogging = function() {
 		clearInterval(this.config.cmStatsLogTimer);
 		localStorage.setItem('CMStatsLoggingActive', 'false');
 
-		this.popup('Stopped logging data!');
+		this.popup('Stopped logging data!', 'info');
 	}
 
 	$('#CMChartN').hide();
@@ -2235,7 +2448,7 @@ CM.clearLogSesion = function() {
 	// Clear the chart
 	this.config.cmStatsChart.clearChart();
 
-	this.popup('Log cleared!');
+	this.popup('Log cleared!', 'info');
 
 };
 
@@ -2453,6 +2666,24 @@ CM.applyUserSettings = function() {
 		this.removeVisualAlerts();
 	}
 
+	// Apply custom audio alerts if set
+	if(settings.customGCAlert.current !== '') {
+		this.config.cmGCActualAlertURL = settings.customGCAlert.current;
+	} else {
+		this.config.cmGCActualAlertURL = this.config.cmGCAudioAlertURL;
+	}
+	if(settings.customSPAlert.current !== '') {
+		this.config.cmSPActualAlertURL = settings.customSPAlert.current;
+	} else {
+		this.config.cmSPActualAlertURL = this.config.cmSPAudioAlertURL;
+	}
+
+	// Cache the audio alert sound files
+	if(settings.audioAlerts.current !== 'off') {
+		this.config.cmGCAudioObject = new Audio(this.config.cmGCActualAlertURL);
+		this.config.cmSPAudioObject = new Audio(this.config.cmSPActualAlertURL);
+	}
+
 	// Efficiency Key
 	if(settings.showEfficiencyKey.current === 'on') {
 		this.attachEfficiencyKey();
@@ -2577,6 +2808,7 @@ CM.saveUserSettings = function() {
 	});
 
 	// Serialize the data
+	// This will automatically encode any URL strings as well
 	serializedSettings = $.param(settingsStates)
 		.replace(/=/g, ':')  // Replace = with :
 		.replace(/&/g, '|'); // Replace & with |
@@ -2586,10 +2818,10 @@ CM.saveUserSettings = function() {
 	document.cookie = 'CMSettings=' + serializedSettings + ';expires=' + cookieDate.toGMTString( ) + ';';
 
 	// Verify we saved it correctly
-	if (document.cookie.indexOf('CMSettings') === -1) {
-		this.popup('Error: Could not save settings!');
+	if(document.cookie.indexOf('CMSettings') === -1) {
+		this.popup('Error: Could not save settings!', 'error');
 	} else {
-		this.popup('Settings saved successfully!');
+		this.popup('Settings saved successfully!', 'info');
 	}
 
 };
@@ -2615,6 +2847,12 @@ CM.loadUserSettings = function() {
 			keyVals = this.split(':');
 			// If we can't find a setting, skip it
 			if(settings.hasOwnProperty(keyVals[0])) {
+
+				// Decode any URL fields
+				if(keyVals[0] === 'customGCAlert' || keyVals[0] === 'customSPAlert') {
+					keyVals[1] = decodeURIComponent(keyVals[1]);
+				}
+
 				settings[keyVals[0]].current = keyVals[1];
 			}
 
@@ -2642,7 +2880,7 @@ CM.setEvents = function() {
 	// Handlers for the settings panel
 	$cmSettingsTables.on('change', 'input, select', function() {
 
-		var setting = $(this).data('name'),
+		var setting = $(this).attr('name'),
 			value;
 
 		// Grab the field value
@@ -2650,9 +2888,12 @@ CM.setEvents = function() {
 			value = $(this).find(":selected").val();
 		} else if($(this).is('[type="checkbox"]')) {
 			value = $(this).prop('checked') ? 'on' : 'off';
-		} else if($(this).is('[type="range"]')) {
+		} else if($(this).is('[type="range"]') || $(this).is('[type="text"]')) {
 			value = $(this).val();
-			// Update range display value
+		}
+
+		// Update range display value
+		if($(this).is('[type="range"]')) {
 			$(this).siblings('.currentValue').text($(this).val());
 		}
 
@@ -2750,12 +2991,15 @@ CM.setEvents = function() {
 		self.downloadCSV();
 	});
 
-	// Show/hide missing achievements tables
+	// Show/hide missing upgrades and achievements tables
+	$('#CMToggleUpg').click(function(){
+		$('#CMUpgCont').toggle();
+	});
 	$('#CMToggleAch').click(function(){
-		$('#CMAchTable .cmICantThinkOfAGoodClassNameForThis').toggle();
+		$('#CMAchCont').toggle();
 	});
 	$('#CMToggleSha').click(function(){
-		$('#CMShaTable .cmICantThinkOfAGoodClassNameForThis').toggle();
+		$('#CMShaCont').toggle();
 	});
 
 };

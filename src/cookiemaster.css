@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.8.2
+    Version:      1.9.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -99,6 +99,11 @@
 	color: #FFF;
 	border: 1px solid #444;
 	padding: 2px;
+}
+
+.cmTable input[type="text"] {
+	width: 250px;
+	padding: 4px;
 }
 
 #CMSettingsSave,
@@ -273,6 +278,10 @@
 	padding: 0 0 5px;
 }
 
+.cmTable .cmDesc td {
+	padding: 10px 0;
+}
+
 .cmTable .cmFirst th {
 	padding: 0 0 5px;
 }
@@ -359,27 +368,42 @@
 }
 .cmShowAsLink:hover { text-decoration: underline; }
 
-.cmICantThinkOfAGoodClassNameForThis { display: none; }
+#CMUpgCont,
+#CMAchCont,
+#CMShaCont {
+	display: none;
+}
 
-#CMAchTable .cmValue,
-#CMShaTable .cmValue {
+#CMStatsPanel .cmSubTitle {
+	color: #DDD;
+	font-size: 24px;
+	margin: 25px 0 0;
+	border-bottom: 1px dashed #3A3A3A;
+	padding: 0 0 10px;
+}
+
+#CMUpgCont .cmValue,
+#CMAchCont .cmValue,
+#CMShaCont .cmValue {
 	width: 70%;
 	color: #FFF;
 	font-weight: bold;
 }
-
 
 #game.onCMMenu #sectionMiddle {
 	background: #000 url(http://orteil.dashnet.org/cookieclicker/img/darkNoise.png);
 }
 
 .cmPopupText {
-	color: #6CF;
 	background-color: rgba(0, 0, 0, 0.85);
 	padding: 20px 25px;
 	border-radius: 20px;
 	display: inline-block;
 }
+
+.cmPopupInfo { color: #6CF; }
+.cmPopupWarning { color: #E37802; }
+.cmPopupError { color: #E60000; }
 
 #tooltip .cmTable {
 	border-top: 1px dashed #313131;
@@ -436,6 +460,9 @@
 	height: 18px;
 	width: 18px;
 }
+
+.cmNotice { color: #6CF; }
+.cmNotice strong { font-weight: bold; }
 
 /* Stats Chart */
 #CMChart {
