@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.8.2 - _2014/1/28_
+
+ - Fixed bug where range sliders would not save selected value correctly
+
 ### Version 1.8.1 - _2014/1/27_
 
  - Segregated settings into sections

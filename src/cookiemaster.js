@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.8.1
+    Version:      1.8.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.8.1',
+	version:              '1.8.2',
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',
 	cmGCAudioObject:      null,
@@ -2641,15 +2641,23 @@ CM.setEvents = function() {
 
 	// Handlers for the settings panel
 	$cmSettingsTables.on('change', 'input, select', function() {
-		var setting = $(this).data('name');
+
+		var setting = $(this).data('name'),
+			value;
+
+		// Grab the field value
 		if($(this).is('select')) {
-			self.config.settings[setting].current = $(this).find(":selected").val();
+			value = $(this).find(":selected").val();
 		} else if($(this).is('[type="checkbox"]')) {
-			self.config.settings[setting].current = $(this).prop('checked') ? 'on' : 'off';
-		}
-		if($(this).is('[type="range"]')) {
+			value = $(this).prop('checked') ? 'on' : 'off';
+		} else if($(this).is('[type="range"]')) {
+			value = $(this).val();
+			// Update range display value
 			$(this).siblings('.currentValue').text($(this).val());
 		}
+
+		self.config.settings[setting].current = value;
+
 	});
 	$('#CMSettingsSave').click(function() {
 		self.saveUserSettings();
