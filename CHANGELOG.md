@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.9.1 - _2014/1/29_
+
+ - Fixed bug where store upgrade tooltips would not disappear after hovering
+
 ### Version 1.9.0 - _2014/1/28_
 
  - Added option to specify custom audio alerts
