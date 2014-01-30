@@ -1,99 +1,172 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="CookieMaster is a browser-based plugin for Cookie Clicker that enhances the game experience with many helpful features, stats and helpers.">
+		<meta name="author" content="Chris Green">
+
 		<title>CookieMaster - Browser plugin for Cookie Clicker</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="site/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="site/css/jumbotron-narrow.min.css" rel="stylesheet">
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		<![endif]-->
 	</head>
+
 	<body>
-		<h1>CookieMaster</h1>
-		<p><strong>CookieMaster is a browser plugin for <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>.</strong></p>
-		<p>It offers many useful features, statistics and options to help you get the most out of the game. See below for a full list, as well as upcoming and planned features.</p>
-		<p>CookieMaster is currently being actively developed, with stuff being added almost daily. If you find a bug or have a feature request, you are encouraged to <a href="https://github.com/greenc/CookieMaster/issues/new">open an issue</a> in the <a href="https://github.com/greenc/CookieMaster/issues">Issue Tracker</a> on GitHub.</p>
 
-		<h2>How To Use</h2>
-		<ol>
-			<li>
-				<p>
-					<a name="CookieMaster" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)">Drag this link into your bookmarks bar/folder</a>
-				</p>
-				<p><strong>or...</strong></p>
-				<p>Paste the following code into a new bookmark in your browser:</p>
-				<textarea cols="80" rows="4">javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)</textarea>
+		<div class="container">
+			<div class="header">
+				<ul class="nav nav-pills pull-right">
+					<li><a href="#features">Features</a></li>
+					<li><a href="#how-to-use">How to use</a></li>
+					<li><a href="#screenshots">Screenshots</a></li>
+				</ul>
+				<h3 class="text-muted">
+					<small>Current release: <strong><a href="https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md">v.1.9.2</a></strong></small>
+				</h3>
+			</div>
 
-			</li>
-			<li>
-				<p>Load up <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></p>
-			</li>
-			<li>
-				<p>Click on your recently created bookmark</p>
-			</li>
-		</ol>
+			<div class="jumbotron">
+				<h1>CookieMaster</h1>
+				<p class="lead">A browser-based plugin for Cookie Clicker.</p>
+				<p><a class="btn btn-lg btn-success" href="#how-to-use" role="button">Get CookieMaster</a></p>
+				<small class="center-block"><strong>or</strong></small>
+				<p><img style="vertical-align:baseline" src="site/images/blacktocat-16.png" alt="GitHub logo" /> <a href="https://github.com/greenc/CookieMaster">View on GitHub</a></p>
+			</div>
 
-		<h2>Features</h2>
-		<ul>
-			<li>Long number shortening, e.g. 3,476,112,098,761 can be displayed as 3.476 T</li>
-			<li>Show different suffix types when shortening numbers, e.g. 26.696 Qa, 26.696 quadrillion, 26.696 P</li>
-			<li>Number localization: Display a period or comma as your preferred decimal separator</li>
-			<li>Calculate and display the most efficient purchases and upgrades</li>
-			<li>Display estimated time left until upgrades and buildings are affordable</li>
-			<li>Clean up the game window: Remove the top bar, make the cookie counter more visible, etc.</li>
-			<li>Change the game highlight font</li>
-			<li>Display accurate countdown timers for game events, e.g. next Golden Cookie, remaining time for buffs</li>
-			<li>Play audio alerts when Golden Cookies and Reindeer spawn (with volume control)</li>
-			<li>Flash the screen when Golden Cookies and Reindeer spawn</li>
-			<li>Display countdowns to next Golden Cookie and Reindeer in the title tab</li>
-			<li>Option to make Golden Cookies more visible when they spawn</li>
-			<li>Option to increase the hitbox area for Golden Cookies, making them easier to click during Cookie Chains</li>
-			<li>Auto-clicker for the Big Cookie with speed control</li>
-			<li>Ability to set auto-clicker only during Click Frenzies</li>
-			<li>Button to instantly pop all on-screen wrinklers</li>
-			<li>Calculate and display Heavenly Chip data, including time left and cookies left until the next one</li>
-			<li>Calculate and display information about banked cookies for maximum buff payouts and other items</li>
-			<li>Calculate and display your maximum Chain Cookie reward and the required bank and CpS to reach the next reward level</li>
-			<li>Calculate and display how many cookies Wrinklers have sucked and the reward for popping them</li>
-			<li>Clicking Golden Cookies and Reindeer no longer pops Wrinklers that lie beneath them</li>
-			<li>Other useful stats</li>
-			<li>Pause button</li>
-			<li>BETA: Persistent stat logging for tracking your CpS through your sessions</li>
-		</ul>
+			<div class="page-header">
+				<h1>Overview</h1>
+			</div>
+			<p>CookieMaster is a JavaScript based plugin for the popular in-browser game <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>.<br />
+				It enhances the game by adding many useful features, statistics and helpers to improve the core experience.<br />
+				See below for the highlights, or check out the <a href="https://github.com/greenc/CookieMaster/blob/master/README.md">READMDE</a> on GitHub for an exhaustive list.</p>
 
-		<h2>Planned and Upcoming Features</h2>
-		<ul>
-			<li>Smart auto-clicking for Golden Cookies and Reindeer to maximise your returns</li>
-			<li>Multiple save slots with import/export functionality</li>
-			<li>Performance optimizations to allow CookieMaster to poll and update even more rapidly</li>
-		</ul>
+			<div class="row marketing">
 
-		<h2>Releases</h2>
-		<p>I try to update CookieMaster as often as possible, but I'm currently a single developer doing this in my spare time, so there's no fixed release schedule as such.</p>
-		<p>For a full release history, consult the <a href="https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md">Changelog page</a> on GitHub.</p>
+				<div class="page-header">
+					<h1 id="features">Key Features</h1>
+				</div>
 
-		<h2>Browser Support</h2>
-		<p>Extensive browser testing has not yet been carried out, however CookieMaster should work happily in current releases of the following browsers:</p>
-		<ul>
-			<li>Chrome (recommended)</li>
-			<li>FireFox</li>
-			<li>Safari</li>
-			<li>Internet Explorer 10+</li>
-		</ul>
-		<p>CookieMaster uses some new web features that may not be supported in older browsers.</p>
+				<div class="col-lg-6">
+					<h4><span class="glyphicon glyphicon-info-sign"></span> Purchase efficiency</h4>
+					<p>Don't know what upgrade or building to buy next? CookieMaster shows you the optimal purchases to maximise your income.</p>
 
-		<h2>Developers / Contributing</h2>
-		<p>CookieMaster uses <a href="http://nodejs.org/">Node.js</a> and <a href="http://gruntjs.com/">Grunt</a> for building and managing the project. Although not necessary for contributing changes, it is recommended to have these installed if you want to take advantage of the project build tasks.</p>
-		<p>It is recommended to download and run Cookie Clicker locally for testing any changes you make to the plugin. All Cookie Clicker game assets are static, so just run a <code>wget</code> or your preferred equivalent on <a href="http://orteil.dashnet.org/cookieclicker/">http://orteil.dashnet.org/cookieclicker/</a> to grab the game files. The CookieMaster source file paths assume that you have Cookie Clicker running in an adjacent directory named <em>/cookieclicker</em>.</p>
-		<ol>
-			<li>Make sure you have <a href="http://git-scm.com/">Git</a>, and optionally <a href="http://nodejs.org/">Node.js</a> and [<a href="http://gruntjs.com/">Grunt</a> installed first.</li>
-			<li>Fork the <a href="https://github.com/greenc/CookieMaster">CookieMaster repository on GitHub</a> and clone it to your local machine.</li>
-			<li>Make your changes. All source files are located in the <em>src/</em> folder. If you are using Node/Grunt, you can run <code>grunt build</code> to create a <em>build/</em> directory with optimized files for local testing (remember to <strong>only</strong> include <em>src/</em> files in your commits if you issue a pull request).</li>
-			<li>When you're done making changes, commit and push them up to your forked repository.</li>
-			<li>You may then create a pull request from GitHub if you would like to have your changes considered for inclusion in the main CookieMaster repo.</li>
-		</ol>
+					<h4><span class="glyphicon glyphicon-tasks"></span> Statistics</h4>
+					<p>How many cookies have my Wrinklers sucked? How many Heavenly Chips will I have if I reset? How long until I can buy the next Time Machine? CookieMaster provides these stats, as well as many more.</p>
 
-		<h2>Contributers</h2>
-		<ul>
-			<li><a href="https://github.com/greenc">Chris Green</a> - original author</li>
-			<li><a href="https://github.com/llbit">Jesper Öqvist</a></li>
-			<li><a href="https://github.com/kgarrison343">Kyle Garrison</a></li>
-		</ul>
+					<h4><span class="glyphicon glyphicon-repeat"></span> Auto-helpers</h4>
+					<p>Don't like clicking? CookieMaster has customizable auto-clickers to make things easier for you.</p>
+
+					<h4><span class="glyphicon glyphicon-stats"></span> Graphs</h4>
+					<p>CookieMaster allows you to track several stats over time, displaying them in a chart in-game.</p>
+				</div>
+
+				<div class="col-lg-6">
+					<h4><span class="glyphicon glyphicon-usd"></span> Number formatting</h4>
+					<p>CookieMaster can format long numbers for you to make them easily readable in several customizable ways.</p>
+
+					<h4><span class="glyphicon glyphicon-time"></span> Timers</h4>
+					<p>CookieMaster can display visual timers showing you exactly how much time remains for a buff effect or until the next item spawns.</p>
+
+					<h4><span class="glyphicon glyphicon-bell"></span> Alerts</h4>
+					<p>If you leave the game running while doing other things, CookieMaster can play audio alerts when items spawn, so you don't miss any.</p>
+
+					<h4><span class="glyphicon glyphicon-cog"></span> Customization</h4>
+					<p>CookieMaster is designed to be highly customizable, giving you ultimate control over your game.</p>
+				</div>
+
+			</div>
+
+			<div class="page-header">
+				<h1 id="how-to-use">How To Use</h1>
+			</div>
+
+			<p>Currently, the easiest way to use CookieMaster is via a bookmarklet:</p>
+			<ol>
+				<li>
+					<p>Drag the following button into your bookmarks bar or folder: <a class="btn btn-xs btn-primary" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)">CookieMaster</a></p>
+					<p><strong>or...</strong></p>
+					<p>Paste the following code into a new bookmark in your browser:</p>
+					<pre>javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js?cb='+Math.random().toString(36).substr(2,5))})(document)</pre>
+				</li>
+				<li>
+					<p>Load up <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></p>
+				</li>
+				<li>
+					<p>Click on your recently created bookmark</p>
+				</li>
+			</ol>
+
+			<div class="page-header">
+				<h1 id="screenshots">Screenshots</h1>
+			</div>
+
+			<div class="row">
+				<div class="col-xs-6 col-md-3">
+					<div class="thumbnail">
+						<a href="site/images/cookiemaster.v.1.9.2-main.png"><img src="site/images/cookiemaster.v.1.9.2-main-thumb.png" alt="CookieMaster v.1.9.2 Main Screen"></a>
+						<div class="caption">Main Screen</div>
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="thumbnail">
+						<a href="site/images/cookiemaster.v.1.9.2-settings.png"><img src="site/images/cookiemaster.v.1.9.2-settings-thumb.png" alt="CookieMaster v.1.9.2 Settings Screen"></a>
+						<div class="caption">Settings Screen</div>
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="thumbnail">
+						<a href="site/images/cookiemaster.v.1.9.2-stats.png"><img src="site/images/cookiemaster.v.1.9.2-stats-thumb.png" alt="CookieMaster v.1.9.2 Statistics Screen"></a>
+						<div class="caption">Stats Screen</div>
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="thumbnail">
+						<a href="site/images/cookiemaster.v.1.9.2-tooltip.png"><img src="site/images/cookiemaster.v.1.9.2-tooltip-thumb.png" alt="CookieMaster v.1.9.2 Statistics Screen"></a>
+						<div class="caption">Tooltip</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="page-header">
+				<h1>Compatibility &amp; Browser Support</h1>
+			</div>
+			<h3>Compatibility</h3>
+			<p>CookieMaster aims to always be compatible with the current version of Cookie Clicker.</p>
+			<h3>Browser Suppot</h3>
+			<p>CookieMaster should work correctly in current releases of the following browsers:</p>
+			<ul>
+				<li>Chrome (recommended)</li>
+				<li>FireFox</li>
+				<li>Safari</li>
+				<li>Internet Explorer (10+)</li>
+			</ul>
+			<p>Note that CookieMaster uses some new web features that may not be supported in some browsers.</p>
+
+			<div class="page-header">
+				<h1>Contributing</h1>
+			</div>
+			<p>Please check out the official <a href="https://github.com/greenc/CookieMaster">GitHub repo</a> for more info about contributing to this plugin :)</p>
+			<br />
+
+
+			<div class="footer">
+				<p>&copy; Chris Green 2014</p>
+			</div>
+
+
+		</div> <!-- /container -->
 
 	</body>
 </html>

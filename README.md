@@ -22,7 +22,7 @@ javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribu
 Screenshot
 ----------
 
-![CookieMaster Statistics and main game window](https://github.com/greenc/CookieMaster/raw/master/screenshots/cookie-master-main.jpg "CookieMaster")
+![CookieMaster Statistics and main game window](https://github.com/greenc/CookieMaster/raw/master/site/images/cookiemaster.v.1.9.2-main.png "CookieMaster")
 
 Features
 ----------
