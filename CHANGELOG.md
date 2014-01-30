@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.9.2 - _2014/1/30_
+
+ - Fixed bug where resetting a game with a high-speed auto-clicker running would unintentionally give extra cookies to the reset game
+
 ### Version 1.9.1 - _2014/1/29_
 
  - Fixed bug where store upgrade tooltips would not disappear after hovering

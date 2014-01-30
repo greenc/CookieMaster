@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.9.1
+    Version:      1.9.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.9.1',                          // Current version of CookieMaster
+	version:              '1.9.2',                          // Current version of CookieMaster
 	ccURL:                'http://dev:8080/cookieclicker/', // Cookie Clicker URL
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
@@ -3218,6 +3218,15 @@ function Beautify(what, floats) {
 CM.replaceNative('Logic', {
 	'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': '',
 });
+
+/**
+ * Pause the auto-clicker during reset to prevent cookies
+ * being given to a reset game
+ */
+CM.replaceNative('Reset', {
+	'if (bypass': 'CM.clearAutoClicker();if (bypass',
+	'Game.Popup(\'Game reset\');': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);}Game.Popup(\'Game reset\');'
+}, 'bypass');
 
 /**
  * Fixes the game's mangled attempt at blocking hotlinked audio files from
