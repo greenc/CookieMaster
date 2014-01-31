@@ -78,12 +78,28 @@ module.exports = function(grunt) {
 				overwrite: true,
 				replacements: [
 					{
-						from: '../cookiemaster/assets',
-						to: '<%= pkg.url %>/assets'
+						from: '../cookiemaster/assets/gc.mp3',
+						to: '<%= pkg.url %>/assets/gc.mp3'
 					},
 					{
-						from: '../cookiemaster/src',
-						to: '<%= pkg.url %>/build'
+						from: '../cookiemaster/assets/sp.mp3',
+						to: '<%= pkg.url %>/assets/sp.mp3'
+					},
+					{
+						from: '../cookiemaster/src/external-methods.js',
+						to: '<%= pkg.url %>/build/external-methods.min.js'
+					},
+					{
+						from: '../cookiemaster/src/cookiemaster.js',
+						to: '<%= pkg.url %>/build/cookiemaster.min.js'
+					},
+					{
+						from: '../cookiemaster/src/cookiemaster.css',
+						to: '<%= pkg.url %>/build/cookiemaster.min.css'
+					},
+					{
+						from: '../cookiemaster/src/cm-bootstrap.js',
+						to: '<%= pkg.url %>/build/cm-bootstrap.min.js'
 					}
 				]
 			},
