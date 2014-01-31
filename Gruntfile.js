@@ -78,28 +78,12 @@ module.exports = function(grunt) {
 				overwrite: true,
 				replacements: [
 					{
-						from: '../cookiemaster/assets/gc.mp3',
-						to: 'http://cookiemaster.vaskemaskine.co.uk/assets/gc.mp3'
+						from: '../cookiemaster/assets',
+						to: '<%= pkg.url %>/assets'
 					},
 					{
-						from: '../cookiemaster/assets/sp.mp3',
-						to: 'http://cookiemaster.vaskemaskine.co.uk/assets/sp.mp3'
-					},
-					{
-						from: '../cookiemaster/src/external-methods.js',
-						to: 'http://cookiemaster.vaskemaskine.co.uk/build/external-methods.min.js'
-					},
-					{
-						from: '../cookiemaster/src/cookiemaster.js',
-						to: 'http://cookiemaster.vaskemaskine.co.uk/build/cookiemaster.min.js'
-					},
-					{
-						from: '../cookiemaster/src/cookiemaster.css',
-						to: 'http://cookiemaster.vaskemaskine.co.uk/build/cookiemaster.min.css'
-					},
-					{
-						from: '../cookiemaster/src/cm-bootstrap.js',
-						to: 'http://cookiemaster.vaskemaskine.co.uk/build/cm-bootstrap.min.js'
+						from: '../cookiemaster/src',
+						to: '<%= pkg.url %>/build'
 					}
 				]
 			},
