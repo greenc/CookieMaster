@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.10.0
+    Version:      1.10.1
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.10.0',                          // Current version of CookieMaster
+	version:              '1.10.1',                         // Current version of CookieMaster
 	ccURL:                'http://dev:8080/cookieclicker/', // Cookie Clicker URL
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
@@ -1568,6 +1568,17 @@ CM.versionCompare = function(v1, v2, options) {
 
 };
 
+/**
+ * Returns true if audio object has loaded a valid resource
+ * @param  {Boolean} obj loaded audio object
+ * @return {Boolean}
+ */
+CM.testAudioObject = function(obj) {
+
+	return obj.networkState === 1 ? true : false;
+
+};
+
 /* ================================================
 	NON-RETURNING METHODS
 
@@ -2407,6 +2418,12 @@ CM.playAudioAlerts = function() {
 				setTimeout(function() {gcAlert.load();}, 1500);
 				this.config.cmAudioGCNotified = true;
 
+				// Display error message if audio file could not be loaded
+				if(!this.testAudioObject(this.config.cmGCAudioObject)) {
+					this.message('<strong>Error:</strong> Could not load Golden Cookie audio alert. If you are using a custom alert, please make sure you have specified a valid URL.', 'error');
+				}
+
+
 			}
 
 		} else {
@@ -2428,6 +2445,11 @@ CM.playAudioAlerts = function() {
 				spAlert.play();
 				setTimeout(function() {spAlert.load();}, 2500);
 				this.config.cmAudioSPNotified = true;
+
+				// Display error message if audio file could not be loaded
+				if(!this.testAudioObject(this.config.cmSPAudioObject)) {
+					this.message('<strong>Error:</strong> Could not load Reindeer audio alert. If you are using a custom alert, please make sure you have specified a valid URL.', 'error');
+				}
 
 			}
 
@@ -2813,7 +2835,7 @@ CM.downloadCSV = function() {
 
 	} else {
 
-		alert('No logged data to download :(');
+		CM.message('<strong>Error:</strong> No logged data available to download!', 'error');
 
 	}
 
@@ -3489,6 +3511,8 @@ CM.checkForUpdate = function() {
 			CM.config.cmVersionNotified = latestVers;
 		}
 
+	}).error(function() {
+		CM.message('<strong>Error:</strong> Could not check for update :(', 'error');
 	});
 
 };
@@ -3548,12 +3572,14 @@ CM.replaceNative('Reset', {
 /*jshint -W020 */
 Audio = function(src) {
 
-	if(src.indexOf('soundjay') !== -1) {
-		Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');
-		this.play = function() {};
-	} else {
-		return new realAudio(src);
+	if(src) {
+		if(src.indexOf('soundjay') !== -1) {
+			CM.message('<strong>Error:</strong> Sorry, no sounds hotlinked from soundjay.com.', 'error');
+			return false;
+		}
 	}
+
+	return new realAudio(src);
 
 };
 /*jshint +W020 */

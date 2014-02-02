@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.10.1 - _2014/2/2_
+
+ - Added some more status messages for when things go horribly, horribly wrong
+
+
 ### Version 1.10.0 - _2014/2/2_
 
  - Made timer controls more granular. Now you can choose which individual timers you want to show
