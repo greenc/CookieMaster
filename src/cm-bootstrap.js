@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.10.2
+    Version:      1.10.3
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -28,7 +28,7 @@ if(typeof CM === 'undefined') {
 
 	(function() {
 
-		var version = '1.10.2',
+		var version = '1.10.3',
 			cmcss   = document.createElement('link'),
 			jquery  = document.createElement('script'),
 			jsapi   = document.createElement('script'),
@@ -63,6 +63,6 @@ if(typeof CM === 'undefined') {
 
 } else {
 
-	Game.Popup('CookieMaster is already loaded!');
+	CM.message('<strong>Error:</strong> CookieMaster is already loaded!', 'error');
 
 }

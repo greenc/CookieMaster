@@ -1,5 +1,14 @@
 # CookieMaster Release History
 
+### Version 1.10.3 - _2014/2/2_
+
+ - Fixed some minor bugs
+ - Added some more system messages
+ - Improved code sanity in a few methods
+ - Added some missing comment headers for some methods
+ - Updated cookiemaster.co.uk to Bootstrap 3.1.0
+ - Small improvements to cookiemaster.co.uk layout
+
 ### Version 1.10.2 - _2014/2/2_
 
  - Changed update checker script to prevent it from caching AJAX request

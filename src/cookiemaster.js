@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.10.2
+    Version:      1.10.3
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.10.2',                         // Current version of CookieMaster
+	version:              '1.10.3',                         // Current version of CookieMaster
 	ccURL:                'http://dev:8080/cookieclicker/', // Cookie Clicker URL
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
@@ -830,14 +830,15 @@ CM.largeNumFormat = function(num, precision) {
 		parts,
 		i;
 
-	if(num === Number.POSITIVE_INFINITY || num === Number.NEGATIVE_INFINITY) {
+	// We'd like our integers to be finite please :)
+	if(!isFinite(num)) {
 		return 'Infinity';
 	}
 
 	// Force positive int for working on it
 	num = Math.abs(num);
 
-	// Format the very largew numbers
+	// Format the very large numbers
 	if(useShortNums) {
 		for(i = 0; i < ranges.length; i++) {
 			if(num >= ranges[i].divider) {
@@ -1060,7 +1061,7 @@ CM.Timer = function(type, label) {
  */
 CM.cookiesToHeavenly = function(cookies) {
 
-	return Math.floor(Math.sqrt(2.5 * Math.pow(10, 11) + 2 * cookies) / Math.pow(10, 6) - 0.5);
+	return Math.floor(Math.sqrt(2.5 * 1e11 + 2 * cookies) / 1e6 - 0.5);
 
 };
 
@@ -1072,7 +1073,7 @@ CM.cookiesToHeavenly = function(cookies) {
  */
 CM.heavenlyToCookies = function(chips) {
 
-	return 5 * Math.pow(10, 11) * chips * (chips + 1);
+	return 5 * 1e11 * chips * (chips + 1);
 
 };
 
@@ -1319,7 +1320,7 @@ CM.formatTime = function(t, compressed) {
 	}
 
 	// Take care of special cases
-	if (time === Infinity) {
+	if (!isFinite(time)) {
 		return 'Never';
 	} else if (time / 86400 > 1e3) {
 		return '> 1,000 days';
@@ -1514,6 +1515,13 @@ CM.replaceNative = function(native, replaces, args) {
 
 };
 
+/**
+ * Compares 2 version numbers
+ * @param  {String} v1      version number 1
+ * @param  {String} v2      version number 2
+ * @param  {Object} options optional params to control sorting and matching behaviour
+ * @return {Integer}         -1|0|1
+ */
 CM.versionCompare = function(v1, v2, options) {
 
 	var lexicographical = options && options.lexicographical,
@@ -1588,6 +1596,9 @@ CM.testAudioObject = function(obj) {
 	method nice and tidy :)
 ================================================ */
 
+/**
+ * Main game loop for most continuously updating methods
+ */
 CM.mainLoop = function() {
 
 	var settings = this.config.settings;
@@ -1778,6 +1789,9 @@ CM.attachSettingsPanel = function() {
 
 };
 
+/**
+ * Build and attach the settings panel to the DOM
+ */
 CM.attachStatsPanel = function() {
 
 	var $ccSectionMiddle   = this.config.ccSectionMiddle,
@@ -2295,6 +2309,9 @@ CM.updateDisplayGCTimer = function() {
 
 };
 
+/**
+ * Automatically click popups as soon as they spawn
+ */
 CM.autoClickPopups = function() {
 
 	var setting = this.config.settings.autoClickPopups.current;
@@ -2530,7 +2547,7 @@ CM.setTrueNeverclick = function() {
 
 			// Warn if Big Cookie has already been clicked
 			if(Game.cookieClicks > 0) {
-				alert('Warning: True Neverclick not possible as Big Cookie has already been clicked ' + Game.cookieClicks + ' times this session.');
+				this.message('<strong>Warning:</strong> True Neverclick not possible as Big Cookie has already been clicked ' + Game.cookieClicks + ' times this session.', 'warning');
 			}
 
 			// Unbind and remove all click handlers
@@ -2547,7 +2564,7 @@ CM.setTrueNeverclick = function() {
 			});
 
 		} else {
-			alert('True Neverclick is already unlocked.');
+			this.message('<strong>Warning:</strong> True Neverclick is already unlocked. Big Cookie will remain clickable.', 'warning');
 		}
 
 	} else {
