@@ -1,5 +1,18 @@
 # CookieMaster Release History
 
+### Version 1.10.0 - _2014/2/2_
+
+ - Made timer controls more granular. Now you can choose which individual timers you want to show
+ - Added a timer for Elder Pledge
+ - Cleaned up code for timers somewhat
+ - Added setting to auto-pop Wrinklers at specified time intervals
+ - Added a more persistent messaging system to display dismissable messages
+ - Changed some existing system messages to use new messging system
+ - Added auto-update checker. A message will now be displayed when a CookieMaster update is available
+ - Added setting to show or hide the Missed Golden Cookies statistic since apparently some of you don't like seeing it
+ - Added setting to hide the building information boxes that appear on hover
+ - Added setting to always display all available upgrades in the store
+
 ### Version 1.9.2 - _2014/1/30_
 
  - Fixed bug where resetting a game with a high-speed auto-clicker running would unintentionally give extra cookies to the reset game

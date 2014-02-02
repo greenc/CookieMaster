@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.9.2
+    Version:      1.10.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,13 +37,16 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.9.2',                          // Current version of CookieMaster
+	version:              '1.10.0',                          // Current version of CookieMaster
 	ccURL:                'http://dev:8080/cookieclicker/', // Cookie Clicker URL
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
+	cmCheckUpdateRate:    1800000,                          // How often to check for updates (default 30 minutes)
 	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',  // Default Golden Cookie audio soundbyte
 	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',  // Default Reindeer audio soundbyte
+	cmVersionURL:         '../cookiemaster/package.json',   // URL to check for plugin updates
+	cmChangelogURL:       'https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md',
 
 	///////////////////////////////////////////////
 	// Internal settings used by the plugin
@@ -62,6 +65,7 @@ CM.config = {
 	cmStatsChart:         null,  // Set when a new logging session stats
 	cmStatsLogStart:      null,  // Set when a new logging session starts
 	cmStatsLogTimer:      null,  // Set when a new logging sessions starts
+	cmVersionNotified:    null,  // Set to last notified version when update check runs
 
 	///////////////////////////////////////////////
 	// Common Selectors
@@ -76,6 +80,7 @@ CM.config = {
 	ccComments:      $('#comments'),
 	ccGoldenCookie:  $('#goldenCookie'),
 	ccSeasonPopup:   $('#seasonPopup'),
+	cmMessageBar:    null, // Set when bar is created
 	cmTimerPanel:    null, // Set when panel is created
 	cmSettingsPanel: null, // Set when panel is created
 	cmStatsPanel:    null, // Set when panel is created
@@ -171,6 +176,38 @@ CM.config = {
 	],
 
 	///////////////////////////////////////////////
+	// Timer bar settings
+	///////////////////////////////////////////////
+
+	cmTimerSettings: {
+		gc: {
+			label: 'Next Cookie:'
+		},
+		sp: {
+			label: 'Next Reindeer:'
+		},
+		frenzy: {
+			label: 'Frenzy:',
+			hide: ['clot', 'elderFrenzy']
+		},
+		elderFrenzy: {
+			label: 'Elder Frenzy:',
+			hide: ['clot', 'frenzy']
+		},
+		clickFrenzy: {
+			label: 'Click Frenzy:'
+		},
+		clot: {
+			label:'Clot:',
+			hide: ['frenzy', 'elderFrenzy']
+		},
+		pledge: {
+			label: 'Pledge:'
+		}
+	},
+
+
+	///////////////////////////////////////////////
 	// User settings panel options
 	///////////////////////////////////////////////
 
@@ -205,11 +242,74 @@ CM.config = {
 			desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
 			current: 'on'
 		},
-		showTimers: {
+		showAllUpgrades: {
+			group:   'ui',
+			type:    'checkbox',
+			label:   'Show All Upgrades:',
+			desc:    'Always display all available upgrades in the store (no need to hover).',
+			current: 'off'
+		},
+		hideBuildingInfo: {
+			group:   'ui',
+			type:    'checkbox',
+			label:   'Hide Building Info Boxes:',
+			desc:    'Hides the building information boxes that normally display when hovering each building section',
+			current: 'off'
+		},
+		showGCTimer: {
 			group:   'alerts',
 			type:    'checkbox',
-			label:   'Show Timers:',
-			desc:    'Display countdown timers for game events and buffs.',
+			label:   'Show Golden Cookie Timer:',
+			desc:    'Display countdown timer for next Golden Cookie.',
+			current: 'on'
+		},
+		showSPTimer: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Reindeer Timer:',
+			desc:    'Display countdown timer for next Reindeer.',
+			current: 'on'
+		},
+		showFrenzyTimer: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Frenzy Timer:',
+			desc:    'Display time remaining for Frenzy buff when active.',
+			current: 'on'
+		},
+		showElderFrenzyTimer: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Elder Frenzy Timer:',
+			desc:    'Display time remaining for Elder Frenzy buff when active.',
+			current: 'on'
+		},
+		showClickFrenzyTimer: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Click Frenzy Timer:',
+			desc:    'Display time remaining for Click Frenzy buff when active.',
+			current: 'on'
+		},
+		showClotTimer: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Clot Timer:',
+			desc:    'Display time remaining for Clot nerf when active.',
+			current: 'on'
+		},
+		showPledgeTimer: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Pledge Timer:',
+			desc:    'Display time remaining for Elder Pledge when active.',
+			current: 'on'
+		},
+		showGCCountdown: {
+			group:   'alerts',
+			type:    'checkbox',
+			label:   'Show Golden Cookie Countdown:',
+			desc:    'Display a countdown timer on Golden Cookies showing how long you have left to click them',
 			current: 'on'
 		},
 		timerBarPosition: {
@@ -501,11 +601,51 @@ CM.config = {
 			},
 			current: 10
 		},
+		showMissedGC: {
+			group: 'general',
+			type:  'checkbox',
+			label: 'Show Missed Golden Cookies:',
+			desc:  'Whether or not to show the stat for missed Golden Cookies.',
+			current: 'on'
+		},
 		enableLogging: {
 			group: 'general',
 			type:  'checkbox',
 			label: 'Enable Logging (BETA):',
 			desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
+			current: 'off'
+		},
+		popWrinklersAtInterval: {
+			group: 'general',
+			type:  'select',
+			label: 'Automatically Pop Wrinklers:',
+			desc:  'Set a timer to automatically pop all Wrinklers at the specified interval.',
+			options: [
+				{
+					label: 'Off',
+					value: 'off'
+				},
+				{
+					label: 'Every 10 minutes',
+					value: 600000
+				},
+				{
+					label: 'Every 30 minutes',
+					value: 1800000
+				},
+				{
+					label: 'Every hour',
+					value: 3600000
+				},
+				{
+					label: 'Every 4 hours',
+					value: 14400000
+				},
+				{
+					label: 'Every 8 hours',
+					value: 28800000
+				}
+			],
 			current: 'off'
 		},
 		trueNeverclick: {
@@ -527,15 +667,26 @@ CM.config = {
 };
 
 /**
+ * Object to hold any active timers
+ * @type {Object}
+ */
+CM.timers = {};
+
+/**
  * Initialization method. This is the first thing that gets called
  * when the script runs, and all methods that need to be invoked on
  * startup should be called from here in the order needed.
  */
 CM.init = function() {
 
-	var self = this,
-		refreshRate = this.config.cmRefreshRate,
-		fastRefreshRate = this.config.cmFastRefreshRate;
+	var self            = this,
+		refreshRate     = this.config.cmRefreshRate,
+		fastRefreshRate = this.config.cmFastRefreshRate,
+		checkUpdateRate = this.config.cmCheckUpdateRate;
+
+	// Attach the message bar before anything else
+	this.config.cmMessageBar = $('<div />').attr('id', 'CMMessageBar');
+	this.config.ccBody.append(this.config.cmMessageBar);
 
 	// Ensure CM can run correctly
 	if(this.integrityCheck()) {
@@ -543,6 +694,7 @@ CM.init = function() {
 		this.loadUserSettings();      // Load current user settings from cookie
 		this.attachSettingsPanel();   // Attach the settings panel to the DOM
 		this.attachStatsPanel();      // Attach the stats panel to the DOM
+		this.attachTimerPanel();      // Attach the timer panel to the DOM
 		this.AddPopWrinklersButton(); // Attach the Pop Wrinklers button to the DOM
 		this.setupTooltips();         // Configures the custom tooltips that overwrite the native ones
 		this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
@@ -578,6 +730,9 @@ CM.init = function() {
 
 		}, fastRefreshRate);
 
+		// Check for plugin updates
+		setInterval(function() {self.checkForUpdate();}, checkUpdateRate);
+
 		// All done :)
 		this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'info');
 
@@ -605,26 +760,26 @@ CM.integrityCheck = function() {
 
 	if(document.location.href.indexOf(this.config.ccURL) === -1) {
 		// Wrong URL
-		this.alertMessage('Error: This isn\'t the Cookie Clicker URL!');
+		alert('Error: This isn\'t the Cookie Clicker URL!');
 		error = true;
 	} else if(!window.jQuery) {
 		// jQuery isn't loaded
-		this.alertMessage('Error: jQuery is not loaded!');
+		alert('Error: jQuery is not loaded!');
 		error = true;
 	} else if(!Game) {
 		// Game class doesn't exist
-		this.alertMessage('Error: Cookie Clicker does not appear to be initialized!');
+		alert('Error: Cookie Clicker does not appear to be initialized!');
 		error = true;
 	}
 
 	// Warn user if this version of Cookie Clicker has not been tested with CookieMaster
 	if(this.compatibilityCheck(ccVers) === -1) {
-		this.alertMessage('Warning: CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!');
+		this.message('<strong>Warning:</strong> CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!', 'warning');
 	}
 
 	// Warn about Golden Cookie and Season Popup bug
 	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
-		this.alertMessage("Warning: New or unsaved game detected.\n\nGolden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.\n\nThis is a bug in the game, not CookieMaster ;)");
+		this.message('<strong>Warning:</strong> New or unsaved game detected.<br />Golden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.<br />This is a bug in the game, not CookieMaster.', 'warning');
 	}
 
 	return !error;
@@ -819,14 +974,15 @@ CM.Timer = function(type, label) {
 	 */
 	this.getTimings = function() {
 
-		var timings = {},
-			lucky = Game.Has("Get lucky");
+		var timings   = {},
+			lucky     = Game.Has("Get lucky"),
+			maxPledge = Game.Has('Sacrificial rolling pins') ? 60 : 30;
 
-		if(this.type === 'reindeer') {
+		if(this.type === 'sp') {
 			timings.min = Game.seasonPopup.minTime / Game.fps;
 			timings.minCurrent = (Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps;
 			timings.max = Game.seasonPopup.maxTime / Game.fps;
-		} else if(this.type === 'goldenCookie') {
+		} else if(this.type === 'gc') {
 			timings.min = Game.goldenCookie.minTime / Game.fps;
 			timings.minCurrent = (Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps;
 			timings.max = Game.goldenCookie.maxTime / Game.fps;
@@ -842,6 +998,9 @@ CM.Timer = function(type, label) {
 		} else if(this.type === 'clot') {
 			timings.minCurrent = Game.frenzy / Game.fps;
 			timings.max = 66 + 66 * lucky;
+		} else if(this.type === 'pledge') {
+			timings.minCurrent = Game.pledgeT / Game.fps;
+			timings.max = 60 * maxPledge;
 		}
 
 		return timings;
@@ -1355,6 +1514,60 @@ CM.replaceNative = function(native, replaces, args) {
 
 };
 
+CM.versionCompare = function(v1, v2, options) {
+
+	var lexicographical = options && options.lexicographical,
+		zeroExtend = options && options.zeroExtend,
+		v1parts = v1.split('.'),
+		v2parts = v2.split('.'),
+		i;
+
+	function isValidPart(x) {
+		return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+	}
+
+	if(!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+		return NaN;
+	}
+
+	if(zeroExtend) {
+		while(v1parts.length < v2parts.length) {
+			v1parts.push("0");
+		}
+		while(v2parts.length < v1parts.length){
+			v2parts.push("0");
+		}
+	}
+
+	if(!lexicographical) {
+		v1parts = v1parts.map(Number);
+		v2parts = v2parts.map(Number);
+	}
+
+	for(i = 0; i < v1parts.length; ++i) {
+		if(v2parts.length === i) {
+			return 1;
+		}
+
+		if(v1parts[i] === v2parts[i]) {
+			continue;
+		}
+		else if(v1parts[i] > v2parts[i]) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+
+	if(v1parts.length !== v2parts.length) {
+		return -1;
+	}
+
+	return 0;
+
+};
+
 /* ================================================
 	NON-RETURNING METHODS
 
@@ -1368,9 +1581,13 @@ CM.mainLoop = function() {
 
 	var settings = this.config.settings;
 
-	// Update timers if active and attached
-	if(settings.showTimers.current === 'on' && $('#CMTimerPanel').length) {
-		this.updateTimers();
+	// Update timers
+	this.updateTimers();
+
+	// Update GC Display timer
+	if(settings.showGCCountdown.current === 'on') {
+		// Golden cookie display timer
+		this.updateDisplayGCTimer();
 	}
 
 	// Show visual alerts if active
@@ -1811,6 +2028,7 @@ CM.updateStats = function() {
 		lbtr              = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
 		lfbText           = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
 		lfbtr             = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+		missedGC          = this.config.settings.showMissedGC.current === 'on' ? Beautify(Game.missedGoldenClicks) : 'I\'m a wimp and don\'t want to know',
 		chainReward       = this.maxChainReward(),
 		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
 		nextChainBank     = this.requiredNextChainTier('bank', chainReward),
@@ -1852,7 +2070,7 @@ CM.updateStats = function() {
 	$('#CMStatsBankRequiredNextChainTier').html(nextChainBankString || '-');
 	$('#CMStatsCPSRequiredNextChainTier').html(nextChainCPSString || '-');
 	$('#CMStatsLastGC').html(lastGC);
-	$('#CMStatsMissedGC').html(Beautify(Game.missedGoldenClicks));
+	$('#CMStatsMissedGC').html(missedGC);
 
 	// Heavenly Chip stats
 	$('#CMStatsHCCurrent').html(hcStats[0] + ' (' + hcStats[1] + ')');
@@ -1915,7 +2133,7 @@ CM.updateStats = function() {
 };
 
 /**
- * Attach and populate the timer panel for showing game event timers
+ * Attach the timer panel for showing game event timers
  */
 CM.attachTimerPanel = function() {
 
@@ -1926,59 +2144,51 @@ CM.attachTimerPanel = function() {
 	// Only attach it if it's not already in DOM
 	if($('#CMTimerPanel').length === 0) {
 
-		// Initialize timer objects
-		// TO DO: Condense frenzy, elderFrenzy and clot into single timer instance
-		//  since they are basically the same thing, and cannot stack together
-		this.gcTimer          = new CM.Timer('goldenCookie', 'Next Cookie:');
-		this.reindeerTimer    = new CM.Timer('reindeer',     'Next Reindeer:');
-		this.frenzyTimer      = new CM.Timer('frenzy',       'Frenzy:');
-		this.clickFrenzyTimer = new CM.Timer('clickFrenzy',  'Click Frenzy:');
-		this.elderFrenzyTimer = new CM.Timer('elderFrenzy',  'Elder Frenzy:');
-		this.clotTimer        = new CM.Timer('clot',         'Clot:');
-
-		// Create the HTML and attach everyting to DOM
-		$cmTimerPanel.append(
-			this.gcTimer.create(),
-			this.reindeerTimer.create(),
-			this.frenzyTimer.create(),
-			this.elderFrenzyTimer.create(),
-			this.clotTimer.create(),
-			this.clickFrenzyTimer.create()
-		);
 		$sectionLeft.append($cmTimerPanel);
 
 		// Save selector to config for later use
 		this.config.cmTimerPanel = $cmTimerPanel;
-
-		// Attach golden cookie display timer
-		this.displayGCTimer();
 
 	}
 
 };
 
 /**
- * Destroy all timers and remove the timer panel
+ * Populate the timer panel with timers
  */
-CM.removeTimerPanel = function() {
+CM.populateTimerPanel = function() {
 
-	// Only remove it if it exists in DOM
-	if($('#CMTimerPanel').length) {
+	var activeTimers    = {},
+		settings        = this.config.settings,
+		timerSettings   = this.config.cmTimerSettings,
+		key,
+		timer;
 
-		// Remove references to all timers
-		this.gcTimer = null;
-		this.reindeerTimer = null;
-		this.frenzyTimer = null;
-		this.clickFrenzyTimer = null;
-		this.elderFrenzyTimer = null;
-		this.clotTimer = null;
+	// Empty the timer panel
+	this.config.cmTimerPanel.empty();
 
-		// Remove golden cookie display timer
-		this.config.cmGCOverlay.remove();
+	// Destroy all timers
+	this.timers = {};
 
-		// Remove the timer panel
-		this.config.cmTimerPanel.remove();
+	// Get on/off status of each timer
+	activeTimers.gc          = settings.showGCTimer.current;
+	activeTimers.sp          = settings.showSPTimer.current;
+	activeTimers.frenzy      = settings.showFrenzyTimer.current;
+	activeTimers.elderFrenzy = settings.showElderFrenzyTimer.current;
+	activeTimers.clickFrenzy = settings.showClickFrenzyTimer.current;
+	activeTimers.clot        = settings.showClotTimer.current;
+	activeTimers.pledge      = settings.showPledgeTimer.current;
 
+	// Create a timer object for each one that is "on"
+	for(key in activeTimers) {
+		if(activeTimers[key] === 'on') {
+			CM.timers[key] = new CM.Timer(key, timerSettings[key].label);
+		}
+	}
+
+	// Call create method and attach each created timer to the timer panel
+	for(timer in this.timers) {
+		CM.config.cmTimerPanel.append(CM.timers[timer].create());
 	}
 
 };
@@ -1986,82 +2196,77 @@ CM.removeTimerPanel = function() {
 /**
  * Update all timers with new values
  */
-// TO DO: DRY this up
 CM.updateTimers = function() {
 
-	// Golden cookie display timer
-	this.displayGCTimer();
+	// Expressions that evaluate to true when each timer should be displayed
+	var conditions = {
+			gc:          Game.goldenCookie.life === 0,
+			sp:          Game.seasonPopup.life === 0,
+			frenzy:      Game.frenzy > 0 && Game.frenzyPower === 7,
+			clickFrenzy: Game.clickFrenzy > 0,
+			elderFrenzy: Game.frenzy > 0 && Game.frenzyPower === 666,
+			clot:        Game.frenzy > 0 && Game.frenzyPower === 0.5,
+			pledge:      Game.pledgeT > 0
+		},
+		key;
 
-	// Golden Cookie timer
-	if(Game.goldenCookie.life === 0) {
-		this.gcTimer.update();
-		this.gcTimer.show();
-	} else {
-		this.gcTimer.hide();
-	}
-
-	// Reindeer timer
-	if(Game.seasonPopup.life === 0) {
-		this.reindeerTimer.update();
-		this.reindeerTimer.show();
-	} else {
-		this.reindeerTimer.hide();
-	}
-
-	// Frenzy timer
-	if(Game.frenzy > 0 && Game.frenzyPower === 7) {
-		this.frenzyTimer.update();
-		this.frenzyTimer.show();
-		this.elderFrenzyTimer.hide();
-		this.clotTimer.hide();
-	} else {
-		this.frenzyTimer.hide();
-	}
-
-	// Click frenzy timer
-	if(Game.clickFrenzy > 0) {
-		this.clickFrenzyTimer.update();
-		this.clickFrenzyTimer.show();
-	} else {
-		this.clickFrenzyTimer.hide();
-	}
-
-	// Elder frenzy timer
-	if(Game.frenzy > 0 && Game.frenzyPower === 666) {
-		this.elderFrenzyTimer.update();
-		this.elderFrenzyTimer.show();
-		this.frenzyTimer.hide();
-		this.clotTimer.hide();
-	} else {
-		this.elderFrenzyTimer.hide();
-	}
-
-	// Clot timer
-	if(Game.frenzy > 0 && Game.frenzyPower === 0.5) {
-		this.clotTimer.update();
-		this.clotTimer.show();
-		this.frenzyTimer.hide();
-		this.elderFrenzyTimer.hide();
-	} else {
-		this.clotTimer.hide();
+	// Update each timer
+	for(key in conditions) {
+		if(this.timers.hasOwnProperty(key)) {
+			if(conditions[key]) {
+				this.timers[key].update().show();
+				this.hideOtherTimers(key);
+			} else {
+				this.timers[key].hide();
+			}
+		}
 	}
 
 };
 
 /**
- * Display a countdown on the golden cookie
+ * Hides other timers when current is active
+ * @param  {[type]} timer current timer
  */
-CM.displayGCTimer = function() {
+CM.hideOtherTimers = function(timer) {
+
+	var settings = this.config.cmTimerSettings[timer],
+		hide     = settings.hasOwnProperty('hide') ? settings.hide : null;
+
+	if(hide && hide.length > 0) {
+		hide.forEach(function(timer) {
+			if(CM.timers.hasOwnProperty(timer)) {
+				CM.timers[timer].hide();
+			}
+		});
+	}
+
+};
+
+/**
+ * Attach a countdown timer to the golden cookie
+ */
+CM.attachDisplayGCTimer = function() {
 
 	var $gc      = this.config.ccGoldenCookie,
-		$overlay = this.config.cmGCOverlay || $('<div />').attr({'id': 'CMGCOverlay', 'class': 'cmFont'}),
-		timeLeft = Math.round(Game.goldenCookie.life / Game.fps);
+		$overlay = this.config.cmGCOverlay || $('<div />').attr({'id': 'CMGCOverlay', 'class': 'cmFont'});
 
-	// Reattach if it was removed at some point
+	// Attach to DOM if not already there
 	if($('#CMGCOverlay').length === 0) {
 		this.config.ccBody.append($overlay);
 		this.config.cmGCOverlay = $overlay;
 	}
+
+};
+
+/**
+ * Update the countdown timer to the golden cookie
+ */
+CM.updateDisplayGCTimer = function() {
+
+	var $gc      = this.config.ccGoldenCookie,
+		$overlay = this.config.cmGCOverlay,
+		timeLeft = Math.round(Game.goldenCookie.life / Game.fps);
 
 	if(Game.goldenCookie.life > 0) {
 
@@ -2247,6 +2452,32 @@ CM.AddPopWrinklersButton = function() {
 		}).text('Pop all Wrinklers');
 
 	$('#cookieAnchor').append($button);
+
+};
+
+/**
+ * Pops all active Wrinklers after a specified time
+ */
+CM.popWrinklersAfterXTime = function() {
+
+	var setting = this.config.settings.popWrinklersAtInterval.current,
+		time = setting !== 'off' ? setting : null;
+
+	// Clear any existing timer
+	if(CM.popWrinklerTimer) {
+		clearTimeout(CM.popWrinklerTimer);
+	}
+
+	if(time) {
+		CM.popWrinklerTimer = setTimeout(function popWrinklers() {
+			var reward = CM.getWrinklerStats()[1];
+			if(CM.wrinklersExist() && reward) {
+				Game.CollectWrinklers();
+				CM.message('<strong>Popped all Wrinklers.</strong> Rewarded ' + Beautify(reward) + ' cookies.', 'notice');
+			}
+			CM.popWrinklerTimer = setTimeout(popWrinklers, time);
+		}, time);
+	}
 
 };
 
@@ -2648,16 +2879,40 @@ CM.applyUserSettings = function() {
 	this.cleanUI(settings.cleanUI.current === 'on');
 	this.changeFont(settings.changeFont.current);
 
-	// Timers
-	if(settings.showTimers.current === 'on') {
-		this.attachTimerPanel();
+	// Show all upgrades
+	if(settings.showAllUpgrades.current === 'on') {
+		config.ccBody.addClass('cmShowAllUpgrades');
 	} else {
-		this.removeTimerPanel();
+		config.ccBody.removeClass('cmShowAllUpgrades');
 	}
+
+	// Hide building info
+	if(settings.hideBuildingInfo.current === 'on') {
+		config.ccBody.addClass('cmHideBuildingInfo');
+	} else {
+		config.ccBody.removeClass('cmHideBuildingInfo');
+	}
+
+	// Timers
+	this.populateTimerPanel();
 	if(settings.timerBarPosition.current === 'top') {
 		config.ccBody.addClass('cmTimerTop');
 	} else {
 		config.ccBody.removeClass('cmTimerTop');
+	}
+
+	// Auto-pop Wrinkler timer
+	if(settings.popWrinklersAtInterval.current !== 'off') {
+		this.popWrinklersAfterXTime();
+	} else {
+		clearTimeout(CM.popWrinklerTimer);
+	}
+
+	// Golden cookie display timer
+	if(settings.showGCCountdown.current === 'on') {
+		this.attachDisplayGCTimer();
+	} else {
+		$('#CMGCOverlay').remove();
 	}
 
 	// Remove Visual alert overlay if not required
@@ -3015,13 +3270,35 @@ CM.suicide = function() {
 };
 
 /**
- * Alert user to messages (expand later)
+ * Alert user to messages via the message bar
  *
- * @param  {String} msg The message
+ * @param  {String} msg  message text
+ * @param  {String} type [notice|warning|success|error]
  */
-CM.alertMessage = function(msg) {
+CM.message = function(msg, type) {
 
-	alert(msg);
+	var typeClass  = type ? 'cm' + this.toTitleCase(type) : 'cmNotice',
+		$container = $('<div />').attr('class', 'cmContainer'),
+		$message   = $('<div />').attr({'class': 'cmMessage ' + typeClass}),
+		$dismiss   = $('<div />').attr('class', 'cmDismiss').text('x');
+
+	$message.html(msg);
+	$container.append($message, $dismiss);
+	this.config.cmMessageBar.prepend($container);
+
+	// Nicely fade in the message
+	$container.slideDown(300, function() {
+		$(this).find('.cmMessage').fadeTo(300, 1);
+	});
+
+	// Click handler to dismiss the message gracefully
+	$dismiss.click(function() {
+		$(this).parent().fadeTo(200, 0, function() {
+			$(this).slideUp(200, function() {
+				$(this).remove();
+			});
+		});
+	});
 
 };
 
@@ -3183,6 +3460,37 @@ CM.manageBuildingTooltip = function(building) {
 	$('.price', '#product' + building.id).attr('class', 'price text-' + color);
 
 	return this.updateTooltip(building, colors);
+};
+
+/**
+ * Checks for plugin updates via an AJAX request
+ */
+CM.checkForUpdate = function() {
+
+	var vers = this.config.version,
+		notifiedVers = this.config.cmVersionNotified,
+		changelog = this.config.cmChangelogURL,
+		url = this.config.cmVersionURL;
+
+	$.getJSON(url).done(function(data) {
+
+		var latestVers = data.version;
+
+		// Display a notice message if latest version is higher than the current one
+		// and we haven't already notified the user
+		if(CM.versionCompare(vers, latestVers) === -1 && notifiedVers !== latestVers) {
+			CM.message(
+				'<strong>Notice: </strong> New version of CookieMaster available!<br />' +
+				'Save and refresh to update to <strong>v.' + latestVers + '</strong> ' +
+				'or <a href="' + changelog + '" target="_blank">check what\'s new</a> (opens in new tab).',
+				'notice'
+			);
+			// Set the notified version flag
+			CM.config.cmVersionNotified = latestVers;
+		}
+
+	});
+
 };
 
 

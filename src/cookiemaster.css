@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.9.2
+    Version:      1.10.0
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -18,6 +18,59 @@
 ================================================ */
 
 /* Styles for the CM UI */
+#CMMessageBar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 500px;
+	z-index: 1000001;
+}
+
+#CMMessageBar .cmContainer {
+	position: relative;
+	margin: 5px;
+	display: none;
+}
+
+#CMMessageBar .cmMessage {
+	font-size: 13px;
+	line-height: 18px;
+	padding: 10px 30px 10px 15px;
+	border-radius: 3px;
+	opacity: 0;
+	color: #FFF;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+#CMMessageBar .cmMessage a {
+	color: #FFF;
+}
+
+#CMMessageBar .cmDismiss {
+	position: absolute;
+	top: 9px;
+	right: 10px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	color: #000;
+	opacity: 0.3;
+	cursor: pointer;
+}
+
+#CMMessageBar .cmDismiss:hover {
+	opacity: 0.5;
+}
+
+#CMMessageBar .cmNotice { background-color: rgba(49, 112, 143, 0.95); }
+#CMMessageBar .cmSuccess { background-color: rgba(77, 158, 45, 0.95); }
+#CMMessageBar .cmWarning { background-color: rgba(190, 150, 20, 0.95); }
+#CMMessageBar .cmError { background-color: rgba(202, 56, 56, 0.95); }
+
 #CMStatsPanel, #CMSettingsPanel {
 	display: none;
 	z-index: 1000000;
@@ -187,12 +240,12 @@
 
 .cmTimerLabel {
 	float: left;
-	width: 25%;
+	width: 27%;
 }
 
 .cmTimer {
 	float: left;
-	width: 65%;
+	width: 63%;
 	height: 14px;
 	background-color: #494949;
 	position: relative;
@@ -215,12 +268,13 @@
 	background-color: #B3B3B3;
 	border-radius: 3px;
 }
-.cmTimer-goldenCookie .cmTimer div { background-color: #FF00FF;}
-.cmTimer-reindeer .cmTimer div { background-color: #FF8500;}
+.cmTimer-gc .cmTimer div { background-color: #FF00FF;}
+.cmTimer-sp .cmTimer div { background-color: #FF8500;}
 .cmTimer-frenzy .cmTimer div { background-color: #D6D612;}
 .cmTimer-clickFrenzy .cmTimer div { background-color: #288BBE;}
 .cmTimer-elderFrenzy .cmTimer div { background-color: #1FC41F;}
 .cmTimer-clot .cmTimer div { background-color: #E90000;}
+.cmTimer-pledge .cmTimer div { background-color: #2900FF;}
 
 .cmTimerCounter {
 	float: left;
@@ -421,10 +475,6 @@
 	line-height: 20px;
 }
 
-.cm-tooltip__warnings div strong {
-	font-weight: bold;
-}
-
 .cmTooltipWarningLucky {
 	background-color: rgba(184, 0, 0, 0.3);
 	border-left: 4px solid #B80000;
@@ -462,7 +512,6 @@
 }
 
 .cmNotice { color: #6CF; }
-.cmNotice strong { font-weight: bold; }
 
 /* Stats Chart */
 #CMChart {
@@ -480,6 +529,9 @@
 .cf:after {
 	clear: both;
 }
+
+strong { font-weight: bold; }
+
 /* End CM UI styles */
 
 /* External stuff */
@@ -609,3 +661,18 @@
 	padding: 10px;
 }
 /* End Feature: highVisibilityCookie */
+
+/* Feature: hideBuildingInfo */
+.cmHideBuildingInfo .row:hover .info,
+.cmHideBuildingInfo #sectionLeft:hover .info,
+.cmHideBuildingInfo .row:hover .specialButton {
+	opacity: 0;
+}
+/* End Feature: hideBuildingInfo */
+
+/* Feature: showAllUpgrades */
+.cmShowAllUpgrades #upgrades {
+	height: auto;
+	min-height: 60px;
+}
+/* End Feature: showAllUpgrades */

@@ -66,7 +66,13 @@ module.exports = function(grunt) {
 				prefix: '[^\\-][Vv]ersion[\'"]?\\s*[:=]\\s*[\'"]?'
 			},
 			defaults: {
-				src: ['src/external-methods.js', 'src/cookiemaster.js', 'src/cookiemaster.css', 'src/cm-bootstrap.js']
+				src: [
+					'src/external-methods.js',
+					'src/cookiemaster.js',
+					'src/cookiemaster.css',
+					'src/cm-bootstrap.js',
+					'current.json'
+				]
 			},
 		},
 		/**
@@ -100,6 +106,10 @@ module.exports = function(grunt) {
 					{
 						from: '../cookiemaster/src/cm-bootstrap.js',
 						to: '<%= pkg.url %>/build/cm-bootstrap.min.js'
+					},
+					{
+						from: '../cookiemaster/package.json',
+						to: '<%= pkg.url %>/package.json'
 					}
 				]
 			},
