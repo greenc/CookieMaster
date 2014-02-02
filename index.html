@@ -8,6 +8,7 @@
 		<meta name="author" content="Chris Green">
 		<title>CookieMaster - Browser plugin for Cookie Clicker</title>
 		<link href="site/css/bootstrap.min.css" rel="stylesheet">
+		<link href='http://fonts.googleapis.com/css?family=Kavoon' rel='stylesheet' type='text/css'>
 		<link href="site/css/jumbotron-narrow.min.css" rel="stylesheet">
 		<!--[if lt IE 9]>
 			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -41,13 +42,14 @@
 			<div class="page-header">
 				<h1>Overview</h1>
 			</div>
-			<p>CookieMaster is a JavaScript based plugin for the popular in-browser game <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>. It enhances the game by adding many useful features, statistics and helpers to improve the core experience.</p>
-			<p>See below for the highlights, or check out the <a href="https://github.com/greenc/CookieMaster/blob/master/README.md">READMDE</a> on GitHub for an exhaustive list.</p>
+			<div class="row">
+				<p>CookieMaster is a JavaScript based plugin for the popular in-browser game <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>. It enhances the game by adding many useful features, statistics and helpers to improve the core experience.</p>
+				<p>See below for the highlights, or check out the <a href="https://github.com/greenc/CookieMaster/blob/master/README.md">READMDE</a> on GitHub for an exhaustive list.</p>
+			</div>
 
 			<div class="page-header">
 				<h1 id="screenshots">Screenshots</h1>
 			</div>
-
 			<div class="row">
 				<div class="col-xs-6 col-md-3">
 					<div class="thumbnail">
@@ -78,7 +80,6 @@
 			<div class="page-header">
 				<h1 id="features">Key Features</h1>
 			</div>
-
 			<div class="row">
 				<div class="col-lg-6">
 					<h4><span class="glyphicon glyphicon-info-sign"></span> Purchase efficiency</h4>
@@ -113,21 +114,23 @@
 				<h1 id="how-to-use">How To Use</h1>
 			</div>
 
-			<p>Currently, the easiest way to use CookieMaster is via a bookmarklet:</p>
-			<ol>
-				<li>
-					<p>Drag the following button into your bookmarks bar or folder: <a class="btn btn-xs btn-primary" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)">CookieMaster</a></p>
-					<p><strong>or...</strong></p>
-					<p>Paste the following code into a new bookmark in your browser:</p>
-					<pre>javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)</pre>
-				</li>
-				<li>
-					<p>Load up <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></p>
-				</li>
-				<li>
-					<p>Click on your recently created bookmark</p>
-				</li>
-			</ol>
+			<div class="row">
+				<p>Currently, the easiest way to use CookieMaster is via a bookmarklet:</p>
+				<ol>
+					<li>
+						<p>Drag the following button into your bookmarks bar or folder: <a class="btn btn-xs btn-success" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)">CookieMaster</a></p>
+						<p><strong>or...</strong></p>
+						<p>Paste the following code into a new bookmark in your browser:</p>
+						<pre>javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)</pre>
+					</li>
+					<li>
+						<p>Load up <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></p>
+					</li>
+					<li>
+						<p>Click on your recently created bookmark</p>
+					</li>
+				</ol>
+			</div>
 
 			<div class="page-header">
 				<h1>Compatibility &amp; Browser Support</h1>
@@ -198,19 +201,21 @@
 			<div class="page-header">
 				<h1>Contributing</h1>
 			</div>
-			<p>Please check out the official <a href="https://github.com/greenc/CookieMaster">GitHub repo</a> for more info about contributing to this plugin :)</p>
-			<h3>Want to donate?</h3>
-			<p>CookieMaster is developed by a single developer in their spare time. If you enjoy using the plugin and want to show your appreciation, you can donate via PayPal.</p>
-			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="D6CV8KSDRDCS2">
-				<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
-				<img alt="Donate via PayPal" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
-			</form>
-			<br />
+			<div class="row">
+				<p>Please check out the official <a href="https://github.com/greenc/CookieMaster">GitHub repo</a> for more info about contributing to this plugin :)</p>
+				<h3>Want to donate?</h3>
+				<p>CookieMaster is developed by a single developer in their spare time. If you enjoy using the plugin and want to show your appreciation, you can donate via PayPal.</p>
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="D6CV8KSDRDCS2">
+					<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+					<img alt="Donate via PayPal" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
+				</form>
+				<br />
+			</div>
 
 			<div class="footer">
-				<p>&copy; Chris Green 2014</p>
+				<p>&copy; Chris Green 2014 - CookieMaster is in no way affiliated or endorsed by Cookie Clicker</p>
 			</div>
 
 		</div> <!-- /container -->
