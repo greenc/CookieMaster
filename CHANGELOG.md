@@ -1,9 +1,12 @@
 # CookieMaster Release History
 
+### Version 1.10.2 - _2014/2/2_
+
+ - Changed update checker script to prevent it from caching AJAX request
+
 ### Version 1.10.1 - _2014/2/2_
 
  - Added some more status messages for when things go horribly, horribly wrong
-
 
 ### Version 1.10.0 - _2014/2/2_
 

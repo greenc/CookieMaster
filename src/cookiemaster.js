@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.10.1
+    Version:      1.10.2
     Date:         23/12/2013
     GitHub:       https://github.com/greenc/CookieMaster
     Dependencies: Cookie Clicker, jQuery
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.10.1',                         // Current version of CookieMaster
+	version:              '1.10.2',                         // Current version of CookieMaster
 	ccURL:                'http://dev:8080/cookieclicker/', // Cookie Clicker URL
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
@@ -3494,7 +3494,11 @@ CM.checkForUpdate = function() {
 		changelog = this.config.cmChangelogURL,
 		url = this.config.cmVersionURL;
 
-	$.getJSON(url).done(function(data) {
+	$.ajax({
+		url: url,
+		cache: false,
+		dataType: 'json'
+	}).done(function(data) {
 
 		var latestVers = data.version;
 
