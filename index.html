@@ -229,11 +229,11 @@
 				var btn = document.getElementById('addToChrome');
 				function setInstalled(el) {
 					el.textContent = 'Already Installed';
-					el.setAttribute('disabled');
+					el.disabled = true;
 				}
 				function setUninstalled(el) {
 					el.innerHTML = 'Add to Chrome <span class="glyphicon glyphicon-download"></span>';
-					el.setAttribute('disabled', false);
+					el.disabled = false;
 				}
 				if(chrome.app.isInstalled) {
 					setInstalled(btn);
