@@ -225,7 +225,6 @@
 		</div> <!-- /container -->
 
 		<script>
-			(function() {
 				var btn = document.getElementById('addToChrome');
 				function setInstalled(el) {
 					console.log('setInstalled');
@@ -240,11 +239,10 @@
 				if(chrome.app.isInstalled) {
 					setInstalled(btn);
 				} else {
-					btn.addEventListener('click', function(this) {
-						chrome.webstore.install(undefined, setInstalled(this), setUninstalled(this));
+					btn.addEventListener('click', function() {
+						chrome.webstore.install(undefined, setInstalled(btn), setUninstalled(btn));
 					}, false);
 				}
-			})();
 		</script>
 
 		<script>
