@@ -235,7 +235,7 @@
 					setInstalled(addToChrome);
 				} else {
 					addToChrome.addEventListener('click', function() {
-						chrome.webstore.install(setInstalled(addToChrome));
+						chrome.webstore.install(setInstalled(addToChrome), null);
 					}, false);
 				}
 			})();
