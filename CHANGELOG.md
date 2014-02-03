@@ -1,5 +1,15 @@
 # CookieMaster Release History
 
+### Version 1.11.1 - _2014/2/3_
+
+ - Secured all game manipulating methods into a function that ensures they are available to work on
+ - Minor site updates
+
+### Version 1.11.0 - _2014/2/3_
+
+ - Added Chrome extension to repo
+ - Removed integrity check method to simplify deployment process across both builds
+
 ### Version 1.10.3 - _2014/2/2_
 
  - Fixed some minor bugs
