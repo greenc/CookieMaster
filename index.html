@@ -240,7 +240,7 @@
 				if(chrome.app.isInstalled) {
 					setInstalled(btn);
 				} else {
-					addToChrome.addEventListener('click', function() {
+					btn.addEventListener('click', function() {
 						chrome.webstore.install(undefined, setInstalled(btn), setUninstalled(btn));
 					}, false);
 				}
