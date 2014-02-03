@@ -228,21 +228,15 @@
 			(function() {
 				var btn = document.getElementById('addToChrome');
 				function setInstalled(el) {
-					console.log('setInstalled');
 					el.textContent = 'Already Installed';
 					el.disabled = true;
-				}
-				function setUninstalled(el) {
-					console.log('setUninstalled');
-					el.innerHTML = 'Add to Chrome <span class="glyphicon glyphicon-download"></span>';
-					el.disabled = false;
 				}
 				if(chrome.app.isInstalled) {
 					setInstalled(btn);
 				} else {
 					btn.addEventListener('click', function() {
-						chrome.webstore.install(undefined, setInstalled(btn), setUninstalled(btn));
-					}, true);
+						chrome.webstore.install(undefined, setInstalled(btn));
+					}, false);
 				}
 			})();
 		</script>
