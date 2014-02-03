@@ -11,17 +11,29 @@ module.exports = function(grunt) {
 		 */
 		clean: {
 			build: {
-				src: [ 'build' ]
+				src: [ 'build', 'chrome-extension/build' ]
 			},
 		},
 		/**
-		 * Copy over the bookmarklet as-is
+		 * Copy files into build directories
 		 */
 		copy: {
-			main: {
+			bookmarklet: {
 				src: 'src/bookmarklet.js',
 				dest: 'build/bookmarklet.js',
 			},
+			chromeCSS: {
+				src: 'src/cookiemaster.css',
+				dest: 'chrome-extension/build/cookiemaster.css',
+			},
+			chromeCM: {
+				src: 'src/cookiemaster.js',
+				dest: 'chrome-extension/build/cookiemaster.js',
+			},
+			chromeEM: {
+				src: 'src/external-methods.js',
+				dest: 'chrome-extension/build/external-methods.js',
+			}
 		},
 		/**
 		 * Minify the other JS files into the build directory
@@ -63,7 +75,7 @@ module.exports = function(grunt) {
 		 */
 		version: {
 			options: {
-				prefix: '[^\\-][Vv]ersion[\'"]?\\s*[:=]\\s*[\'"]?'
+				prefix: '[^\\-_][Vv]ersion[\'"]?\\s*[:=]\\s*[\'"]?'
 			},
 			defaults: {
 				src: [
@@ -71,7 +83,7 @@ module.exports = function(grunt) {
 					'src/cookiemaster.js',
 					'src/cookiemaster.css',
 					'src/cm-bootstrap.js',
-					'current.json'
+					'chrome-extension/manifest.json'
 				]
 			},
 		},
@@ -80,7 +92,12 @@ module.exports = function(grunt) {
 		 */
 		replace: {
 			sources: {
-				src: ['build/cm-bootstrap.min.js', 'build/bookmarklet.js', 'build/cookiemaster.min.js'],
+				src: [
+					'build/cm-bootstrap.min.js',
+					'build/bookmarklet.js',
+					'build/cookiemaster.min.js',
+					'chrome-extension/build/cookiemaster.js'
+				],
 				overwrite: true,
 				replacements: [
 					{
@@ -114,7 +131,7 @@ module.exports = function(grunt) {
 				]
 			},
 			ccLink: {
-				src: ['build/cookiemaster.min.js'],
+				src: ['build/cookiemaster.min.js', 'chrome-extension/build/cookiemaster.js'],
 				overwrite: true,
 				replacements: [
 					{

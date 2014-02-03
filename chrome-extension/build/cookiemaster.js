@@ -43,9 +43,9 @@ CM.config = {
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
 	cmCheckUpdateRate:    1800000,                          // How often to check for updates (default 30 minutes)
-	cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',  // Default Golden Cookie audio soundbyte
-	cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',  // Default Reindeer audio soundbyte
-	cmVersionURL:         '../cookiemaster/package.json',   // URL to check for plugin updates
+	cmGCAudioAlertURL:    'http://cookiemaster.co.uk/assets/gc.mp3',  // Default Golden Cookie audio soundbyte
+	cmSPAudioAlertURL:    'http://cookiemaster.co.uk/assets/sp.mp3',  // Default Reindeer audio soundbyte
+	cmVersionURL:         'http://cookiemaster.co.uk/package.json',   // URL to check for plugin updates
 	cmChangelogURL:       'https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md',
 
 	///////////////////////////////////////////////

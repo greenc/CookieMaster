@@ -7,3 +7,8 @@ node_modules
 
 # JSHint settings
 .jshintrc
+
+# Chrome extension package
+*.pem
+*.crx
+*.zip
