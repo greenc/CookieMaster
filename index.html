@@ -241,7 +241,7 @@
 					setInstalled(btn);
 				} else {
 					addToChrome.addEventListener('click', function() {
-						chrome.webstore.install(setInstalled(btn), setUninstalled(btn));
+						chrome.webstore.install(undefined, setInstalled(btn), setUninstalled(btn));
 					}, false);
 				}
 			})();
