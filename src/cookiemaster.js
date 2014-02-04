@@ -2,13 +2,12 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.11.3
-    Date:         23/12/2013
-    Website:      http://cookiemaster.co.uk
-    GitHub:       https://github.com/greenc/CookieMaster
-    Dependencies: Cookie Clicker, jQuery
-    Author:       Chris Green
-                  c.robert.green@gmail.com
+    Version: 1.11.3
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
 
     This code was written to be used, abused,
     extended and improved upon. Feel free to do
@@ -976,7 +975,7 @@ CM.Timer = function(type, label) {
 	 */
 	this.show = function() {
 
-		if(this.container.is(':hidden')) {
+		if(!this.container.hasClass('cmVisible')) {
 
 			var $content = this.container.children();
 
@@ -984,6 +983,8 @@ CM.Timer = function(type, label) {
 			this.container.slideDown(200, function() {
 				$content.animate({'opacity': 1}, 200);
 			});
+
+			this.container.addClass('cmVisible');
 
 		}
 
@@ -998,13 +999,15 @@ CM.Timer = function(type, label) {
 	 */
 	this.hide = function() {
 
-		if(this.container.is(':visible')) {
+		if(this.container.hasClass('cmVisible')) {
 
 			var $container = this.container;
 
 			this.container.children().animate({'opacity': 0}, 200, function() {
 				$container.slideUp(200);
 			});
+
+			this.container.removeClass('cmVisible');
 
 		}
 
@@ -1510,10 +1513,10 @@ CM.versionCompare = function(v1, v2, options) {
 
 	if(zeroExtend) {
 		while(v1parts.length < v2parts.length) {
-			v1parts.push("0");
+			v1parts.push('0');
 		}
 		while(v2parts.length < v1parts.length){
-			v2parts.push("0");
+			v2parts.push('0');
 		}
 	}
 
@@ -1526,7 +1529,6 @@ CM.versionCompare = function(v1, v2, options) {
 		if(v2parts.length === i) {
 			return 1;
 		}
-
 		if(v1parts[i] === v2parts[i]) {
 			continue;
 		}
@@ -1661,7 +1663,7 @@ CM.attachSettingsPanel = function() {
 			if(thisSetting.group === group) {
 
 				// Reset these for each loop
-				options = [];
+				options = '';
 				option  = {};
 				current = thisSetting.current;
 
@@ -1675,13 +1677,13 @@ CM.attachSettingsPanel = function() {
 
 						thisOption = thisSetting.options[option];
 
-						selected = (current === thisOption.value.toString()) ? ' selected="selected"' : '';
-						options.push('<option value="' + thisOption.value + '"' + selected + '>' + thisOption.label + '</option>');
+						selected = current === thisOption.value.toString() ? ' selected="selected"' : '';
+						options += '<option value="' + thisOption.value + '"' + selected + '>' + thisOption.label + '</option>';
 
 					}
 
 					control =  '<select name="' + setting + '">';
-					control += options.join('');
+					control += options;
 					control += '</select>';
 
 				} else if(thisSetting.type === 'checkbox') {
@@ -2402,7 +2404,7 @@ CM.playAudioAlerts = function() {
 
 				gcAlert.volume = volume;
 				gcAlert.play();
-				setTimeout(function() {gcAlert.load();}, 1500);
+				setTimeout(function() {gcAlert.load();}, 2500);
 				this.config.cmAudioGCNotified = true;
 
 				// Display error message if audio file could not be loaded
@@ -3514,7 +3516,7 @@ CM.checkForUpdate = function() {
 ================================================ */
 
 /* ================================================
-	FOLLOWING CODE MODIFIES GAME STATE
+	THE FOLLOWING CODE MODIFIES GAME STATE
 	WE MUST ENSURE GAME IS READY BEFORE EXECUTING
 ================================================ */
 
@@ -3528,6 +3530,7 @@ var gameReadyStateCheckInterval = setInterval(function() {
 			COOKIE CLICKER FUNCTION OVERRIDES
 		================================================ */
 
+		//////////////////////////////////////////////////////////////////////
 		// Hook CMEO into the game's own objects
 		//////////////////////////////////////////////////////////////////////
 

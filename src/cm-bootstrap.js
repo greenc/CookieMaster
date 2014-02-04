@@ -2,13 +2,12 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.11.3
-    Date:         23/12/2013
-    Website:      http://cookiemaster.co.uk
-    GitHub:       https://github.com/greenc/CookieMaster
-    Dependencies: Cookie Clicker, jQuery
-    Author:       Chris Green
-                  c.robert.green@gmail.com
+    Version: 1.11.3
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
 
     This code was written to be used, abused,
     extended and improved upon. Feel free to do
@@ -17,8 +16,6 @@
     original author (me).
 
 ================================================ */
-
-/*global CM:false,google:false*/
 
 /**
  * This file acts as a bootstrap to load the CookieMaster dependencies and scripts.
@@ -31,7 +28,7 @@ if(typeof CM === 'undefined') {
 
 		var version = '1.11.3',
 			docFrag = document.createDocumentFragment(),
-			deps = [
+			deps    = [
 				{
 					// CookieMaster CSS
 					type:    'link',
