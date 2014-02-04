@@ -28,7 +28,7 @@
 					<li><a href="#screenshots">Screenshots</a></li>
 				</ul>
 				<h3 class="text-muted">
-					<small>Current release: <strong><a href="https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md">v.1.10.3</a></strong></small>
+					<small>Current release: <strong><a href="https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md">v.1.11.2</a></strong></small>
 				</h3>
 			</div>
 
@@ -36,7 +36,8 @@
 				<h1>CookieMaster</h1>
 				<p class="lead">A browser-based plugin for Cookie Clicker.</p>
 				<p>
-					<button class="btn btn-lg btn-primary" type="button" id="addToChrome">Add to Chrome <span class="glyphicon glyphicon-download"></span></button> or
+					<button class="btn btn-lg btn-primary" type="button" id="addToChrome">Add to Chrome <span class="glyphicon glyphicon-download"></span></button>
+					<span id="buttonOr">or</span>
 					<a class="btn btn-lg btn-success" href="#how-to-use" role="button">Get Bookmarklet <span class="glyphicon glyphicon-bookmark"></span></a>
 				</p>
 
@@ -226,17 +227,25 @@
 
 		<script>
 			(function() {
+
 				var btn = document.getElementById('addToChrome');
-				function setInstalled(el) {
-					el.textContent = 'Already Installed';
-					el.disabled = true;
-				}
-				if(chrome.app.isInstalled) {
-					setInstalled(btn);
+				var orText = document.getElementById('buttonOr');
+
+				if(window.chrome && window.navigator.vendor === 'Google Inc.') {
+					function setInstalled(el) {
+						el.textContent = 'Already Installed';
+						el.disabled = true;
+					}
+					if(chrome.app.isInstalled) {
+						setInstalled(btn);
+					} else {
+						btn.addEventListener('click', function() {
+							chrome.webstore.install(undefined, setInstalled(btn));
+						}, false);
+					}
 				} else {
-					btn.addEventListener('click', function() {
-						chrome.webstore.install(undefined, setInstalled(btn));
-					}, false);
+					btn.style.display = 'none';
+					orText.style.display = 'none';
 				}
 			})();
 		</script>

@@ -2,6 +2,11 @@
 
 ### Version 1.11.1 - _2014/2/3_
 
+ - CookieMaster now silently fixes the game bug where Golden Cookies and Reindeer do not spawn in a new, unsaved game.
+ - Updated site to not show "Add to Chrome" button to non-Chrome users
+
+### Version 1.11.1 - _2014/2/3_
+
  - Secured all game manipulating methods into a function that ensures they are available to work on
  - Minor site updates
 

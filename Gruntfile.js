@@ -57,7 +57,8 @@ module.exports = function(grunt) {
 					consolidateViaSelectors:    true
 				},
 				files: {
-					'build/cookiemaster.min.css': 'src/cookiemaster.css'
+					'build/cookiemaster.min.css': 'src/cookiemaster.css',
+					'site/css/jumbotron-narrow.min.css': 'site/css/jumbotron-narrow.css'
 				}
 			}
 		},
@@ -68,6 +69,10 @@ module.exports = function(grunt) {
 			build: {
 				src:  'build/cookiemaster.min.css',
 				dest: 'build/cookiemaster.min.css'
+			},
+			site: {
+				src: 'site/css/jumbotron-narrow.css',
+				dest: 'site/css/jumbotron-narrow.min.css'
 			}
 		},
 		/**

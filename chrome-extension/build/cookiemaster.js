@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version:      1.11.1
+    Version:      1.11.2
     Date:         23/12/2013
     Website:      http://cookiemaster.co.uk
     GitHub:       https://github.com/greenc/CookieMaster
@@ -38,7 +38,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.11.1',                         // Current version of CookieMaster
+	version:              '1.11.2',                         // Current version of CookieMaster
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -736,9 +736,9 @@ CM.init = function() {
 		this.message('<strong>Warning:</strong> CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!', 'warning');
 	}
 
-	// Warn about Golden Cookie and Season Popup bug
-	if(Game.seasonPopup.maxTime === 0 || Game.goldenCookie.maxTime === 0) {
-		this.message('<strong>Warning:</strong> New or unsaved game detected.<br />Golden cookies and reindeer will not spawn until you manually save and refresh Cookie Clicker.<br />This is a bug in the game, not CookieMaster.', 'warning');
+	// Silently fix new game spawns
+	if(Game.seasonPopup.maxTime === 0 && Game.goldenCookie.maxTime === 0) {
+		this.fixNewGameSpawns();
 	}
 
 	// All done :)
@@ -1255,6 +1255,15 @@ CM.getReindeerReward = function() {
 
 	return Math.max(25, Game.cookiesPs * 60) * multiplier;
 
+};
+
+CM.fixNewGameSpawns = function() {
+	Game.goldenCookie.minTime = Game.goldenCookie.getMinTime();
+	Game.goldenCookie.maxTime = Game.goldenCookie.getMaxTime();
+	Game.seasonPopup.minTime  = Game.seasonPopup.getMinTime();
+	Game.seasonPopup.maxTime  = Game.seasonPopup.getMaxTime();
+	Game.goldenCookie.toDie   = 0;
+	Game.seasonPopup.toDie    = 0;
 };
 
 /**
@@ -3484,9 +3493,10 @@ CM.checkForUpdate = function() {
 		// and we haven't already notified the user
 		if(CM.versionCompare(vers, latestVers) === -1 && notifiedVers !== latestVers) {
 			CM.message(
-				'<strong>Notice: </strong> New version of CookieMaster available!<br />' +
-				'Save and refresh to update to <strong>v.' + latestVers + '</strong> ' +
-				'or <a href="' + changelog + '" target="_blank">check what\'s new</a> (opens in new tab).',
+				'<strong>New version of CookieMaster available! (v.' + latestVers + ')</strong><br />' +
+				'<em>Bookmark users:</em> Save and refresh to update.<br />' +
+				'<em>Chrome extension users:</em> Click "Update Extensions Now" from the Extensions menu and refresh.<br />' +
+				'<a href="' + changelog + '" target="_blank">See what\'s new</a> (opens in new tab).',
 				'notice'
 			);
 			// Set the notified version flag
