@@ -16,6 +16,14 @@
 			<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 		<![endif]-->
 		<link rel="icon" href="site/favicon.png" type="image/x-icon" />
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-47630596-3', 'cookiemaster.co.uk');
+			ga('send', 'pageview');
+		</script>
 	</head>
 
 	<body>
@@ -24,8 +32,9 @@
 			<div class="header">
 				<ul class="nav nav-pills pull-right">
 					<li><a href="#features">Features</a></li>
-					<li><a href="#how-to-use">How to use</a></li>
 					<li><a href="#screenshots">Screenshots</a></li>
+					<li><a href="#get-cookiemaster">Get CookieMaster</a></li>
+					<li><a href="#compatibility">Compatibility</a></li>
 				</ul>
 				<h3 class="text-muted">
 					<small>Current release: <strong><a href="https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md">v.1.11.3</a></strong></small>
@@ -34,14 +43,11 @@
 
 			<div class="jumbotron">
 				<h1>CookieMaster</h1>
-				<p class="lead">A browser-based plugin for Cookie Clicker.</p>
+				<p class="lead">A browser plugin for Cookie Clicker.</p>
 				<p>
-					<button class="btn btn-lg btn-primary" type="button" id="addToChrome">Add to Chrome <span class="glyphicon glyphicon-download"></span></button>
-					<span id="buttonOr">or</span>
-					<a class="btn btn-lg btn-success" href="#how-to-use" role="button">Get Bookmarklet <span class="glyphicon glyphicon-bookmark"></span></a>
+					<a class="btn btn-lg btn-success" href="#get-cookiemaster" role="button">Get CookieMaster</a>
 				</p>
-
-				<p class="viewGithub"><img style="vertical-align:baseline" src="site/images/blacktocat-16.png" alt="GitHub logo" /> <a href="https://github.com/greenc/CookieMaster">View on GitHub</a></p>
+				<p class="viewLinks">View on <a href="https://github.com/greenc/CookieMaster">GitHub</a> or <a href="https://chrome.google.com/webstore/detail/cookiemaster-cookie-click/imcmmmehenbhbhomgigngjehehjeheco">Chrome Web Store</a></p>
 			</div>
 
 			<div class="page-header">
@@ -52,8 +58,8 @@
 				<p>See below for the highlights, or check out the <a href="https://github.com/greenc/CookieMaster/blob/master/README.md">READMDE</a> on GitHub for an exhaustive list.</p>
 			</div>
 
-			<div class="page-header">
-				<h1 id="screenshots">Screenshots</h1>
+			<div id="screenshots" class="page-header">
+				<h1>Screenshots</h1>
 			</div>
 			<div class="row">
 				<div class="col-xs-6 col-md-3">
@@ -82,8 +88,8 @@
 				</div>
 			</div>
 
-			<div class="page-header">
-				<h1 id="features">Key Features</h1>
+			<div id="features" class="page-header">
+				<h1>Key Features</h1>
 			</div>
 			<div class="row">
 				<div class="col-lg-6">
@@ -115,29 +121,44 @@
 				</div>
 			</div>
 
-			<div class="page-header">
-				<h1 id="how-to-use">How To Use</h1>
+			<div id="get-cookiemaster" class="page-header">
+				<h1>Get CookieMaster</h1>
 			</div>
 
 			<div class="row">
-				<p>CookieMaster is available as a <a href="https://chrome.google.com/webstore/detail/cookiemaster/imcmmmehenbhbhomgigngjehehjeheco?hl=en&gl=GB">Chrome extension</a> and as a bookmarklet that can be used in any browser.<br />To use the bookmarklet, follow the steps below:</p>
-				<ol>
-					<li>
-						<p>Drag the following button into your bookmarks bar or folder: <a class="btn btn-xs btn-success" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)">CookieMaster</a></p>
-						<p><strong>or...</strong></p>
-						<p>Paste the following code into a new bookmark in your browser:</p>
-						<pre>javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)</pre>
-					</li>
-					<li>
-						<p>Load up <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></p>
-					</li>
-					<li>
-						<p>Click on your recently created bookmark</p>
-					</li>
-				</ol>
+				<div class="col-lg-6">
+					<h3>Chrome Extension</h3>
+					<p><button id="addToChrome" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-download-alt"></span> Install to Chrome</button>
+						or <a href="https://chrome.google.com/webstore/detail/cookiemaster-cookie-click/imcmmmehenbhbhomgigngjehehjeheco">view in the Chrome Web Store</a></p>
+					<ul>
+						<li class="small">Google Chrome required to install</li>
+						<li class="small">Loads automatically once installed</li>
+					</ul>
+				</div>
+				<div class="col-lg-6">
+					<h3>User Script</h3>
+					<p><a class="btn btn-sm btn-primary" href="userscript/cookiemaster.user.js"><span class="glyphicon glyphicon-download-alt"></span> Install User Script</a></p>
+					<ul>
+						<li class="small">Compatible with Greasemonkey and other script engines</li>
+						<li class="small">Loads automatically once installed</li>
+					</ul>
+					<p class="small">Credit goes to <a href="https://github.com/Samboni">Samboni</a> for contributing the userscript.</p>
+				</div>
+				<div class="col-lg-12">
+					<h3>Bookmarklet</h3>
+					<p>Not a Chrome or userscript user? No problem. Just run CookieMaster from a bookmark instead, by dragging the following button into your bookmarks bar or folder:</p>
+					<p><a id="bookmarkBtn" class="btn btn-sm btn-primary" href="javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)"><span class="glyphicon glyphicon-bookmark"></span> CookieMaster Bookmark</a></p>
+					<p><strong>or...</strong></p>
+					<p>Paste the following code into a new bookmark in your browser:</p>
+					<pre>javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)</pre>
+					<ul>
+						<li class="small">Compatible with all supported browsers</li>
+						<li class="small">Click bookmark to load CookieMaster</li>
+					</ul>
+				</div>
 			</div>
 
-			<div class="page-header">
+			<div id="compatibility" class="page-header">
 				<h1>Compatibility &amp; Browser Support</h1>
 			</div>
 
@@ -227,36 +248,21 @@
 
 		<script>
 			(function() {
-
-				var btn = document.getElementById('addToChrome');
-				var orText = document.getElementById('buttonOr');
-
+				var chromeBtn   = document.getElementById('addToChrome');
+				var bookmarkBtn = document.getElementById('bookmarkBtn');
 				if(window.chrome && window.navigator.vendor === 'Google Inc.') {
-					function setInstalled(el) {
-						el.textContent = 'Already Installed';
-						el.disabled = true;
-					}
-					if(chrome.app.isInstalled) {
-						setInstalled(btn);
-					} else {
-						btn.addEventListener('click', function() {
-							chrome.webstore.install(undefined, setInstalled(btn));
-						}, false);
-					}
+					chromeBtn.addEventListener('click', function() {
+						chrome.webstore.install();
+					}, false);
 				} else {
-					btn.style.display = 'none';
-					orText.style.display = 'none';
+					chromeBtn.innerHTML ='<span class="glyphicon glyphicon-download-alt"></span> Chrome required';
+					chromeBtn.disabled = true;
 				}
+				bookmarkBtn.addEventListener('click', function(e) {
+					alert('Drag me into your bookmarks bar or folder :)');
+					e.preventDefault();
+				});
 			})();
-		</script>
-
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			ga('create', 'UA-47630596-3', 'cookiemaster.co.uk');
-			ga('send', 'pageview');
 		</script>
 
 	</body>

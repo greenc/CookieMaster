@@ -74,10 +74,6 @@ body {
 	margin: 10px 0;
 }
 
-.jumbotron #buttonOr {
-	margin: 0 10px;
-}
-
 .marketing {
 	margin: 40px 0;
 }
@@ -145,7 +141,7 @@ a,a:hover,a:focus {
 }
 
 pre {
-	color: #9caf73;
+	color: #6FADD6;
 	background-color: #000;
 	background-color: rgba(0,0,0,0.5);
 	border: 1px solid #000;
@@ -162,18 +158,15 @@ pre {
 	border-top: 1px solid #202020;
 }
 
-.jumbotron .viewGithub {
+.jumbotron .viewLinks {
 	margin: 30px 0 0;
-	padding-top: 20px;
+	padding-top: 30px;
 	border-top: 1px dashed #202020;
+	font-size: 16px;
 }
 
 @media(max-width:640px) {
 	.jumbotron {
 		padding: 20px;
 	}
-	.jumbotron #buttonOr {
-		display: block;
-	}
 }
-
