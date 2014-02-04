@@ -66,9 +66,9 @@ chrome.extension.sendMessage({}, function(response) {
 
 				if(dep.type === 'link') {
 					el.rel  = 'stylesheet';
-					el.href = dep.url;
+					el.href = chrome.extension.getURL(dep.url);
 				} else if(dep.type === 'script') {
-					el.src = dep.url;
+					el.src = chrome.extension.getURL(dep.url);
 				}
 
 				el.async = dep.async;

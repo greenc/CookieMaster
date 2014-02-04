@@ -13,7 +13,7 @@
 	},
 	"web_accessible_resources": [
 		"lib/*",
-		"build/*",
+		"build/*"
 	],
 	"content_scripts": [
 		{
