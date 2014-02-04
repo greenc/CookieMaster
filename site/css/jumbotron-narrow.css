@@ -74,6 +74,10 @@ body {
 	margin: 10px 0;
 }
 
+.jumbotron #buttonOr {
+	margin: 0 10px;
+}
+
 .marketing {
 	margin: 40px 0;
 }
