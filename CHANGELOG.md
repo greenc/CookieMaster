@@ -1,6 +1,11 @@
 # CookieMaster Release History
 
-### Version 1.11.1 - _2014/2/3_
+### Version 1.11.3 - _2014/2/3_
+
+ - Minor changes to the Chrome Extension manifest
+ - No new features this time, sorry :(
+
+### Version 1.11.2 - _2014/2/3_
 
  - CookieMaster now silently fixes the game bug where Golden Cookies and Reindeer do not spawn in a new, unsaved game.
  - Updated site to not show "Add to Chrome" button to non-Chrome users
