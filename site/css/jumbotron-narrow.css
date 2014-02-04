@@ -168,7 +168,7 @@ pre {
 	.jumbotron {
 		padding: 20px;
 	}
-	.jumbotron .buttonOr {
+	.jumbotron #buttonOr {
 		display: block;
 	}
 }
