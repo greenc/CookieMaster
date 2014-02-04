@@ -73,9 +73,9 @@ if(typeof CM === 'undefined') {
 		 */
 		for(i = 0; i < deps.length; i++) {
 
-			dep = deps[i];
-			el  = document.createElement(dep.type);
-			qp  = dep.nocache ? '?v=' + version : '';
+			dep = deps[i];                            // Dependency
+			el  = document.createElement(dep.type);   // Create element
+			qp  = dep.nocache ? '?v=' + version : ''; // Append cache buster
 
 			if(dep.type === 'link') {
 				el.rel  = 'stylesheet';
@@ -84,8 +84,8 @@ if(typeof CM === 'undefined') {
 				el.src = dep.url + qp;
 			}
 
-			el.async = dep.async;
-			docFrag.appendChild(el);
+			el.async = dep.async;    // Set async for ordered parsing
+			docFrag.appendChild(el); // Append to document fragment
 
 		}
 
