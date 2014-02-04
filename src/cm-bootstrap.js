@@ -30,35 +30,72 @@ if(typeof CM === 'undefined') {
 	(function() {
 
 		var version = '1.11.3',
-			cmcss   = document.createElement('link'),
-			jquery  = document.createElement('script'),
-			jsapi   = document.createElement('script'),
-			cmex    = document.createElement('script'),
-			cmjs    = document.createElement('script');
+			docFrag = document.createDocumentFragment(),
+			deps = [
+				{
+					// CookieMaster CSS
+					type:    'link',
+					url:     '../cookiemaster/src/cookiemaster.css',
+					async:   true,
+					nocache: true
+				},
+				{
+					// jQuery
+					type:    'script',
+					url:     '//ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js',
+					async:   false,
+					nocache: false
+				},
+				{
+					// Google Charts API
+					type:    'script',
+					url:     '//www.google.com/jsapi',
+					async:   false,
+					nocache: false
+				},
+				{
+					// External CookieMaster methods
+					type:    'script',
+					url:     '../cookiemaster/src/external-methods.js',
+					async:   false,
+					nocache: true
+				},
+				{
+					// CookieMaster methods
+					type:    'script',
+					url:     '../cookiemaster/src/cookiemaster.js',
+					async:   false,
+					nocache: true
+				},
+			],
+			dep, el, qp, i;
 
-		// Set CSS file attributes
-		cmcss.rel  = 'stylesheet';
-		cmcss.type = 'text/css';
-		cmcss.href = '../cookiemaster/src/cookiemaster.css?v=' + version;
+		/**
+		 * Create an element for each dependency and
+		 * append to a document fragment
+		 */
+		for(i = 0; i < deps.length; i++) {
 
-		// Set async on scripts
-		jquery.async = false;
-		jsapi.async  = false;
-		cmex.async   = false;
-		cmjs.async   = false;
+			dep = deps[i];
+			el  = document.createElement(dep.type);
+			qp  = dep.nocache ? '?v=' + version : '';
 
-		// Set script sources
-		jquery.src = '//ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js';
-		jsapi.src  = '//www.google.com/jsapi';
-		cmex.src   = '../cookiemaster/src/external-methods.js?v=' + version;
-		cmjs.src   = '../cookiemaster/src/cookiemaster.js?v='     + version;
+			if(dep.type === 'link') {
+				el.rel  = 'stylesheet';
+				el.href = dep.url + qp;
+			} else if(dep.type === 'script') {
+				el.src = dep.url + qp;
+			}
 
-		// Add to DOM
-		document.head.appendChild(cmcss);
-		document.body.appendChild(jquery);
-		document.body.appendChild(jsapi);
-		document.body.appendChild(cmex);
-		document.body.appendChild(cmjs);
+			el.async = dep.async;
+			docFrag.appendChild(el);
+
+		}
+
+		/**
+		 * Append fragment to DOM
+		 */
+		document.head.appendChild(docFrag);
 
 	})();
 
