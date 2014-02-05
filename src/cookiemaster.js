@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.4
+    Version: 1.11.5
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.11.4',                         // Current version of CookieMaster
+	version:              '1.11.5',                         // Current version of CookieMaster
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -975,7 +975,7 @@ CM.Timer = function(type, label) {
 	 */
 	this.show = function() {
 
-		if(!this.container.hasClass('cmVisible')) {
+		if(this.container.is(':hidden')) {
 
 			var $content = this.container.children();
 
@@ -983,8 +983,6 @@ CM.Timer = function(type, label) {
 			this.container.slideDown(200, function() {
 				$content.animate({'opacity': 1}, 200);
 			});
-
-			this.container.addClass('cmVisible');
 
 		}
 
@@ -999,15 +997,13 @@ CM.Timer = function(type, label) {
 	 */
 	this.hide = function() {
 
-		if(this.container.hasClass('cmVisible')) {
+		if(this.container.is(':visible')) {
 
 			var $container = this.container;
 
 			this.container.children().animate({'opacity': 0}, 200, function() {
 				$container.slideUp(200);
 			});
-
-			this.container.removeClass('cmVisible');
 
 		}
 
@@ -1048,13 +1044,13 @@ CM.heavenlyToCookies = function(chips) {
  */
 CM.getHCStats = function() {
 
-	var stats          = [],
-		current        = Game.prestige['Heavenly chips'],
-		currentPercent = current * 2,
-		max            = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-		maxPercent     = max * 2,
-		cookiesToNext  = this.heavenlyToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
-		timeToNext     = Math.round(cookiesToNext / this.effectiveCps()),
+	var stats           = [],
+		current         = Game.prestige['Heavenly chips'],
+		currentPercent  = current * 2,
+		max             = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
+		maxPercent      = max * 2,
+		cookiesToNext   = this.heavenlyToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
+		timeToNext      = Math.round(cookiesToNext / this.effectiveCps()),
 		i;
 
 	stats = [
@@ -1335,7 +1331,7 @@ CM.formatTime = function(t, compressed) {
 };
 
 /**
- * Checks if any Wrinkers are on screen
+ * Checks if any Wrinklers are on screen
  *
  * @return {[Boolean]}
  */
@@ -1343,7 +1339,7 @@ CM.wrinklersExist = function() {
 
 	var i;
 
-	for(i in Game.wrinklers) {
+	for(i = 0; i < Game.wrinklers.length; i++) {
 		if(Game.wrinklers[i].phase > 0) {
 			return true;
 		}

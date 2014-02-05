@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.4
+    Version: 1.11.5
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -327,7 +327,7 @@
 .cmTable .cmHeader th {
 	text-align: left;
 	font-size: 24px;
-	line-height: 38px;
+	line-height: 48px;
 	vertical-align: top;
 	padding: 0 0 5px;
 }
@@ -398,16 +398,16 @@
 }
 
 .cmIcon {
-	height: 38px;
-	width: 38px;
+	height: 48px;
+	width: 48px;
 	float: left;
-	margin: 0 15px 5px 0;
+	margin: 0 10px 0 0;
 }
 
-.cmIconLucky { background-position: -484px -54px; }
-.cmIconHC { background-position: -916px -343px; }
-.cmIconWrinkler { background-position: -677px -244px; }
-.cmIconMisc { background-position: -6px -342px; }
+.cmIconLucky { background-position: -481px -49px; }
+.cmIconHC { background-position: -912px -336px; }
+.cmIconWrinkler { background-position: -911px -384px; }
+.cmIconMisc { background-position: -1px -336px; }
 
 .cmFont { font-family: "Kavoon", Georgia, serif; }
 
@@ -514,6 +514,10 @@
 .cmNotice { color: #6CF; }
 
 /* Stats Chart */
+#CMChartCont {
+	margin-top: 30px;
+}
+
 #CMChart {
 	margin: 20px 0 0;
 	width: 100%;

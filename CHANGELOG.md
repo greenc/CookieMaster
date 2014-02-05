@@ -1,5 +1,12 @@
 # CookieMaster Release History
 
+### Version 1.11.5 - _2014/2/5_
+
+ - Wrinkler stats now have a Wrinkler-themed icon
+ - CSS tweaks to stats page
+ - Fixed potential bug where timers would not reappear when tab was not active and auto-clicker for popups was on
+ - Minor performance enhancements
+
 ### Version 1.11.4 - _2014/2/5_
 
  - Fixed potential catastrophic plugin crash on initialization
