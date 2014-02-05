@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.5
+    Version: 1.11.6
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.11.5',                         // Current version of CookieMaster
+	version:              '1.11.6',                         // Current version of CookieMaster
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -112,8 +112,8 @@ CM.config = {
 				standard:   ' sextillion',
 				longscale:  ' trilliard',
 				e:          'e21',
-				scientific: ' &times; 10&sup2;sup1;',
-				compact:    '*10&sup2;sup1;'
+				scientific: ' &times; 10&sup2;&sup1;',
+				compact:    '*10&sup2;&sup1;'
 			}
 		},
 		{
@@ -592,7 +592,7 @@ CM.config = {
 			group: 'cheats',
 			type:  'range',
 			label: 'Auto-click Speed:',
-			desc:  'How many times per second to auto-click the big cookie.',
+			desc:  'How many times per second to auto-click the big cookie. Note that most browsers throttle timers to 1 second intervals when the page is running in the background.',
 			options: {
 				min: 1,
 				max: 250,
@@ -3493,7 +3493,7 @@ CM.checkForUpdate = function() {
 			CM.message(
 				'<strong>New version of CookieMaster available! (v.' + latestVers + ')</strong><br />' +
 				'<em>Bookmark users:</em> Save and refresh to update.<br />' +
-				'<em>Chrome extension users:</em> Click "Update Extensions Now" from the Extensions menu and refresh.<br />' +
+				'<em>Chrome extension users:</em> Chrome auto-updates your plugins periodically, but if you really want the new version right now, check the "Developer mode" box in your Extensions page, then click "Update Extensions Now".<br />' +
 				'<a href="' + changelog + '" target="_blank">See what\'s new</a> (opens in new tab).',
 				'notice'
 			);

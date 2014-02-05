@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.11.6 - _2014/2/5_
+
+ - Fixed typos in scientific notation suffixes
+ - Amended update message for Chrome extension users
+
 ### Version 1.11.5 - _2014/2/5_
 
  - Wrinkler stats now have a Wrinkler-themed icon
