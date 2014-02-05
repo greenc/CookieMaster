@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.7
+    Version: 1.11.8
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.11.7',                         // Current version of CookieMaster
+	version:              '1.11.8',                         // Current version of CookieMaster
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -100,8 +100,8 @@ CM.config = {
 				standard:   ' septillion',
 				longscale:  ' quadrillion',
 				e:          'e24',
-				scientific: ' × 10²⁴',
-				compact:    '*10²⁴'
+				scientific: ' &times; 10&sup2;&#8308;',
+				compact:    '*10&sup2;&#8308;'
 			}
 		},
 		{
@@ -112,8 +112,8 @@ CM.config = {
 				standard:   ' sextillion',
 				longscale:  ' trilliard',
 				e:          'e21',
-				scientific: ' × 10²¹',
-				compact:    '*10²¹'
+				scientific: ' &times; 10&sup2;&sup1;',
+				compact:    '*10&sup2;&sup1;'
 			}
 		},
 		{
@@ -124,8 +124,8 @@ CM.config = {
 				standard:   ' quintillion',
 				longscale:  ' trillion',
 				e:          'e18',
-				scientific: ' × 10¹⁸',
-				compact:    '*10¹⁸'
+				scientific: ' &times; 10&sup1;&#8312;',
+				compact:    '*10&sup1;&#8312;'
 			}
 		}, {
 			divider: 1e15,
@@ -135,8 +135,8 @@ CM.config = {
 				standard:   ' quadrillion',
 				longscale:  ' billiard',
 				e:          'e15',
-				scientific: ' × 10¹⁵',
-				compact:    '*10¹⁵'
+				scientific: ' &times; 10&sup1;&#8309;',
+				compact:    '*10&sup1;&#8309;'
 			}
 		}, {
 			divider: 1e12,
@@ -146,8 +146,8 @@ CM.config = {
 				standard:   ' trillion',
 				longscale:  ' billion',
 				e:          'e12',
-				scientific: ' × 10¹²',
-				compact:    '*10¹²'
+				scientific: ' &times; 10&sup1;&sup2;',
+				compact:    '*10&sup1;&sup2;'
 			}
 		}, {
 			divider: 1e9,
@@ -157,8 +157,8 @@ CM.config = {
 				standard:   ' billion',
 				longscale:  ' milliard',
 				e:          'e9',
-				scientific: ' × 10⁹',
-				compact:    '*10⁹'
+				scientific: ' &times; 10&#8313;',
+				compact:    '*10&#8313;'
 			}
 		}, {
 			divider: 1e6,
@@ -168,8 +168,8 @@ CM.config = {
 				standard:   ' million',
 				longscale:  ' million',
 				e:          'e6',
-				scientific: ' × 10⁶',
-				compact:    '*10⁶'
+				scientific: ' &times; 10&#8310;',
+				compact:    '*10&#8310;'
 			}
 		}
 	],

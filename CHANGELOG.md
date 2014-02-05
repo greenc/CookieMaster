@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.11.8 - _2014/2/5_
+
+ - Reverted fix from previous release since Cookie Clicker live site is not UTF-8 compatible :(
+
 ### Version 1.11.7 - _2014/2/5_
 
  - Fixed character encoding issues in some number notation formats
