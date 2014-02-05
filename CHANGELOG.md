@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.11.4 - _2014/2/5_
+
+ - Fixed potential catastrophic plugin crash on initialization
+ - Added moderate performance improvements to plugin loading and initialization routines
+
 ### Version 1.11.3 - _2014/2/3_
 
  - Minor changes to the Chrome Extension manifest
