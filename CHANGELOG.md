@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.11.7 - _2014/2/5_
+
+ - Fixed character encoding issues in some number notation formats
+
 ### Version 1.11.6 - _2014/2/5_
 
  - Fixed typos in scientific notation suffixes
