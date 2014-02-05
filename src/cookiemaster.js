@@ -3522,106 +3522,110 @@ CM.checkForUpdate = function() {
 
 var gameReadyStateCheckInterval = setInterval(function() {
 
-	if (Game.ready) {
+	if(typeof Game === 'object') {
 
-		clearInterval(gameReadyStateCheckInterval);
+		if (Game.ready) {
 
-		/* ================================================
-			COOKIE CLICKER FUNCTION OVERRIDES
-		================================================ */
+			clearInterval(gameReadyStateCheckInterval);
 
-		//////////////////////////////////////////////////////////////////////
-		// Hook CMEO into the game's own objects
-		//////////////////////////////////////////////////////////////////////
+			/* ================================================
+				COOKIE CLICKER FUNCTION OVERRIDES
+			================================================ */
 
-		Game.Achievement.prototype.getDescribedInteger = CMEO.getDescribedInteger;
-		Game.Achievement.prototype.matches             = CMEO.matches;
+			//////////////////////////////////////////////////////////////////////
+			// Hook CMEO into the game's own objects
+			//////////////////////////////////////////////////////////////////////
 
-		Game.Object.prototype.getBaseCostPerIncome  = CMEO.getBaseCostPerIncome;
-		Game.Object.prototype.getColors             = CMEO.getColors;
-		Game.Object.prototype.getComparativeInfos   = CMEO.getComparativeInfos;
-		Game.Object.prototype.getReturnInvestment   = CMEO.getReturnInvestment;
-		Game.Object.prototype.getTimeLeft           = CMEO.getTimeLeft;
-		Game.Object.prototype.getType               = CMEO.getTypeOf;
-		Game.Object.prototype.getWorth              = CMEO.getWorthOf;
-		Game.Object.prototype.identifier            = CMEO.identifier;
-		Game.Object.prototype.matches               = CMEO.matches;
+			Game.Achievement.prototype.getDescribedInteger = CMEO.getDescribedInteger;
+			Game.Achievement.prototype.matches             = CMEO.matches;
 
-		Game.Upgrade.prototype.getBaseCostPerIncome = CMEO.getBaseCostPerIncome;
-		Game.Upgrade.prototype.getColors            = CMEO.getColors;
-		Game.Upgrade.prototype.getComparativeInfos  = CMEO.getComparativeInfos;
-		Game.Upgrade.prototype.getDescribedInteger  = CMEO.getDescribedInteger;
-		Game.Upgrade.prototype.getReturnInvestment  = CMEO.getReturnInvestment;
-		Game.Upgrade.prototype.getTimeLeft          = CMEO.getTimeLeft;
-		Game.Upgrade.prototype.getType              = CMEO.getTypeOf;
-		Game.Upgrade.prototype.getWorth             = CMEO.getWorthOf;
-		Game.Upgrade.prototype.identifier           = CMEO.identifier;
-		Game.Upgrade.prototype.matches              = CMEO.matches;
+			Game.Object.prototype.getBaseCostPerIncome  = CMEO.getBaseCostPerIncome;
+			Game.Object.prototype.getColors             = CMEO.getColors;
+			Game.Object.prototype.getComparativeInfos   = CMEO.getComparativeInfos;
+			Game.Object.prototype.getReturnInvestment   = CMEO.getReturnInvestment;
+			Game.Object.prototype.getTimeLeft           = CMEO.getTimeLeft;
+			Game.Object.prototype.getType               = CMEO.getTypeOf;
+			Game.Object.prototype.getWorth              = CMEO.getWorthOf;
+			Game.Object.prototype.identifier            = CMEO.identifier;
+			Game.Object.prototype.matches               = CMEO.matches;
 
-		/**
-		 * Hijacks the original Beautify method to use
-		 * our own formatting function
-		 *
-		 * @param {Integer} what   Number to beautify
-		 * @param {Integer} floats Desired precision
-		 *
-		 * @return {String}    Formatted number
-		 */
-		window.Beautify = function(what, floats) {
+			Game.Upgrade.prototype.getBaseCostPerIncome = CMEO.getBaseCostPerIncome;
+			Game.Upgrade.prototype.getColors            = CMEO.getColors;
+			Game.Upgrade.prototype.getComparativeInfos  = CMEO.getComparativeInfos;
+			Game.Upgrade.prototype.getDescribedInteger  = CMEO.getDescribedInteger;
+			Game.Upgrade.prototype.getReturnInvestment  = CMEO.getReturnInvestment;
+			Game.Upgrade.prototype.getTimeLeft          = CMEO.getTimeLeft;
+			Game.Upgrade.prototype.getType              = CMEO.getTypeOf;
+			Game.Upgrade.prototype.getWorth             = CMEO.getWorthOf;
+			Game.Upgrade.prototype.identifier           = CMEO.identifier;
+			Game.Upgrade.prototype.matches              = CMEO.matches;
 
-			var precision = floats || 0;
+			/**
+			 * Hijacks the original Beautify method to use
+			 * our own formatting function
+			 *
+			 * @param {Integer} what   Number to beautify
+			 * @param {Integer} floats Desired precision
+			 *
+			 * @return {String}    Formatted number
+			 */
+			window.Beautify = function(what, floats) {
 
-			return CM.largeNumFormat(what, precision);
+				var precision = floats || 0;
 
-		};
+				return CM.largeNumFormat(what, precision);
 
-		/**
-		 * Remove the title tag update functionality from the main
-		 * game as we will use our own, faster update function
-		 */
-		CM.replaceNative('Logic', {
-			'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': '',
-		});
+			};
 
-		/**
-		 * Pause the auto-clicker during reset to prevent cookies
-		 * being given to a reset game
-		 */
-		CM.replaceNative('Reset', {
-			'if (bypass': 'CM.clearAutoClicker();if (bypass',
-			'Game.Popup(\'Game reset\');': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);}Game.Popup(\'Game reset\');'
-		}, 'bypass');
+			/**
+			 * Remove the title tag update functionality from the main
+			 * game as we will use our own, faster update function
+			 */
+			CM.replaceNative('Logic', {
+				'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': '',
+			});
 
-		/**
-		 * Fixes the game's mangled attempt at blocking hotlinked audio files from
-		 * soundjay.com (soundjay files are still blocked, but the Audio API now
-		 * works correctly again).
-		 *
-		 * @param {String} src source file
-		 *
-		 * @return {Object}    new Audio object
-		 */
-		/*jshint -W020 */
-		window.Audio = function(src) {
+			/**
+			 * Pause the auto-clicker during reset to prevent cookies
+			 * being given to a reset game
+			 */
+			CM.replaceNative('Reset', {
+				'if (bypass': 'CM.clearAutoClicker();if (bypass',
+				'Game.Popup(\'Game reset\');': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);}Game.Popup(\'Game reset\');'
+			}, 'bypass');
 
-			if(src) {
-				if(src.indexOf('soundjay') !== -1) {
-					CM.message('<strong>Error:</strong> Sorry, no sounds hotlinked from soundjay.com.', 'error');
-					return false;
+			/**
+			 * Fixes the game's mangled attempt at blocking hotlinked audio files from
+			 * soundjay.com (soundjay files are still blocked, but the Audio API now
+			 * works correctly again).
+			 *
+			 * @param {String} src source file
+			 *
+			 * @return {Object}    new Audio object
+			 */
+			/*jshint -W020 */
+			window.Audio = function(src) {
+
+				if(src) {
+					if(src.indexOf('soundjay') !== -1) {
+						CM.message('<strong>Error:</strong> Sorry, no sounds hotlinked from soundjay.com.', 'error');
+						return false;
+					}
 				}
-			}
 
-			return new realAudio(src);
+				return new realAudio(src);
 
-		};
-		/*jshint +W020 */
+			};
+			/*jshint +W020 */
 
-		/* ================================================
-			END COOKIE CLICKER FUNCTION OVERRIDES
-		================================================ */
+			/* ================================================
+				END COOKIE CLICKER FUNCTION OVERRIDES
+			================================================ */
 
-		// Start it up!
-		CM.init();
+			// Start it up!
+			CM.init();
+
+		}
 
 	}
 
