@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.8
+    Version: 1.12.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -1278,11 +1278,15 @@ CMEO.getColors = function() {
  *
  * @return {Array}
  */
-CME.getLuckyAlerts = function(object) {
-	var price     = object.getPrice(),
-		newIncome = Game.cookiesPs + object.getWorth(),
-		rewards   = [this.getLuckyTreshold(false, newIncome), this.getLuckyTreshold('frenzy', newIncome)],
-		deficits  = [0, 0];
+CME.getThresholdAlerts = function(object) {
+	var price      = object.getPrice(),
+		newIncome  = Game.cookiesPs + object.getWorth(),
+		deficits   = [0, 0, 0],
+		rewards   = [
+			this.getLuckyTreshold(false, newIncome),
+			this.getLuckyTreshold('frenzy', newIncome),
+			CM.requiredChainTier('bank', 'this', CM.maxChainReward())
+		];
 
 	// Check Lucky alert
 	if (Game.cookies - price < rewards[0]) {
@@ -1292,6 +1296,11 @@ CME.getLuckyAlerts = function(object) {
 	// Check Lucky Frenzy alert
 	if (Game.cookies - price < rewards[1]) {
 		deficits[1] = rewards[1] - (Game.cookies - price);
+	}
+
+	// Check Chain alert
+	if (Game.cookies - price < rewards[2]) {
+		deficits[2] = rewards[2] - (Game.cookies - price);
 	}
 
 	return deficits;

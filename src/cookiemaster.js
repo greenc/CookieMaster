@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.8
+    Version: 1.12.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.11.8',                         // Current version of CookieMaster
+	version:              '1.12.0',                         // Current version of CookieMaster
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -202,6 +202,9 @@ CM.config = {
 		},
 		pledge: {
 			label: 'Pledge:'
+		},
+		wrinklers: {
+			label: 'Pop Wrinklers:'
 		}
 	},
 
@@ -574,11 +577,11 @@ CM.config = {
 					value: 'off'
 				},
 				{
-					label: 'During Click Frenzies',
+					label: 'Click Frenzies & Elder Frenzies',
 					value: 'clickFrenzies'
 				},
 				{
-					label: 'During All Frenzies',
+					label: 'All Frenzies',
 					value: 'allFrenzies'
 				},
 				{
@@ -937,7 +940,9 @@ CM.Timer = function(type, label) {
 
 		var timings   = {},
 			lucky     = Game.Has("Get lucky"),
-			maxPledge = Game.Has('Sacrificial rolling pins') ? 60 : 30;
+			maxPledge = Game.Has('Sacrificial rolling pins') ? 60 : 30,
+			WrinklerT = CM.popWrinklersTimeRelative,
+			time      = new Date().getTime();
 
 		if(this.type === 'sp') {
 			timings.min = Game.seasonPopup.minTime / Game.fps;
@@ -962,6 +967,9 @@ CM.Timer = function(type, label) {
 		} else if(this.type === 'pledge') {
 			timings.minCurrent = Game.pledgeT / Game.fps;
 			timings.max = 60 * maxPledge;
+		} else if(this.type === 'wrinklers') {
+			timings.minCurrent = (CM.popWrinklersTime - time) / 1000;
+			timings.max = WrinklerT / 1000;
 		}
 
 		return timings;
@@ -1021,6 +1029,7 @@ CM.Timer = function(type, label) {
  */
 CM.cookiesToHeavenly = function(cookies) {
 
+	cookies = parseInt(cookies, 10);
 	return Math.floor(Math.sqrt(2.5 * 1e11 + 2 * cookies) / 1e6 - 0.5);
 
 };
@@ -1033,32 +1042,50 @@ CM.cookiesToHeavenly = function(cookies) {
  */
 CM.heavenlyToCookies = function(chips) {
 
+	chips = parseInt(chips, 10);
 	return 5 * 1e11 * chips * (chips + 1);
+
+};
+
+/**
+ * Get the number of cookies remaining to have X chips
+ *
+ * @param {integer} chipsNumber
+ * @return {integer} Returns 0 if number is negative
+ */
+CM.heavenlyToCookiesRemaining = function(chips) {
+
+	chips = parseInt(chips, 10);
+	var remaining = this.heavenlyToCookies(chips) - (Game.cookiesReset + Game.cookiesEarned);
+
+	return remaining > 0 ? remaining : 0;
 
 };
 
 /**
  * Returns array of stats for Heavenly Chips
  *
- * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, timeToNextHC]
+ * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, totalCookiesToNextHC, timeToNextHC]
  */
 CM.getHCStats = function() {
 
-	var stats           = [],
-		current         = Game.prestige['Heavenly chips'],
-		currentPercent  = current * 2,
-		max             = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-		maxPercent      = max * 2,
-		cookiesToNext   = this.heavenlyToCookies(max + 1) - (Game.cookiesReset + Game.cookiesEarned),
-		timeToNext      = Math.round(cookiesToNext / this.effectiveCps()),
+	var stats                = [],
+		current              = Game.prestige['Heavenly chips'],
+		currentPercent       = current * 2,
+		max                  = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
+		maxPercent           = max * 2,
+		cookiesToNext        = this.heavenlyToCookiesRemaining(max + 1),
+		totalCookiesToNext   = this.heavenlyToCookies(max + 1) - this.heavenlyToCookies(max),
+		timeToNext           = Math.round(cookiesToNext / this.effectiveCps()),
 		i;
 
 	stats = [
-		Beautify(current),
-		Beautify(currentPercent) + '%',
-		Beautify(max),
-		Beautify(maxPercent) + '%',
-		Beautify(cookiesToNext),
+		current,
+		currentPercent,
+		max,
+		maxPercent,
+		cookiesToNext,
+		totalCookiesToNext,
 		this.formatTime(timeToNext)
 	];
 
@@ -1202,24 +1229,29 @@ CM.maxChainReward = function() {
 /**
  * Returns bank or CpS required for next chain tier
  *
- * @param  {Integer} maxReward Maximum current chain reward
  * @param  {String}  type      bank, cps
+ * @param  {String}  which     this, next
+ * @param  {Integer} maxReward Maximum current chain reward
  * @return {Integer}
  */
-CM.requiredNextChainTier = function(type, maxReward) {
+CM.requiredChainTier = function(type, which, maxReward) {
 
 	var wrath         = Game.elderWrath === 3 ? true : false,
 		digitString   = wrath ? '6' : '7',
 		minChain      = wrath ? 66666 : 77777,
 		minNextChain  = wrath ? 666666 : 777777,
-		nextChainTier = (maxReward < minChain) ? minNextChain : parseInt(maxReward + digitString, 10);
+		thisChainTier = (maxReward < minChain) ? minChain     : parseInt(maxReward, 10),
+		nextChainTier = (maxReward < minChain) ? minNextChain : parseInt(maxReward + digitString, 10),
+		chainAmount;
 
 	// Chains not possible until player has earned 100000+ cookies total
 	if(Game.cookiesEarned < 100000) {
 		return false;
 	}
 
-	return type === 'bank' ? nextChainTier * 4 : nextChainTier / 6 / 60 / 60;
+	chainAmount = which === 'this' ? thisChainTier : nextChainTier;
+
+	return type === 'bank' ? chainAmount * 4 : chainAmount / 6 / 60 / 60;
 
 };
 
@@ -1782,6 +1814,7 @@ CM.attachStatsPanel = function() {
 		$cmStatsChartBtnN  = $('<button />').attr({'id': 'CMChartN', 'type': 'button', 'class': 'cmFont'}).text('Stop logging'),
 		$cmStatsChartBtnC  = $('<button />').attr({'id': 'CMChartC', 'type': 'button', 'class': 'cmFont'}).text('Clear log'),
 		$cmStatsChartBtnD  = $('<button />').attr({'id': 'CMChartD', 'type': 'button', 'class': 'cmFont'}).text('Download CSV'),
+		hcSelect           = '<input id="CMXHC" value="" />',
 		tableHTML          = '';
 
 	tableHTML += '<table class="cmTable">';
@@ -1849,6 +1882,10 @@ CM.attachStatsPanel = function() {
 	tableHTML +=     '<tr>';
 	tableHTML +=         '<td>Time to next HC:</td>';
 	tableHTML +=         '<td class="cmValue" id="CMStatsHCTimeToNext"></td>';
+	tableHTML +=     '</tr>';
+	tableHTML +=     '<tr>';
+	tableHTML +=         '<td>Cookies to ' + hcSelect + ' Heavenly Chips:</td>';
+	tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
 	tableHTML +=     '</tr>';
 	tableHTML += '</table>';
 
@@ -2015,6 +2052,7 @@ CM.removeEfficiencyKey = function() {
 CM.updateStats = function() {
 
 	var hcStats           = this.getHCStats(),
+		cookiesToXHC      = $('#CMXHC').val() || hcStats[2] + 1,
 		wrinklerStats     = this.getWrinklerStats(),
 		lastGC            = this.toTitleCase(Game.goldenCookie.last) || '-',
 		lbText            = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
@@ -2024,14 +2062,15 @@ CM.updateStats = function() {
 		missedGC          = this.config.settings.showMissedGC.current === 'on' ? Beautify(Game.missedGoldenClicks) : 'I\'m a wimp and don\'t want to know',
 		chainReward       = this.maxChainReward(),
 		chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
-		nextChainBank     = this.requiredNextChainTier('bank', chainReward),
-		nextChainCPS      = this.requiredNextChainTier('cps', chainReward),
+		nextChainBank     = this.requiredChainTier('bank', 'next', chainReward),
+		nextChainCPS      = this.requiredChainTier('cps', 'next', chainReward),
 		missingU          = this.getMissingUpgrades(),
 		missingA          = this.getMissingAchievements(),
 		missingS          = this.getMissingAchievements(true),
 		upgHTML           = '',
 		aHTML             = '',
 		sHTML             = '',
+		cmxhcr,
 		nextChainBankString,
 		nextChainCPSString,
 		i,
@@ -2053,6 +2092,14 @@ CM.updateStats = function() {
 		}
 	}
 
+	// Cookies to X HC
+	if(this.heavenlyToCookiesRemaining(cookiesToXHC) === 0) {
+		cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
+	} else {
+		cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
+			' (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')';
+	}
+
 	// Golden Cookie stats
 	$('#CMStatsLuckyRequired').html(lbText + lbtr);
 	$('#CMStatsLuckyFrenzyRequired').html(lfbText + lfbtr);
@@ -2066,10 +2113,11 @@ CM.updateStats = function() {
 	$('#CMStatsMissedGC').html(missedGC);
 
 	// Heavenly Chip stats
-	$('#CMStatsHCCurrent').html(hcStats[0] + ' (' + hcStats[1] + ')');
-	$('#CMStatsHCMax').html(hcStats[2] + ' (' + hcStats[3] + ')');
-	$('#CMStatsHCCookiesToNext').html(hcStats[4]);
-	$('#CMStatsHCTimeToNext').html(hcStats[5]);
+	$('#CMStatsHCCurrent').html(Beautify(hcStats[0]) + ' (' + Beautify(hcStats[1]) + '%)');
+	$('#CMStatsHCMax').html(Beautify(hcStats[2]) + ' (' + Beautify(hcStats[3]) + '%)');
+	$('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
+	$('#CMStatsHCTimeToNext').html(hcStats[6]);
+	$('#CMStatsHCCookiesToX').html(cmxhcr);
 
 	// Wrinkler stats
 	$('#CMStatsWrinklersSucked').html(Beautify(wrinklerStats[0]));
@@ -2172,6 +2220,11 @@ CM.populateTimerPanel = function() {
 	activeTimers.clot        = settings.showClotTimer.current;
 	activeTimers.pledge      = settings.showPledgeTimer.current;
 
+	// Create timer for Wrinkler auto-pop feature
+	if(settings.popWrinklersAtInterval.current !== 'off') {
+		activeTimers.wrinklers = 'on';
+	}
+
 	// Create a timer object for each one that is "on"
 	for(key in activeTimers) {
 		if(activeTimers[key] === 'on') {
@@ -2199,7 +2252,8 @@ CM.updateTimers = function() {
 			clickFrenzy: Game.clickFrenzy > 0,
 			elderFrenzy: Game.frenzy > 0 && Game.frenzyPower === 666,
 			clot:        Game.frenzy > 0 && Game.frenzyPower === 0.5,
-			pledge:      Game.pledgeT > 0
+			pledge:      Game.pledgeT > 0,
+			wrinklers:   CM.popWrinklersTimeRelative > 0
 		},
 		key;
 
@@ -2473,9 +2527,13 @@ CM.popWrinklersAfterXTime = function() {
 	// Clear any existing timer
 	if(CM.popWrinklerTimer) {
 		clearTimeout(CM.popWrinklerTimer);
+		CM.popWrinklersTime = null;
 	}
 
+	CM.popWrinklersTimeRelative = Number(time);
+
 	if(time) {
+		CM.popWrinklersTime = new Date().getTime() + Number(time);
 		CM.popWrinklerTimer = setTimeout(function popWrinklers() {
 			var reward = CM.getWrinklerStats()[1];
 			if(CM.wrinklersExist() && reward) {
@@ -2495,7 +2553,7 @@ CM.updateTitleTicker = function() {
 
 	var gcTime  = Math.round((Game.goldenCookie.maxTime - Game.goldenCookie.time) / Game.fps),
 		spTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
-		gcI     = (Game.goldenCookie.life > 0) ? 'G' : gcTime,
+		gcI     = (Game.goldenCookie.life > 0) ? 'G (' + Math.round(Game.goldenCookie.life / Game.fps) + ')' : gcTime,
 		spI     = (Game.seasonPopup.life > 0) ? 'R' : spTime,
 		cookies = Beautify(Game.cookies);
 
@@ -2579,6 +2637,7 @@ CM.manageAutoClicker = function() {
 
 	var when        = this.config.settings.autoClick.current,
 		clickFrenzy = Game.clickFrenzy > 0,
+		elderFrenzy = Game.frenzy > 0 && Game.frenzyPower === 666,
 		frenzy      = Game.frenzy > 0 && Game.frenzyPower > 1;
 
 	if(when === 'allFrenzies') {
@@ -2591,7 +2650,7 @@ CM.manageAutoClicker = function() {
 
 	} else if(when === 'clickFrenzies') {
 
-		if(clickFrenzy) {
+		if(clickFrenzy || elderFrenzy) {
 			this.startAutoClicker();
 		} else {
 			this.clearAutoClicker();
@@ -3137,7 +3196,9 @@ CM.setEvents = function() {
 		$statsPanel       = this.config.cmStatsPanel,
 		$settingsPanel    = this.config.cmSettingsPanel,
 		$sectionLeft      = this.config.ccSectionLeft,
-		$cmSettingsTables = $('#CMSettingsTables');
+		$cmSettingsTables = $('#CMSettingsTables'),
+		nextHC            = this.getHCStats()[2] + 1,
+		cookiesToXHC      = this.heavenlyToCookiesRemaining(nextHC);
 
 	// Handlers for the settings panel
 	$cmSettingsTables.on('change', 'input, select', function() {
@@ -3264,6 +3325,16 @@ CM.setEvents = function() {
 		$('#CMShaCont').toggle();
 	});
 
+	// HC estimation box
+	$('#CMXHC').val(nextHC);
+	$('#CMStatsHCCookiesToX').html(Beautify(cookiesToXHC));
+	$('#CMXHC').keyup(function() {
+		var value     = $(this).val(),
+			remaining = Beautify(CM.heavenlyToCookiesRemaining(value)),
+			total     = Beautify(CM.heavenlyToCookies(value));
+		$('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');
+	});
+
 };
 
 /**
@@ -3330,6 +3401,10 @@ CM.makeTooltip = function(object) {
 				'<strong>Lucky+Frenzy deficit if purchased:</strong><br />' +
 				'<span id="' + identifier + 'caution_amount"></span>' +
 			'</div>' +
+			'<div id="' + identifier + 'note_div_chain" class="cmTooltipWarningChain">' +
+				'<strong>Current Chain tier deficit if purchased:</strong><br />' +
+				'<span id="' + identifier + 'chain_amount"></span>' +
+			'</div>' +
 		'</div>';
 
 	// Update store
@@ -3347,7 +3422,7 @@ CM.makeTooltip = function(object) {
 CM.updateTooltip = function(object, colors) {
 
 	var informations = [object.getWorth(true), object.getBaseCostPerIncome(), object.getTimeLeft()],
-	deficits     = CME.getLuckyAlerts(object),
+	deficits     = CME.getThresholdAlerts(object),
 	identifier   = '#' + object.identifier(),
 	$object      = $(identifier);
 
@@ -3363,7 +3438,7 @@ CM.updateTooltip = function(object, colors) {
 
 	// Update informations
 	$object
-	.attr('class', 'cm-tooltip__contents border-'+colors[0])
+	.attr('class', 'cm-tooltip__contents border-' + colors[0])
 	.html(
 		'<table class="cmTable">' +
 			'<tr>' +
@@ -3372,7 +3447,7 @@ CM.updateTooltip = function(object, colors) {
 			'</tr>' +
 			'<tr>' +
 				'<td>BCI:</td>' +
-				'<td class="cmValue text-' +colors[0] + '">' + Beautify(informations[1], 1) + '</td>' +
+				'<td class="cmValue text-' + colors[0] + '">' + Beautify(informations[1], 1) + '</td>' +
 			'</tr>' +
 			'<tr>' +
 				'<td>Time Left:</td>' +
@@ -3381,11 +3456,13 @@ CM.updateTooltip = function(object, colors) {
 		'</table>'
 	);
 
-	$(identifier+'warning_amount').html(Beautify(deficits[0]) + ' (' +CME.getTimeToCookies(deficits[0]) + ')');
-	$(identifier+'caution_amount').html(Beautify(deficits[1]) + ' (' +CME.getTimeToCookies(deficits[1]) + ')');
+	$(identifier + 'warning_amount').html(Beautify(deficits[0]) + ' (' + CME.getTimeToCookies(deficits[0]) + ')');
+	$(identifier + 'caution_amount').html(Beautify(deficits[1]) + ' (' + CME.getTimeToCookies(deficits[1]) + ')');
+	$(identifier +   'chain_amount').html(Beautify(deficits[2]) + ' (' + CME.getTimeToCookies(deficits[2]) + ')');
 
-	$(identifier+'note_div_warning').toggle(deficits[0] > 0);
-	$(identifier+'note_div_caution').toggle(deficits[1] > 0);
+	$(identifier + 'note_div_warning').toggle(deficits[0] > 0);
+	$(identifier + 'note_div_caution').toggle(deficits[1] > 0);
+	$(identifier +   'note_div_chain').toggle(deficits[2] > 0);
 
 };
 

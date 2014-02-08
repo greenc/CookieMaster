@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.11.8
+    Version: 1.12.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -240,12 +240,12 @@
 
 .cmTimerLabel {
 	float: left;
-	width: 27%;
+	width: 30%;
 }
 
 .cmTimer {
 	float: left;
-	width: 63%;
+	width: 59%;
 	height: 14px;
 	background-color: #494949;
 	position: relative;
@@ -275,10 +275,11 @@
 .cmTimer-elderFrenzy .cmTimer div { background-color: #1FC41F;}
 .cmTimer-clot .cmTimer div { background-color: #E90000;}
 .cmTimer-pledge .cmTimer div { background-color: #2900FF;}
+.cmTimer-wrinklers .cmTimer div { background-color: #8A3400;}
 
 .cmTimerCounter {
 	float: left;
-	width: 10%;
+	width: 11%;
 	color: #FFF;
 	text-align: center;
 
@@ -483,6 +484,10 @@
 	background-color: rgba(206, 108, 0, 0.3);
 	border-left: 4px solid #CE6C00;
 }
+.cmTooltipWarningChain {
+	background-color: rgba(16, 82, 163, 0.3);
+	border-left: 4px solid #1052A3;
+}
 
 #CMEfficiencyTable {
 	width: 300px;
@@ -512,6 +517,8 @@
 }
 
 .cmNotice { color: #6CF; }
+
+#CMXHC { width: 70px; }
 
 /* Stats Chart */
 #CMChartCont {

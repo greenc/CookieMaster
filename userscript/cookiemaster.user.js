@@ -7,7 +7,7 @@
 // @exclude     http://orteil.dashnet.org/cookieclicker/beta/
 // @downloadURL http://cookiemaster.co.uk/userscript/cookiemaster.user.js
 // @updateURL   http://cookiemaster.co.uk/userscript/cookiemaster.user.js
-// @icon        http://cookiemaster.co.uk/site/icons/cookiemaster.icon.user.png
+// @icon        http://cookiemaster.co.uk/site/images/cookiemaster.icon.user.png
 // ==/UserScript==
 
 (function(d){

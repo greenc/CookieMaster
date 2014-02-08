@@ -1,5 +1,14 @@
 # CookieMaster Release History
 
+### Version 1.12.0 - _2014/2/8_
+
+ - Changed auto-clicker option for Click Frenzies to also include Elder Frenzies
+ - Added a visual timer bar for Automatically Pop Wrinklers setting
+ - Added tooltip stat to show when a purchase would put you under the bank required for current maximum Cookie Chain tier
+ - Added interactive Prestige stat to show total cookies and cookies remaining to reach an arbitrary number of Heavenly Chips
+ - Added total number of cookies required to the Cookies to next HC stat
+ - Fixed User Script icon URL
+
 ### Version 1.11.8 - _2014/2/5_
 
  - Reverted fix from previous release since Cookie Clicker live site is not UTF-8 compatible :(
