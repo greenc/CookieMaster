@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 			},
 		},
 		/**
-		 * Change paths to production ones on build
+		 * Execute string replacements on paths and URLs
 		 */
 		replace: {
 			paths: {

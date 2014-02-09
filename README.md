@@ -10,10 +10,15 @@ CookieMaster is currently being actively developed, with stuff being added almos
 
 How To Use
 ----------
+
+CookieMaster is available as a [Chrome extension](https://chrome.google.com/webstore/detail/cookiemaster-cookie-click/imcmmmehenbhbhomgigngjehehjeheco?hl=en), userscript or via a bookmarklet. For more detailed installation instructions, please see [the main site](http://cookiemaster.co.uk).
+
+If you want to use the bookmarklet installation method, just follow the steps below:
+
 * Paste the following code into a new bookmark in your browser:
 
 ```javascript
-javascript:(function(d){d.body.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)
+javascript:(function(d){d.head.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)
 ```
 
 * Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
