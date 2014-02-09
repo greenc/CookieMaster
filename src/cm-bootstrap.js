@@ -17,6 +17,8 @@
 
 ================================================ */
 
+/*global CM:false*/
+
 /**
  * This file acts as a bootstrap to load the CookieMaster dependencies and scripts.
  * It enables us to request the latest version of all files without users having

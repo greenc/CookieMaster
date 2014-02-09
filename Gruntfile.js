@@ -19,19 +19,19 @@ module.exports = function(grunt) {
 		 */
 		copy: {
 			bookmarklet: {
-				src: 'src/bookmarklet.js',
+				src:  'src/bookmarklet.js',
 				dest: 'build/bookmarklet.js',
 			},
 			chromeCSS: {
-				src: 'src/cookiemaster.css',
+				src:  'src/cookiemaster.css',
 				dest: 'chrome-extension/build/cookiemaster.css',
 			},
 			chromeCM: {
-				src: 'src/cookiemaster.js',
+				src:  'src/cookiemaster.js',
 				dest: 'chrome-extension/build/cookiemaster.js',
 			},
 			chromeEM: {
-				src: 'src/external-methods.js',
+				src:  'src/external-methods.js',
 				dest: 'chrome-extension/build/external-methods.js',
 			}
 		},
@@ -41,9 +41,9 @@ module.exports = function(grunt) {
 		uglify: {
 			build: {
 				files: {
-					'build/cm-bootstrap.min.js': 'src/cm-bootstrap.js',
+					'build/cm-bootstrap.min.js':     'src/cm-bootstrap.js',
 					'build/external-methods.min.js': 'src/external-methods.js',
-					'build/cookiemaster.min.js': 'src/cookiemaster.js'
+					'build/cookiemaster.min.js':     'src/cookiemaster.js'
 				}
 			}
 		},
@@ -57,13 +57,13 @@ module.exports = function(grunt) {
 					consolidateViaSelectors:    true
 				},
 				files: {
-					'build/cookiemaster.min.css': 'src/cookiemaster.css',
+					'build/cookiemaster.min.css':        'src/cookiemaster.css',
 					'site/css/jumbotron-narrow.min.css': 'site/css/jumbotron-narrow.css'
 				}
 			}
 		},
 		/**
-		 * Minify the CSS file
+		 * Minify the CSS files
 		 */
 		cssmin: {
 			build: {
@@ -96,52 +96,57 @@ module.exports = function(grunt) {
 		 * Change paths to production ones on build
 		 */
 		replace: {
-			sources: {
-				src: [
-					'build/cm-bootstrap.min.js',
-					'build/bookmarklet.js',
-					'build/cookiemaster.min.js',
-					'chrome-extension/build/cookiemaster.js'
-				],
+			paths: {
+				src: ['build/*', 'chrome-extension/build/*'],
 				overwrite: true,
 				replacements: [
 					{
-						from: '../cookiemaster/assets/gc.mp3',
-						to: '<%= pkg.url %>/assets/gc.mp3'
+						from: '../cookiemaster',
+						to:   '<%= pkg.cookieMasterURL %>'
 					},
 					{
-						from: '../cookiemaster/assets/sp.mp3',
-						to: '<%= pkg.url %>/assets/sp.mp3'
-					},
-					{
-						from: '../cookiemaster/src/external-methods.js',
-						to: '<%= pkg.url %>/build/external-methods.min.js'
-					},
-					{
-						from: '../cookiemaster/src/cookiemaster.js',
-						to: '<%= pkg.url %>/build/cookiemaster.min.js'
-					},
-					{
-						from: '../cookiemaster/src/cookiemaster.css',
-						to: '<%= pkg.url %>/build/cookiemaster.min.css'
-					},
-					{
-						from: '../cookiemaster/src/cm-bootstrap.js',
-						to: '<%= pkg.url %>/build/cm-bootstrap.min.js'
-					},
-					{
-						from: '../cookiemaster/package.json',
-						to: '<%= pkg.url %>/package.json'
+						from: 'http://dev:8080/cookieclicker/',
+						to:   '<%= pkg.cookieClickerURL %>'
 					}
 				]
 			},
-			ccLink: {
-				src: ['build/cookiemaster.min.js', 'chrome-extension/build/cookiemaster.js'],
+			min: {
+				src: ['build/*'],
 				overwrite: true,
 				replacements: [
 					{
-						from: 'http://dev:8080/cookieclicker/',
-						to: 'http://orteil.dashnet.org/cookieclicker/'
+						from: 'src/external-methods.js',
+						to:   'build/external-methods.min.js'
+					},
+					{
+						from: 'src/cookiemaster.js',
+						to:   'build/cookiemaster.min.js'
+					},
+					{
+						from: 'src/cookiemaster.css',
+						to:   'build/cookiemaster.min.css'
+					},
+					{
+						from: 'src/cm-bootstrap.js',
+						to:   'build/cm-bootstrap.min.js'
+					},
+				]
+			}
+		},
+		/**
+		 * Zip the chrome-extension directory ready for upload
+		 * to Chrome Web Store
+		 */
+		compress: {
+			main: {
+				options: {
+					archive: './chrome-extension-<%= pkg.version %>.zip',
+					mode:    'zip',
+					level:   9
+				},
+				files: [
+					{
+						src: './chrome-extension/**'
 					}
 				]
 			}
@@ -150,6 +155,17 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default', []);
 	grunt.registerTask('css',  ['cssc', 'cssmin']);
-	grunt.registerTask('build', ['clean', 'copy', 'css', 'uglify', 'replace']);
+	/**
+	 * Main build task
+	 */
+	grunt.registerTask('build', [
+		'version',
+		'clean',
+		'copy',
+		'css',
+		'uglify',
+		'replace',
+		'compress'
+	]);
 
 };
