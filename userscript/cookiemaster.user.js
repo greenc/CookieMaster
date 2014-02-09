@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 (function(d){
-	d.head
-		.appendChild(d.createElement('script'))
-		.setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime());
+    d.head
+        .appendChild(d.createElement('script'))
+        .setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime());
 })(document);

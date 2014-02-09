@@ -1,28 +1,28 @@
 {
-	"manifest_version": 2,
-	"name":             "CookieMaster - Cookie Clicker Plugin",
-	"short_name":       "CookieMaster",
-	"version":          "1.12.1",
-	"description":      "A feature-rich plugin for Cookie Clicker",
-	"homepage_url":     "http://cookiemaster.co.uk",
-	"icons": {
-		"16":  "icons/icon16.png",
-		"19":  "icons/icon19.png",
-		"48":  "icons/icon48.png",
-		"128": "icons/icon128.png"
-	},
-	"web_accessible_resources": [
-		"lib/*",
-		"build/*"
-	],
-	"content_scripts": [
-		{
-			"matches": [
-				"http://orteil.dashnet.org/cookieclicker/"
-			],
-			"js": [
-				"inject.js"
-			]
-		}
-	]
+    "manifest_version": 2,
+    "name":             "CookieMaster - Cookie Clicker Plugin",
+    "short_name":       "CookieMaster",
+    "version":          "1.12.2",
+    "description":      "A feature-rich plugin for Cookie Clicker",
+    "homepage_url":     "http://cookiemaster.co.uk",
+    "icons": {
+        "16":  "icons/icon16.png",
+        "19":  "icons/icon19.png",
+        "48":  "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "web_accessible_resources": [
+        "lib/*",
+        "build/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "http://orteil.dashnet.org/cookieclicker/"
+            ],
+            "js": [
+                "inject.js"
+            ]
+        }
+    ]
 }

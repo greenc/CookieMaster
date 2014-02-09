@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.12.1
+    Version: 1.12.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -26,80 +26,80 @@
  */
 if(typeof CM === 'undefined') {
 
-	(function() {
+    (function() {
 
-		var version = '1.12.1',
-			docFrag = document.createDocumentFragment(),
-			deps    = [
-				{
-					// CookieMaster CSS
-					type:    'link',
-					url:     '../cookiemaster/src/cookiemaster.css',
-					async:   true,
-					nocache: true
-				},
-				{
-					// jQuery
-					type:    'script',
-					url:     '//ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js',
-					async:   false,
-					nocache: false
-				},
-				{
-					// Google Charts API
-					type:    'script',
-					url:     '//www.google.com/jsapi',
-					async:   false,
-					nocache: false
-				},
-				{
-					// External CookieMaster methods
-					type:    'script',
-					url:     '../cookiemaster/src/external-methods.js',
-					async:   false,
-					nocache: true
-				},
-				{
-					// CookieMaster methods
-					type:    'script',
-					url:     '../cookiemaster/src/cookiemaster.js',
-					async:   false,
-					nocache: true
-				},
-			],
-			dep, el, qp, i;
+        var version = '1.12.2',
+            docFrag = document.createDocumentFragment(),
+            deps    = [
+                {
+                    // CookieMaster CSS
+                    type:    'link',
+                    url:     '../cookiemaster/src/cookiemaster.css',
+                    async:   true,
+                    nocache: true
+                },
+                {
+                    // jQuery
+                    type:    'script',
+                    url:     '//ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js',
+                    async:   false,
+                    nocache: false
+                },
+                {
+                    // Google Charts API
+                    type:    'script',
+                    url:     '//www.google.com/jsapi',
+                    async:   false,
+                    nocache: false
+                },
+                {
+                    // External CookieMaster methods
+                    type:    'script',
+                    url:     '../cookiemaster/src/external-methods.js',
+                    async:   false,
+                    nocache: true
+                },
+                {
+                    // CookieMaster methods
+                    type:    'script',
+                    url:     '../cookiemaster/src/cookiemaster.js',
+                    async:   false,
+                    nocache: true
+                },
+            ],
+            dep, el, qp, i;
 
-		/**
-		 * Create an element for each dependency and
-		 * append to a document fragment
-		 */
-		for(i = 0; i < deps.length; i++) {
+        /**
+         * Create an element for each dependency and
+         * append to a document fragment
+         */
+        for(i = 0; i < deps.length; i++) {
 
-			dep = deps[i];                            // Dependency
-			el  = document.createElement(dep.type);   // Create element
-			qp  = dep.nocache ? '?v=' + version : ''; // Append cache buster
+            dep = deps[i];                            // Dependency
+            el  = document.createElement(dep.type);   // Create element
+            qp  = dep.nocache ? '?v=' + version : ''; // Append cache buster
 
-			if(dep.type === 'link') {
-				el.rel  = 'stylesheet';
-				el.href = dep.url + qp;
-			} else if(dep.type === 'script') {
-				el.src = dep.url + qp;
-			}
+            if(dep.type === 'link') {
+                el.rel  = 'stylesheet';
+                el.href = dep.url + qp;
+            } else if(dep.type === 'script') {
+                el.src = dep.url + qp;
+            }
 
-			el.async = dep.async;    // Set async for ordered parsing
-			docFrag.appendChild(el); // Append to document fragment
+            el.async = dep.async;    // Set async for ordered parsing
+            docFrag.appendChild(el); // Append to document fragment
 
-		}
+        }
 
-		/**
-		 * Append fragment to DOM
-		 */
-		document.head.appendChild(docFrag);
+        /**
+         * Append fragment to DOM
+         */
+        document.head.appendChild(docFrag);
 
-	})();
+    })();
 
 } else {
 
-	CM.message('<strong>Error:</strong> CookieMaster is already loaded!', 'error');
+    CM.message('<strong>Error:</strong> CookieMaster is already loaded!', 'error');
 
 }

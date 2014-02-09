@@ -1,5 +1,11 @@
 # CookieMaster Release History
 
+### Version 1.12.2 - _2014/2/9_
+
+ - Removed 10 second option from Pop Wrinklers setting as it was only intended for debugging
+ - Converted entire project to use 4 spaces for indentation across all HTML, CSS and JS
+ - Streamlined build process for easier updating
+
 ### Version 1.12.1 - _2014/2/9_
 
  - Fixed bug where Auto-pop Wrinkler timer would not reset properly after reaching zero
