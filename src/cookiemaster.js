@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.12.0
+    Version: 1.12.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
 	// General CookieMaster settings
 	///////////////////////////////////////////////
 
-	version:              '1.12.0',                         // Current version of CookieMaster
+	version:              '1.12.1',                         // Current version of CookieMaster
 	ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
 	cmRefreshRate:        1000,                             // Refresh rate for main game loop
 	cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -628,6 +628,10 @@ CM.config = {
 					value: 'off'
 				},
 				{
+					label: 'Every 10 seconds',
+					value: 10000
+				},
+				{
 					label: 'Every 10 minutes',
 					value: 600000
 				},
@@ -1029,7 +1033,7 @@ CM.Timer = function(type, label) {
  */
 CM.cookiesToHeavenly = function(cookies) {
 
-	cookies = parseInt(cookies, 10);
+	//cookies = parseInt(cookies, 10);
 	return Math.floor(Math.sqrt(2.5 * 1e11 + 2 * cookies) / 1e6 - 0.5);
 
 };
@@ -1042,7 +1046,7 @@ CM.cookiesToHeavenly = function(cookies) {
  */
 CM.heavenlyToCookies = function(chips) {
 
-	chips = parseInt(chips, 10);
+	//chips = parseInt(chips, 10);
 	return 5 * 1e11 * chips * (chips + 1);
 
 };
@@ -1055,7 +1059,7 @@ CM.heavenlyToCookies = function(chips) {
  */
 CM.heavenlyToCookiesRemaining = function(chips) {
 
-	chips = parseInt(chips, 10);
+	//chips = parseInt(chips, 10);
 	var remaining = this.heavenlyToCookies(chips) - (Game.cookiesReset + Game.cookiesEarned);
 
 	return remaining > 0 ? remaining : 0;
@@ -2052,7 +2056,7 @@ CM.removeEfficiencyKey = function() {
 CM.updateStats = function() {
 
 	var hcStats           = this.getHCStats(),
-		cookiesToXHC      = $('#CMXHC').val() || hcStats[2] + 1,
+		cookiesToXHC      = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
 		wrinklerStats     = this.getWrinklerStats(),
 		lastGC            = this.toTitleCase(Game.goldenCookie.last) || '-',
 		lbText            = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
@@ -2527,15 +2531,17 @@ CM.popWrinklersAfterXTime = function() {
 	// Clear any existing timer
 	if(CM.popWrinklerTimer) {
 		clearTimeout(CM.popWrinklerTimer);
-		CM.popWrinklersTime = null;
+		CM.popWrinklersTime         = null;
+		CM.popWrinklersTimeRelative = null;
 	}
 
-	CM.popWrinklersTimeRelative = Number(time);
-
 	if(time) {
-		CM.popWrinklersTime = new Date().getTime() + Number(time);
-		CM.popWrinklerTimer = setTimeout(function popWrinklers() {
+		CM.popWrinklersTimeRelative = Number(time);
+		CM.popWrinklersTime         = new Date().getTime() + Number(time);
+		CM.popWrinklerTimer         = setTimeout(function popWrinklers() {
 			var reward = CM.getWrinklerStats()[1];
+			CM.popWrinklersTimeRelative = Number(time);
+			CM.popWrinklersTime = new Date().getTime() + Number(time);
 			if(CM.wrinklersExist() && reward) {
 				Game.CollectWrinklers();
 				CM.message('<strong>Popped all Wrinklers.</strong> Rewarded ' + Beautify(reward) + ' cookies.', 'notice');
@@ -3329,7 +3335,7 @@ CM.setEvents = function() {
 	$('#CMXHC').val(nextHC);
 	$('#CMStatsHCCookiesToX').html(Beautify(cookiesToXHC));
 	$('#CMXHC').keyup(function() {
-		var value     = $(this).val(),
+		var value     = Number($(this).val()),
 			remaining = Beautify(CM.heavenlyToCookiesRemaining(value)),
 			total     = Beautify(CM.heavenlyToCookies(value));
 		$('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');

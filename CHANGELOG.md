@@ -1,5 +1,11 @@
 # CookieMaster Release History
 
+### Version 1.12.1 - _2014/2/9_
+
+ - Fixed bug where Auto-pop Wrinkler timer would not reset properly after reaching zero
+ - Fixed bug where Auto-pop Wrinkler feature would not show timer bar for first countdown after setting was saved/changed
+ - Fixed bug where games with very high numbers would calculate incorrect or missing information for Prestige stats
+
 ### Version 1.12.0 - _2014/2/8_
 
  - Changed auto-clicker option for Click Frenzies to also include Elder Frenzies
