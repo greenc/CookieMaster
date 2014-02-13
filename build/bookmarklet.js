@@ -1,1 +1,1 @@
-javascript:(function(d){d.head.appendChild(d.createElement('script')).setAttribute('src','http://cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)
+javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.co.uk/b?c='+new Date().getTime())._

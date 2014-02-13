@@ -18,7 +18,7 @@ If you want to use the bookmarklet installation method, just follow the steps be
 * Paste the following code into a new bookmark in your browser:
 
 ```javascript
-javascript:(function(d){d.head.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)
+javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.co.uk/b?c='+new Date().getTime())._
 ```
 
 * Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)

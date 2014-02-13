@@ -131,6 +131,16 @@ module.exports = function(grunt) {
                         to:   'build/cm-bootstrap.min.js'
                     },
                 ]
+            },
+            bookmark: {
+                src: ['build/bookmarklet.js'],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: 'http://cookiemaster.co.uk/build/cm-bootstrap.min.js',
+                        to:   '//cookiemaster.co.uk/b'
+                    }
+                ]
             }
         },
         /**

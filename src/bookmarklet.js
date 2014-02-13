@@ -1,1 +1,1 @@
-javascript:(function(d){d.head.appendChild(d.createElement('script')).setAttribute('src','../cookiemaster/src/cm-bootstrap.js?cb='+new Date().getTime())})(document)
+javascript:with(document)(head.appendChild(createElement('script')).src='../cookiemaster/src/cm-bootstrap.js?c='+new Date().getTime())._
