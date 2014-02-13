@@ -147,10 +147,10 @@
                 <div class="col-lg-12">
                     <h3>Bookmarklet</h3>
                     <p>Not a Chrome or userscript user? No problem. Just run CookieMaster from a bookmark instead, by dragging the following button into your bookmarks bar or folder:</p>
-                    <p><a id="bookmarkBtn" class="btn btn-sm btn-primary" href="javascript:(function(d){d.head.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)"><span class="glyphicon glyphicon-bookmark"></span> CookieMaster Bookmark</a></p>
+                    <p><a id="bookmarkBtn" class="btn btn-sm btn-primary" href="javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.co.uk/b?c='+new Date().getTime())._"><span class="glyphicon glyphicon-bookmark"></span> CookieMaster Bookmark</a></p>
                     <p><strong>or...</strong></p>
                     <p>Paste the following code into a new bookmark in your browser:</p>
-                    <pre>javascript:(function(d){d.head.appendChild(d.createElement('script')).setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime())})(document)</pre>
+                    <pre>javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.co.uk/b?c='+new Date().getTime())._</pre>
                     <ul>
                         <li class="small">Compatible with all supported browsers</li>
                         <li class="small">Click bookmark once created to load CookieMaster</li>
