@@ -1,5 +1,11 @@
 # CookieMaster Release History
 
+### Version 1.12.3 - _2014/2/14_
+
+ - Updated plugin to fix compatibility issues with latest game release (v.1.0411)
+ - Seasonal timers will now only display during the correct season
+ - Added info for Prisms to building efficiency calculations
+
 ### Version 1.12.2 - _2014/2/9_
 
  - Removed 10 second option from Pop Wrinklers setting as it was only intended for debugging
