@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.13.0 - _2014/2/14_
+
+ - Fixed bug where Prism upgrades would not have their efficiency and gains calculated
+ - Added stat to show estimated time remaining until X Heavenly Chips
+
 ### Version 1.12.3 - _2014/2/14_
 
  - Updated plugin to fix compatibility issues with latest game release (v.1.0411)
