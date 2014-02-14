@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.12.2
+    Version: 1.12.3
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,8 +37,8 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.12.2',                         // Current version of CookieMaster
-    ccCompatibleVersions: ['1.0402', '1.0403'],             // Known compatible versions of Cookie Clicker
+    version:              '1.12.3',                         // Current version of CookieMaster
+    ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
     cmCheckUpdateRate:    1800000,                          // How often to check for updates (default 30 minutes)
@@ -2247,7 +2247,7 @@ CM.updateTimers = function() {
     // Expressions that evaluate to true when each timer should be displayed
     var conditions = {
             gc:          Game.goldenCookie.life === 0,
-            sp:          Game.seasonPopup.life === 0,
+            sp:          Game.seasonPopup.life === 0 && Game.season === 'christmas',
             frenzy:      Game.frenzy > 0 && Game.frenzyPower === 7,
             clickFrenzy: Game.clickFrenzy > 0,
             elderFrenzy: Game.frenzy > 0 && Game.frenzyPower === 666,

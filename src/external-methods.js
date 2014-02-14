@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.12.2
+    Version: 1.12.3
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -304,6 +304,12 @@ CME.buildingAmount = function(building) {
             0  : 'Antibatter',
             49 : 'Quirky quarks',
             99 : 'It does matter!',
+        },
+        'Prism': {
+            0  : 'Lone photon',
+            49 : 'Dazzling glimmer',
+            99 : 'Blinding flash',
+            149: 'Unending glow'
         }
     },
     achievement = upgrades[building.name][building.amount];

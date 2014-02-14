@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name":             "CookieMaster - Cookie Clicker Plugin",
     "short_name":       "CookieMaster",
-    "version":          "1.12.2",
+    "version":          "1.12.3",
     "description":      "A feature-rich plugin for Cookie Clicker",
     "homepage_url":     "http://cookiemaster.co.uk",
     "icons": {
