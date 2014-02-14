@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.12.3
+    Version: 1.13.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.12.3',                         // Current version of CookieMaster
+    version:              '1.13.0',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -2097,7 +2097,7 @@ CM.updateStats = function() {
         cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
     } else {
         cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
-            ' (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')';
+            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.effectiveCps())) + ')';
     }
 
     // Golden Cookie stats

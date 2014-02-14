@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.12.3
+    Version: 1.13.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -566,6 +566,7 @@ CME.getBuildingWorth = function(building) {
         case 'Portal':
         case 'Time machine':
         case 'Antimatter condenser':
+        case 'Prism':
         case 'Grandma':
             income += this.getTotalCursorModifiers() * multiplier;
             break;
@@ -796,7 +797,8 @@ CME.getUpgradeWorth = function(upgrade) {
             'Alchemy labs',
             'Portals',
             'Time machines',
-            'Antimatter condensers'
+            'Antimatter condensers',
+            'Prisms'
         ],
         gainsUpgrades;
 
@@ -818,6 +820,7 @@ CME.getUpgradeWorth = function(upgrade) {
         {building: 'Portals',               modifier: 1666},
         {building: 'Time machines',         modifier: 9876},
         {building: 'Antimatter condensers', modifier: 99999},
+        {building: 'Prisms',                modifier: 1000000}
     ];
     gainsUpgrades.forEach(function(gainUpgrade, key) {
         if (upgrade.matches(gainUpgrade.building + ' gain <b>')) {
