@@ -1,5 +1,17 @@
 # CookieMaster Release History
 
+### Version 1.14.0 - _2014/2/15_
+
+ - Added setting to show or hide the deficit alerts in the tooltips
+ - Portals and Grandmas now show correct income and BCI values
+ - Income and BCI calculations for buildings are now performed by simulating actual purchases, to ensure 100% correct calculations. Upgrades still based on the older method of computing all modifiers from the base cost.
+ - Added CpC income stat to clicking-related Upgrade tooltips
+ - Added setting to hide the native game buff timer bars
+ - Max/current Lucky and Lucky+Frenzy reward stats are now highlighted if reached
+ - Fixed bug where Reindeer timer in title bar would display when it shouldn't (and count backwards)
+ - Missing Upgrades stats now display descriptions for each upgrade
+ - Missing Upgrades stats should no longer display the season switching upgrades once Season Switcher has been purchased
+
 ### Version 1.13.0 - _2014/2/14_
 
  - Fixed bug where Prism upgrades would not have their efficiency and gains calculated

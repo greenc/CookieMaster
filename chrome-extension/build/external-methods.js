@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.13.0
+    Version: 1.14.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -238,224 +238,6 @@ CME.hasntAchievement = function(checkedAchievement) {
 };
 
 //////////////////////////////////////////////////////////////////////
-//////////////////////////// BUILDING SCHEMAS ////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-/**
- * Check if a given building would unlock an amount-related achievement when bought
- *
- * @param {Object} building
- *
- * @return {Boolean}
- */
-CME.buildingAmount = function(building) {
-
-    var upgrades = {
-        'Cursor': {
-            0   : 'Click',
-            1   : 'Double-click',
-            49  : 'Mouse wheel',
-            99  : 'Of Mice and Men',
-            199 : 'The Digital',
-        },
-        'Grandma': {
-            0   : 'Grandma\'s Cookies',
-            49  : 'Sloppy kisses',
-            99  : 'Retirement home',
-            149 : 'Friend of the ancients',
-            199 : 'Ruler of the ancients',
-        },
-        'Farm': {
-            0  : 'My first farm',
-            49 : 'Reap what you sow',
-            99 : 'Farm ill',
-        },
-        'Factory': {
-            0  : 'Production chain',
-            49 : 'Industrial revolution',
-            99 : 'Global warming',
-        },
-        'Mine': {
-            0  : 'You know the drill',
-            49 : 'Excavation site',
-            99 : 'Hollow the planet',
-        },
-        'Shipment': {
-            0  : 'Expedition',
-            49 : 'Galactic highway',
-            99 : 'Far far away',
-        },
-        'Alchemy lab': {
-            0  : 'Transmutation',
-            49 : 'Transmogrification',
-            99 : 'Gold member',
-        },
-        'Portal': {
-            0  : 'A whole new world',
-            49 : 'Now you\'re thinking',
-            99 : 'Dimensional shift',
-        },
-        'Time machine': {
-            0  : 'Time warp',
-            49 : 'Alternate timeline',
-            99 : 'Rewriting history',
-        },
-        'Antimatter condenser': {
-            0  : 'Antibatter',
-            49 : 'Quirky quarks',
-            99 : 'It does matter!',
-        },
-        'Prism': {
-            0  : 'Lone photon',
-            49 : 'Dazzling glimmer',
-            99 : 'Blinding flash',
-            149: 'Unending glow'
-        }
-    },
-    achievement = upgrades[building.name][building.amount];
-
-    // Get unlocked achievements by amount of that building
-    if (achievement) {
-        return this.hasntAchievement(achievement);
-    }
-
-    return false;
-};
-
-/**
- * Check if a given building would unlock Base 10 when bought
- *
- * @param {String} checkedBuilding
- *
- * @return {Boolean}
- */
-CME.baseTen = function(checkedBuilding) {
-    var names   = [],
-        amounts = [],
-        base,
-        i;
-
-    if (this.hasAchievement('Base 10')) {
-        return false;
-    }
-
-    Game.ObjectsById.forEach(function (building) {
-        names.push(building.name);
-        amounts.push(building.amount);
-    });
-    names.forEach(function (names, key) {
-        if (names === checkedBuilding) {
-            amounts[key]++;
-        }
-    });
-
-    base = amounts.length * 10;
-    for (i = 0; i < amounts.length; i++) {
-        if (amounts[i] < base || amounts[i] > base) {
-            return false;
-        }
-        base -= 10;
-    }
-
-    return true;
-};
-
-/**
- * Check if a given building would unlock Mathematician when bought
- *
- * @param {String} checkedBuilding
- *
- * @return {Boolean}
- */
-CME.mathematician = function(checkedBuilding) {
-    var names   = [],
-        amounts = [],
-        base,
-        i;
-
-    if (this.hasAchievement('Mathematician')) {
-        return false;
-    }
-
-    Game.ObjectsById.forEach(function (building) {
-        names.push(building.name);
-        amounts.push(building.amount);
-    });
-    names.forEach(function (name, key) {
-        if (name === checkedBuilding) {
-            amounts[key]++;
-        }
-    });
-
-    base = 128;
-    for (i = 0; i < amounts.length; i++) {
-        if (i > 2) {
-            base = base / 2;
-        }
-        if (amounts[i] < base) {
-            return false;
-        }
-    }
-
-    return true;
-};
-
-/**
- * Check if a given building would unlock OWE when bought
- *
- * @param {String} checkedBuilding
- *
- * @return {Boolean}
- */
-CME.oneWithEverything = function(checkedBuilding) {
-    if (this.hasAchievement('One with everything')) {
-        return false;
-    }
-
-    return this.checkBuildingUnifiesAmounts(0, checkedBuilding);
-};
-
-/**
- * Check if a given building would unlock Centennial when bought
- *
- * @param {String} checkedBuilding
- *
- * @return {Boolean}
- */
-CME.centennial = function(checkedBuilding) {
-    if (this.hasAchievement('Centennial')) {
-        return false;
-    }
-
-    return this.checkBuildingUnifiesAmounts(99, checkedBuilding);
-};
-
-/**
- * Checks whether buying a certain building would
- * bring all amounts to the same level
- *
- * @param {Integer} amount
- * @param {String}  checkedBuilding
- *
- * @return {Boolean}
- */
-CME.checkBuildingUnifiesAmounts = function(amount, checkedBuilding) {
-    var todo = [];
-
-    Game.ObjectsById.forEach(function (building) {
-        if (building.amount === amount) {
-            todo.push(building.name);
-        }
-    });
-
-    if (todo.length === 1 && todo[0] === checkedBuilding) {
-        return true;
-    }
-
-    return false;
-};
-
-//////////////////////////////////////////////////////////////////////
 ///////////////////////////// INFORMATIONS ///////////////////////////
 //////////////////////////////////////////////////////////////////////
 
@@ -522,145 +304,7 @@ CME.updateBuildingsInformations = function() {
  * @return {Integer}
  */
 CME.getBuildingWorth = function(building) {
-
-    var multiplier = Game.globalCpsMult,
-        income     = building.storedCps * multiplier,
-        unlocked   = 0;
-
-    // Get unlocked achievements by amount of buildings (50, 100, ...)
-    unlocked += this.buildingAmount(building);
-
-    // Get unlocked achievements by global number of buildings
-    if (Game.BuildingsOwned === 99) {
-        unlocked += this.hasntAchievement('Builder');
-    }
-    if (Game.BuildingsOwned === 399) {
-        unlocked += this.hasntAchievement('Architect');
-    }
-    if (Game.BuildingsOwned === 799) {
-        unlocked += this.hasntAchievement('Engineer');
-    }
-
-    // Get unlocked achievements by building schemas
-    if (this.oneWithEverything(building.name)) {
-        unlocked++;
-    }
-    if (this.mathematician(building.name)) {
-        unlocked++;
-    }
-    if (this.baseTen(building.name)) {
-        unlocked++;
-    }
-    if (this.centennial(building.name)) {
-        unlocked++;
-    }
-
-    // Add cursor modifiers
-    switch (building.name) {
-        case 'Grandma':
-        case 'Farm':
-        case 'Factory':
-        case 'Mine':
-        case 'Shipment':
-        case 'Alchemy lab':
-        case 'Portal':
-        case 'Time machine':
-        case 'Antimatter condenser':
-        case 'Prism':
-        case 'Grandma':
-            income += this.getTotalCursorModifiers() * multiplier;
-            break;
-        case 'Grandma':
-            income += this.getTotalGrandmaModifiers(building.amount) * multiplier;
-            break;
-        case 'Portal':
-            income += this.getTotalPortalModifiers() * multiplier;
-            break;
-    }
-
-    return income + this.callCached('getAchievementWorth', [unlocked, 0, income]);
-};
-
-//////////////////////////////////////////////////////////////////////
-/////////////////////////////// MODIFIERS ////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-/**
- * Get the cursor modifiers
- *
- * @return {Integer}
- */
-CME.getTotalCursorModifiers = function() {
-    var modifier = 0;
-
-    Game.UpgradesById.forEach(function (upgrade) {
-        if (upgrade.bought && upgrade.matches('The mouse and cursors gain')) {
-            var r = 31;
-            if (upgrade.matches(' another ')) {
-                r += 8;
-            }
-            modifier += upgrade.desc.substr(r, upgrade.desc.indexOf('<', r) - r) * 1;
-        }
-    });
-
-    return modifier * Game.ObjectsById[0].amount;
-};
-
-/**
- * Get the various Grandma modifiers
- *
- * @param {Integer} currentNumber
- *
- * @return {Integer}
- */
-CME.getTotalGrandmaModifiers = function(currentNumber) {
-    var cookiesPs = 0.5,
-        amount    = 0,
-        modifiers = 1;
-
-    Game.UpgradesById.forEach(function (upgrade) {
-        if (upgrade.bought && upgrade.name === 'Forwards from grandma') {
-            cookiesPs += 0.3;
-        }
-        else if (upgrade.bought && upgrade.matches('Grandmas are <b>twice</b>.')) {
-            modifiers *= 2;
-        }
-        else if (upgrade.bought && upgrade.matches('Grandmas are <b>4 times</b> as efficient.')) {
-            modifiers *= 4;
-        }
-        else if (upgrade.bought && upgrade.matches('for every 50 grandmas')) {
-            amount += (currentNumber + 1) * 0.02 * (currentNumber + 1) - currentNumber * 0.02 * currentNumber;
-        }
-        else if (upgrade.bought && upgrade.matches('for every 20 portals')) {
-            amount += Game.ObjectsById[7].amount * 0.05;
-        }
-    });
-
-    return cookiesPs * modifiers + amount * modifiers;
-};
-
-/**
- * Get the portal modifiers
- *
- * @return {Integer}
- */
-CME.getTotalPortalModifiers = function() {
-    var amount    = 0,
-        modifiers = 1;
-
-    Game.UpgradesById.forEach(function (upgrade) {
-        if (upgrade.bought && upgrade.matches('Grandmas are <b>twice</b> as efficient.')) {
-            modifiers *= 2;
-        }
-        else if (upgrade.bought && upgrade.matches('Grandmas are <b>4 times</b> as efficient.')) {
-            modifiers *= 4;
-        }
-        else if (upgrade.bought && upgrade.matches('for every 20 portals')) {
-            amount += Game.ObjectsById[1].amount * 0.05;
-        }
-    });
-
-    return amount * modifiers;
+    return this.simulateBuy(building, 'cookiesPs');
 };
 
 /**
@@ -727,52 +371,6 @@ CME.getHeavenlyMultiplier = function() {
     }
 
     return chips * potential;
-};
-
-
-//////////////////////////////////////////////////////////////////////
-// Pledges
-//////////////////////////////////////////////////////////////////////
-
-/**
- * Compute the cost of pledges for a given time
- *
- * @param {Integer} lapse (mn)
- *
- * @return {Integer}
- */
-CME.estimatePledgeCost = function(lapse) {
-
-    var pledge   = Game.Upgrades['Elder Pledge'],
-        duration = Game.Has('Sacrificial rolling pins') ? 60 : 30,
-        required = lapse / duration,
-        price    = pledge.getPrice(),
-        cost = 0,
-        i;
-
-    for (i = 0; i < required; i++) {
-        cost += price;
-
-        // Recompute pledge price
-        price = Math.pow(8, Math.min(Game.pledges + 2, 14));
-        price *= Game.Has('Toy workshop') ? 0.95 : 1;
-        price *= Game.Has('Santa\'s dominion') ? 1 : 0.98;
-    }
-
-    return CM.largeNumFormat(cost);
-};
-
-/**
- * Compute the cost of the covenant for a given time
- *
- * @param {Integer} lapse (mn)
- *
- * @return {Integer}
- */
-CME.estimateCovenantCost = function(lapse) {
-    var income = Game.cookiesPs * (lapse * 60);
-
-    return CM.largeNumFormat(income - (income * 0.95));
 };
 
 /**
@@ -1276,10 +874,6 @@ CMEO.getColors = function() {
     return CME.computeColorCoding(this.getComparativeInfos());
 };
 
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////// HELPERS /////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
 /**
  * Get the lucky alerts for a price
  *
@@ -1360,6 +954,144 @@ CME.computeColorCoding = function(informations) {
  *
  * @return {Boolean}
  */
-CME.isInStore = function(upgrade) {
-    return Game.UpgradesInStore.indexOf(upgrade) !== -1;
+CMEO.isInStore = function() {
+    return Game.UpgradesInStore.indexOf(this) !== -1;
+};
+
+/**
+ * Simulate buying an object and return change in a statistic
+ *
+ * @param {Object} object
+ * @param {String} statistic The statistic to watch
+ *
+ * @return {Integer}
+ */
+CME.simulateBuy = function(object, statistic) {
+
+    // Store initial state
+    ////////////////////////////////////////////////////////////////////
+
+    // Disable some native methods
+    var swaped = {
+            SetResearch : Game.SetResearch,
+            Popup       : Game.Popup,
+        },
+        stored = {
+            cpsSucked        : Game.cpsSucked,
+            globalCpsMult    : Game.globalCpsMult,
+            cookiesPs        : Game.cookiesPs,
+            computedMouseCps : Game.computedMouseCps,
+        },
+        income;
+
+    Game.SetResearch = function() {};
+    Game.Popup       = function() {};
+
+    // Simulate buy and store result
+    ////////////////////////////////////////////////////////////////////
+
+    // Simulate buy and store statistic
+    object.simulateToggle(true);
+    Game.CalculateGains();
+    income = Game[statistic];
+
+    // Restore initial state
+    ////////////////////////////////////////////////////////////////////
+
+    // Reverse buy
+    object.simulateToggle(false);
+    Game.cpsSucked        = stored.cpsSucked;
+    Game.globalCpsMult    = stored.globalCpsMult;
+    Game.cookiesPs        = stored.cookiesPs;
+    Game.computedMouseCps = stored.computedMouseCps;
+
+    // Restore native methods
+    Game.SetResearch = swaped.SetResearch;
+    Game.Popup       = swaped.Popup;
+
+    return income - Game[statistic];
+};
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////////////// BUILDINGS ////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * Toggle bought state of a building
+ *
+ * @param {Boolean} buyOrReverse Buy or reverse
+ *
+ * @return {void}
+ */
+CMEO.simulateBuildingToggle = function(buyOrReverse) {
+    if (buyOrReverse) {
+        this.amount++;
+        this.bought++;
+        if (this.buyFunction) {
+            this.buyFunction();
+        }
+    } else {
+        this.amount--;
+        this.bought--;
+        if (this.sellFunction) {
+            this.sellFunction();
+        }
+    }
+};
+
+//////////////////////////////////////////////////////////////////////
+////////////////////////////// UPGRADES //////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * Toggle bought state of an upgrade
+ *
+ * @param {Boolean} buyOrReverse Buy or reverse
+ *
+ * @return {void}
+ */
+CMEO.simulateUpgradeToggle = function(buyOrReverse) {
+    if (buyOrReverse) {
+        this.bought = 1;
+        if (this.buyFunction) {
+            this.buyFunction();
+        }
+        if (this.hide !== 3) {
+            Game.UpgradesOwned++;
+        }
+    } else {
+        this.bought = 0;
+        if (this.hide !== 3) {
+            Game.UpgradesOwned--;
+        }
+    }
+};
+
+/**
+ * Checks if an upgrade is clicking related or not
+ *
+ * @return {Boolean}
+ */
+CMEO.isClickingRelated = function() {
+    return this.matches('Clicking') || this.matches('The mouse');
+};
+
+/**
+ * Get the true worth of a clicking upgrade
+ *
+ * @return {Integer}
+ */
+CMEO.getClickingWorth = function() {
+    return CME.callCached('getClickingUpgradeWorth', [this]);
+};
+
+/**
+ * Get how much buying an upgrade would boost clicking CPS
+ *
+ * @param {Object} upgrade
+ *
+ * @return {Integer}
+ */
+CME.getClickingUpgradeWorth = function(upgrade) {
+    return this.simulateBuy(upgrade, 'computedMouseCps');
 };

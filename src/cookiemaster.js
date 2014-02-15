@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.13.0
+    Version: 1.14.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.13.0',                         // Current version of CookieMaster
+    version:              '1.14.0',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -237,27 +237,172 @@ CM.config = {
     },
 
     settings: {
-        cleanUI: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Clean Interface:',
-            desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
+
+        ///////////////////////////////////////////////
+        // General
+        ///////////////////////////////////////////////
+
+        showMissedGC: {
+            group: 'general',
+            type:  'checkbox',
+            label: 'Show Missed Golden Cookies:',
+            desc:  'Whether or not to show the stat for missed Golden Cookies.',
             current: 'on'
         },
-        showAllUpgrades: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Show All Upgrades:',
-            desc:    'Always display all available upgrades in the store (no need to hover).',
+        enableLogging: {
+            group: 'general',
+            type:  'checkbox',
+            label: 'Enable Logging (BETA):',
+            desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
             current: 'off'
         },
-        hideBuildingInfo: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Hide Building Info Boxes:',
-            desc:    'Hides the building information boxes that normally display when hovering each building section',
+        popWrinklersAtInterval: {
+            group: 'general',
+            type:  'select',
+            label: 'Automatically Pop Wrinklers:',
+            desc:  'Set a timer to automatically pop all Wrinklers at the specified interval.',
+            options: [
+                {
+                    label: 'Off',
+                    value: 'off'
+                },
+                {
+                    label: 'Every 10 minutes',
+                    value: 600000
+                },
+                {
+                    label: 'Every 30 minutes',
+                    value: 1800000
+                },
+                {
+                    label: 'Every hour',
+                    value: 3600000
+                },
+                {
+                    label: 'Every 4 hours',
+                    value: 14400000
+                },
+                {
+                    label: 'Every 8 hours',
+                    value: 28800000
+                }
+            ],
             current: 'off'
         },
+        trueNeverclick: {
+            group: 'general',
+            type:  'checkbox',
+            label: 'True Neverclick Helper:',
+            desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
+            current: 'off'
+        },
+        autoPledge: {
+            group: 'general',
+            type:  'checkbox',
+            label: 'Auto-Pledge:',
+            desc:  'Automatically rebuy Elder Pledge upgrade to keep the Grandmapocalypse at bay.',
+            current: 'off'
+        },
+
+        ///////////////////////////////////////////////
+        // Numbers
+        ///////////////////////////////////////////////
+
+        numFormat: {
+            group: 'numbers',
+            type:  'select',
+            label: 'Number Formatting:',
+            desc:  'Sets the desired decimal and thousands separator symbols for numbers.',
+            options: [
+                {
+                    label: '1,234,567.890',
+                    value: 'us'
+                },
+                {
+                    label: '1.234.567,890',
+                    value: 'eu'
+                }
+            ],
+            current: 'us'
+        },
+        shortNums: {
+            group:   'numbers',
+            type:    'checkbox',
+            label:   'Shorten Numbers:',
+            desc:    'Shorten large numbers with suffixes.',
+            current: 'on'
+        },
+        suffixFormat: {
+            group: 'numbers',
+            type:  'select',
+            label: 'Suffix Type:',
+            desc:  'Notation type to use for shortened number suffixes.',
+            options: [
+                {
+                    label: 'Mathematical',
+                    value: 'math'
+                },
+                {
+                    label: 'SI Units',
+                    value: 'si'
+                },
+                {
+                    label: 'Standard (Short Scale)',
+                    value: 'standard'
+                },
+                {
+                    label: 'Long Scale',
+                    value: 'longscale'
+                },
+                {
+                    label: 'Scientific',
+                    value: 'scientific'
+                },
+                {
+                    label: 'Scientific (e-notation)',
+                    value: 'e'
+                },
+                {
+                    label: 'Scientific (compact)',
+                    value: 'compact'
+                }
+            ],
+            current: 'math'
+        },
+        precision: {
+            group: 'numbers',
+            type:  'select',
+            label: 'Precision:',
+            desc:  'How many decimal places to show for shortened numbers.',
+            options: [
+                {
+                    label: '0',
+                    value: '0'
+                },
+                {
+                    label: '1',
+                    value: '1'
+                },
+                {
+                    label: '2',
+                    value: '2'
+                },
+                {
+                    label: '3',
+                    value: '3'
+                },
+                {
+                    label: '4',
+                    value: '4'
+                }
+            ],
+            current: '3'
+        },
+
+        ///////////////////////////////////////////////
+        // Alerts
+        ///////////////////////////////////////////////
+
         showGCTimer: {
             group:   'alerts',
             type:    'checkbox',
@@ -409,101 +554,58 @@ CM.config = {
             placeholder: 'http://example.com/file.mp3',
             current:     ''
         },
-        numFormat: {
-            group: 'numbers',
-            type:  'select',
-            label: 'Number Formatting:',
-            desc:  'Sets the desired decimal and thousands separator symbols for numbers.',
-            options: [
-                {
-                    label: '1,234,567.890',
-                    value: 'us'
-                },
-                {
-                    label: '1.234.567,890',
-                    value: 'eu'
-                }
-            ],
-            current: 'us'
-        },
-        shortNums: {
-            group:   'numbers',
+
+        ///////////////////////////////////////////////
+        // UI
+        ///////////////////////////////////////////////
+
+        cleanUI: {
+            group:   'ui',
             type:    'checkbox',
-            label:   'Shorten Numbers:',
-            desc:    'Shorten large numbers with suffixes.',
+            label:   'Clean Interface:',
+            desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
             current: 'on'
         },
-        suffixFormat: {
-            group: 'numbers',
-            type:  'select',
-            label: 'Suffix Type:',
-            desc:  'Notation type to use for shortened number suffixes.',
-            options: [
-                {
-                    label: 'Mathematical',
-                    value: 'math'
-                },
-                {
-                    label: 'SI Units',
-                    value: 'si'
-                },
-                {
-                    label: 'Standard (Short Scale)',
-                    value: 'standard'
-                },
-                {
-                    label: 'Long Scale',
-                    value: 'longscale'
-                },
-                {
-                    label: 'Scientific',
-                    value: 'scientific'
-                },
-                {
-                    label: 'Scientific (e-notation)',
-                    value: 'e'
-                },
-                {
-                    label: 'Scientific (compact)',
-                    value: 'compact'
-                }
-            ],
-            current: 'math'
+        hideNativeTimers: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Hide native timers:',
+            desc:    'Hide the native game buff timers.',
+            current: 'off'
         },
-        precision: {
-            group: 'numbers',
-            type:  'select',
-            label: 'Precision:',
-            desc:  'How many decimal places to show for shortened numbers.',
-            options: [
-                {
-                    label: '0',
-                    value: '0'
-                },
-                {
-                    label: '1',
-                    value: '1'
-                },
-                {
-                    label: '2',
-                    value: '2'
-                },
-                {
-                    label: '3',
-                    value: '3'
-                },
-                {
-                    label: '4',
-                    value: '4'
-                }
-            ],
-            current: '3'
+        showAllUpgrades: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Show All Upgrades:',
+            desc:    'Always display all available upgrades in the store (no need to hover).',
+            current: 'off'
+        },
+        hideBuildingInfo: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Hide Building Info Boxes:',
+            desc:    'Hides the building information boxes that normally display when hovering each building section',
+            current: 'off'
+        },
+        colorBlind: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Color Blind Mode:',
+            desc:    'Alternate color scheme that is color-blind friendly.',
+            current: 'off'
         },
         showEfficiencyKey: {
             group:   'ui',
             type:    'checkbox',
             label:   'Show Efficiency Key:',
             desc:    'Display building efficiency color key in the right panel.',
+            current: 'on'
+        },
+        showDeficitStats: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Show Deficit Stats:',
+            desc:    'Show labels on item tooltips warning about Lucky and Chain deficits',
             current: 'on'
         },
         changeFont: {
@@ -541,6 +643,11 @@ CM.config = {
             desc:    'Make the clickable area larger for Golden Cookies. Helps accuracy during chains. Requires "Show Timers" to be on.',
             current: 'off'
         },
+
+        ///////////////////////////////////////////////
+        // Cheats
+        ///////////////////////////////////////////////
+
         autoClickPopups: {
             group:   'cheats',
             type:    'select',
@@ -602,67 +709,6 @@ CM.config = {
                 step: 1
             },
             current: 10
-        },
-        showMissedGC: {
-            group: 'general',
-            type:  'checkbox',
-            label: 'Show Missed Golden Cookies:',
-            desc:  'Whether or not to show the stat for missed Golden Cookies.',
-            current: 'on'
-        },
-        enableLogging: {
-            group: 'general',
-            type:  'checkbox',
-            label: 'Enable Logging (BETA):',
-            desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
-            current: 'off'
-        },
-        popWrinklersAtInterval: {
-            group: 'general',
-            type:  'select',
-            label: 'Automatically Pop Wrinklers:',
-            desc:  'Set a timer to automatically pop all Wrinklers at the specified interval.',
-            options: [
-                {
-                    label: 'Off',
-                    value: 'off'
-                },
-                {
-                    label: 'Every 10 minutes',
-                    value: 600000
-                },
-                {
-                    label: 'Every 30 minutes',
-                    value: 1800000
-                },
-                {
-                    label: 'Every hour',
-                    value: 3600000
-                },
-                {
-                    label: 'Every 4 hours',
-                    value: 14400000
-                },
-                {
-                    label: 'Every 8 hours',
-                    value: 28800000
-                }
-            ],
-            current: 'off'
-        },
-        trueNeverclick: {
-            group: 'general',
-            type:  'checkbox',
-            label: 'True Neverclick Helper:',
-            desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
-            current: 'off'
-        },
-        colorBlind: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Color Blind Mode:',
-            desc:    'Alternate color scheme that is color-blind friendly.',
-            current: 'off'
         }
     }
 
@@ -1389,11 +1435,23 @@ CM.wrinklersExist = function() {
 CM.getMissingUpgrades = function() {
 
     var missing = [],
+        hasSS   = Game.Has('Season switcher'),
         a;
 
     for(a in Game.Upgrades) {
         if(Game.Upgrades[a].debug !== 1 && Game.Upgrades[a].unlocked === 0) {
-            missing.push(a);
+            // If Season switcher is unlocked, don't add the switching upgrades to the list
+            if(hasSS) {
+                if(
+                    Game.Upgrades[a].name !== 'Ghostly biscuit' &&
+                    Game.Upgrades[a].name !== 'Lovesick biscuit' &&
+                    Game.Upgrades[a].name !== 'Festive biscuit'
+                ) {
+                    missing.push(a);
+                }
+            } else {
+                missing.push(a);
+            }
         }
     }
 
@@ -1627,6 +1685,11 @@ CM.mainLoop = function() {
 
     if(this.config.cmStatsPanel.is(':visible')) {
         this.updateStats();
+    }
+
+    // Auto-Pledge
+    if(settings.autoPledge.current === 'on') {
+        this.autoBuyPledge();
     }
 
     // Update building efficiency info
@@ -2051,30 +2114,48 @@ CM.removeEfficiencyKey = function() {
 // TO DO: Possibly cache these selectors for performance :/
 CM.updateStats = function() {
 
-    var hcStats           = this.getHCStats(),
-        cookiesToXHC      = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
-        wrinklerStats     = this.getWrinklerStats(),
-        lastGC            = this.toTitleCase(Game.goldenCookie.last) || '-',
-        lbText            = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
-        lbtr              = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
-        lfbText           = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
-        lfbtr             = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
-        missedGC          = this.config.settings.showMissedGC.current === 'on' ? Beautify(Game.missedGoldenClicks) : 'I\'m a wimp and don\'t want to know',
-        chainReward       = this.maxChainReward(),
-        chainRewardString = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
-        nextChainBank     = this.requiredChainTier('bank', 'next', chainReward),
-        nextChainCPS      = this.requiredChainTier('cps', 'next', chainReward),
-        missingU          = this.getMissingUpgrades(),
-        missingA          = this.getMissingAchievements(),
-        missingS          = this.getMissingAchievements(true),
-        upgHTML           = '',
-        aHTML             = '',
-        sHTML             = '',
+    var hcStats              = this.getHCStats(),
+        cookiesToXHC         = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
+        wrinklerStats        = this.getWrinklerStats(),
+        lastGC               = this.toTitleCase(Game.goldenCookie.last) || '-',
+        lbText               = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
+        lbtr                 = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+        lfbText              = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
+        lfbtr                = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+        missedGC             = this.config.settings.showMissedGC.current === 'on' ? Beautify(Game.missedGoldenClicks) : 'I\'m a wimp and don\'t want to know',
+        chainReward          = this.maxChainReward(),
+        chainRewardString    = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
+        nextChainBank        = this.requiredChainTier('bank', 'next', chainReward),
+        nextChainCPS         = this.requiredChainTier('cps', 'next', chainReward),
+        missingU             = this.getMissingUpgrades(),
+        missingA             = this.getMissingAchievements(),
+        missingS             = this.getMissingAchievements(true),
+        upgHTML              = '',
+        aHTML                = '',
+        sHTML                = '',
+        luckyReward          = this.luckyReward(),
+        maxLuckyReward       = this.maxLuckyReward(),
+        luckyFrenzyReward    = this.luckyFrenzyReward(),
+        maxLuckyFrenzyReward = this.maxLuckyFrenzyReward(),
+        luckyRewardStr,
+        luckyFrenzyRewardStr,
         cmxhcr,
         nextChainBankString,
         nextChainCPSString,
         i,
         j;
+
+    if(luckyReward >= maxLuckyReward) {
+        luckyRewardStr = '<span class="cmHighlight">' + Beautify(luckyReward) + ' / ' + Beautify(maxLuckyReward) + '</span>';
+    } else {
+        luckyRewardStr = Beautify(luckyReward) + ' / ' + Beautify(maxLuckyReward);
+    }
+
+    if(luckyFrenzyReward >= maxLuckyFrenzyReward) {
+        luckyFrenzyRewardStr = '<span class="cmHighlight">' + Beautify(luckyFrenzyReward) + ' / ' + Beautify(maxLuckyFrenzyReward) + '</span>';
+    } else {
+        luckyFrenzyRewardStr = Beautify(luckyFrenzyReward) + ' / ' + Beautify(maxLuckyFrenzyReward);
+    }
 
     if(nextChainBank !== false) {
         if(Game.cookies > nextChainBank) {
@@ -2103,8 +2184,8 @@ CM.updateStats = function() {
     // Golden Cookie stats
     $('#CMStatsLuckyRequired').html(lbText + lbtr);
     $('#CMStatsLuckyFrenzyRequired').html(lfbText + lfbtr);
-    $('#CMStatsLuckyReward').html(Beautify(this.luckyReward()) + ' (max: ' + Beautify(this.maxLuckyReward()) + ')');
-    $('#CMStatsLuckyFrenzyReward').html(Beautify(this.luckyFrenzyReward()) + ' (max: ' + Beautify(this.maxLuckyFrenzyReward()) + ')');
+    $('#CMStatsLuckyReward').html(luckyRewardStr);
+    $('#CMStatsLuckyFrenzyReward').html(luckyFrenzyRewardStr);
     $('#CMStatsReindeerReward').html(Beautify(this.getReindeerReward()));
     $('#CMStatsMaxChainReward').html(chainRewardString);
     $('#CMStatsBankRequiredNextChainTier').html(nextChainBankString || '-');
@@ -2137,7 +2218,7 @@ CM.updateStats = function() {
     upgHTML += '<table class="cmTable">';
     if(missingU.length) {
         for(i = 0; i < missingU.length; i++) {
-            upgHTML += '<tr><td colspan ="2">' + missingU[i] + '</td></tr>';
+            upgHTML += '<tr><td>' + missingU[i] + '</td><td class="cmValue">' + Game.Upgrades[missingU[i]].desc + '</td></tr>';
         }
     } else {
         upgHTML += '<tr><td colspan="2">All upgrades purchased. Well done!</td></tr>';
@@ -2503,6 +2584,23 @@ CM.playAudioAlerts = function() {
 };
 
 /**
+ * Automatically buys Elder Pledge if available
+ */
+CM.autoBuyPledge = function() {
+
+    var pledge  = Game.Upgrades['Elder Pledge'],
+        inStore = pledge.isInStore(),
+        price   = pledge.getPrice(),
+        bank    = Game.cookies;
+
+    if(inStore && price < bank) {
+        pledge.buy();
+        this.popup('Bought Elder Pledge!', 'info');
+    }
+
+};
+
+/**
  * Adds a button to pop all existing wrinklers
  */
 CM.AddPopWrinklersButton = function() {
@@ -2557,9 +2655,12 @@ CM.updateTitleTicker = function() {
         spTime  = Math.round((Game.seasonPopup.maxTime - Game.seasonPopup.time) / Game.fps),
         gcI     = (Game.goldenCookie.life > 0) ? 'G (' + Math.round(Game.goldenCookie.life / Game.fps) + ')' : gcTime,
         spI     = (Game.seasonPopup.life > 0) ? 'R' : spTime,
-        cookies = Beautify(Game.cookies);
+        cookies = Beautify(Game.cookies),
+        spPart  = Game.season === 'christmas' ? ' | ' + spI : ' ';
 
-    document.title = gcI + ' | ' + spI + ' - ' + cookies + ' cookies';
+
+
+    document.title = gcI + spPart + ' - ' + cookies + ' cookies';
 
 };
 
@@ -2954,6 +3055,13 @@ CM.applyUserSettings = function() {
         config.ccBody.removeClass('cmShowAllUpgrades');
     }
 
+    // Hide native game timers
+    if(settings.hideNativeTimers.current === 'on') {
+        config.ccBody.addClass('cmHideNativeTimers');
+    } else {
+        config.ccBody.removeClass('cmHideNativeTimers');
+    }
+
     // Hide building info
     if(settings.hideBuildingInfo.current === 'on') {
         config.ccBody.addClass('cmHideBuildingInfo');
@@ -3100,7 +3208,7 @@ CM.applyUserSettings = function() {
     }
 
     // Color blind mode
-    if (settings.colorBlind.current === 'on') {
+    if(settings.colorBlind.current === 'on') {
         config.ccBody.addClass('cmCB');
     } else {
         config.ccBody.removeClass('cmCB');
@@ -3424,9 +3532,10 @@ CM.makeTooltip = function(object) {
 CM.updateTooltip = function(object, colors) {
 
     var informations = [object.getWorth(true), object.getBaseCostPerIncome(), object.getTimeLeft()],
-    deficits     = CME.getThresholdAlerts(object),
-    identifier   = '#' + object.identifier(),
-    $object      = $(identifier);
+        deficits     = CME.getThresholdAlerts(object),
+        identifier   = '#' + object.identifier(),
+        $object      = $(identifier),
+        html;
 
     // Create tooltip if it doesn't exist
     if (!object.matches(object.identifier())) {
@@ -3439,32 +3548,44 @@ CM.updateTooltip = function(object, colors) {
     }
 
     // Update informations
-    $object
-    .attr('class', 'cm-tooltip__contents border-' + colors[0])
-    .html(
-        '<table class="cmTable">' +
-            '<tr>' +
-                '<td>Bonus Income:</td>' +
-                '<td class="cmValue">' + Beautify(informations[0], 1) + '</td>' +
-            '</tr>' +
-            '<tr>' +
-                '<td>BCI:</td>' +
-                '<td class="cmValue text-' + colors[0] + '">' + Beautify(informations[1], 1) + '</td>' +
-            '</tr>' +
-            '<tr>' +
-                '<td>Time Left:</td>' +
-                '<td class="cmValue text-' + colors[1] + '">' + CM.formatTime(informations[2], true) + '</td>' +
-            '</tr>' +
-        '</table>'
-    );
+    html =  '<table class="cmTable">';
+
+    // Add clicking bonus informations
+    if(object.getType() === 'upgrade' && object.isClickingRelated()) {
+        html += '<tr>' +
+                    '<td>Bonus CpC:</td>' +
+                    '<td class="cmValue text-' + colors[1] + '">' + Beautify(object.getClickingWorth(), 1) + '</td>' +
+                '</tr>';
+    }
+    html +=     '<tr>' +
+                    '<td>Bonus Income:</td>' +
+                    '<td class="cmValue">' + Beautify(informations[0], 1) + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td>BCI:</td>' +
+                    '<td class="cmValue text-' + colors[0] + '">' + Beautify(informations[1], 1) + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td>Time Left:</td>' +
+                    '<td class="cmValue text-' + colors[1] + '">' + CM.formatTime(informations[2], true) + '</td>' +
+                '</tr>' +
+             '</table>';
+
+    $object.attr('class', 'cm-tooltip__contents border-' + colors[0]).html(html);
 
     $(identifier + 'warning_amount').html(Beautify(deficits[0]) + ' (' + CME.getTimeToCookies(deficits[0]) + ')');
     $(identifier + 'caution_amount').html(Beautify(deficits[1]) + ' (' + CME.getTimeToCookies(deficits[1]) + ')');
     $(identifier +   'chain_amount').html(Beautify(deficits[2]) + ' (' + CME.getTimeToCookies(deficits[2]) + ')');
 
-    $(identifier + 'note_div_warning').toggle(deficits[0] > 0);
-    $(identifier + 'note_div_caution').toggle(deficits[1] > 0);
-    $(identifier +   'note_div_chain').toggle(deficits[2] > 0);
+    if(this.config.settings.showDeficitStats.current === 'on') {
+        $(identifier + 'note_div_warning').toggle(deficits[0] > 0);
+        $(identifier + 'note_div_caution').toggle(deficits[1] > 0);
+        $(identifier +   'note_div_chain').toggle(deficits[2] > 0);
+    } else {
+        $(identifier + 'note_div_warning').hide();
+        $(identifier + 'note_div_caution').hide();
+        $(identifier +   'note_div_chain').hide();
+    }
 
 };
 
@@ -3520,7 +3641,7 @@ CM.manageUpgradeTooltips = function(upgrade) {
     var colors   = upgrade.getColors();
 
     // Cancel if the upgrade isn't in the store
-    if (!CME.isInStore(upgrade)) {
+    if (!upgrade.isInStore()) {
         return;
     }
 
@@ -3623,6 +3744,7 @@ var gameReadyStateCheckInterval = setInterval(function() {
             Game.Object.prototype.getWorth              = CMEO.getWorthOf;
             Game.Object.prototype.identifier            = CMEO.identifier;
             Game.Object.prototype.matches               = CMEO.matches;
+            Game.Object.prototype.simulateToggle        = CMEO.simulateBuildingToggle;
 
             Game.Upgrade.prototype.getBaseCostPerIncome = CMEO.getBaseCostPerIncome;
             Game.Upgrade.prototype.getColors            = CMEO.getColors;
@@ -3632,8 +3754,12 @@ var gameReadyStateCheckInterval = setInterval(function() {
             Game.Upgrade.prototype.getTimeLeft          = CMEO.getTimeLeft;
             Game.Upgrade.prototype.getType              = CMEO.getTypeOf;
             Game.Upgrade.prototype.getWorth             = CMEO.getWorthOf;
+            Game.Upgrade.prototype.getClickingWorth     = CMEO.getClickingWorth;
             Game.Upgrade.prototype.identifier           = CMEO.identifier;
             Game.Upgrade.prototype.matches              = CMEO.matches;
+            Game.Upgrade.prototype.simulateToggle       = CMEO.simulateUpgradeToggle;
+            Game.Upgrade.prototype.isInStore            = CMEO.isInStore;
+            Game.Upgrade.prototype.isClickingRelated    = CMEO.isClickingRelated;
 
             /**
              * Hijacks the original Beautify method to use
