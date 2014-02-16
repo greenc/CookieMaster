@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.0
+    Version: 1.14.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -972,9 +972,11 @@ CME.simulateBuy = function(object, statistic) {
     ////////////////////////////////////////////////////////////////////
 
     // Disable some native methods
-    var swaped = {
+    var swapped = {
             SetResearch : Game.SetResearch,
             Popup       : Game.Popup,
+            Win         : Game.Win,
+            Unlock      : Game.Unlock
         },
         stored = {
             cpsSucked        : Game.cpsSucked,
@@ -986,6 +988,8 @@ CME.simulateBuy = function(object, statistic) {
 
     Game.SetResearch = function() {};
     Game.Popup       = function() {};
+    Game.Win         = function() {};
+    Game.Unlock      = function() {};
 
     // Simulate buy and store result
     ////////////////////////////////////////////////////////////////////
@@ -1006,8 +1010,10 @@ CME.simulateBuy = function(object, statistic) {
     Game.computedMouseCps = stored.computedMouseCps;
 
     // Restore native methods
-    Game.SetResearch = swaped.SetResearch;
-    Game.Popup       = swaped.Popup;
+    Game.SetResearch = swapped.SetResearch;
+    Game.Popup       = swapped.Popup;
+    Game.Win         = swapped.Win;
+    Game.Unlock      = swapped.Unlock;
 
     return income - Game[statistic];
 };

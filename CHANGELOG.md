@@ -1,5 +1,11 @@
 # CookieMaster Release History
 
+### Version 1.14.1 - _2014/2/16_
+
+ - Fixed bug where achievements were unlocked before they were earned
+ - Fixed bug where upgrades would appear in the store before they should
+ - Fixed bug where deficit stats would appear in tooltips in the native Stats panel
+
 ### Version 1.14.0 - _2014/2/15_
 
  - Added setting to show or hide the deficit alerts in the tooltips

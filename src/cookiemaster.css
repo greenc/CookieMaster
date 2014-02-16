@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.0
+    Version: 1.14.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -108,10 +108,11 @@
 }
 
 #CMStatsPanel .cm-tooltip__contents,
-#CMStatsPanel .cm-tooltip__warnings {
+#CMStatsPanel .cm-tooltip__warnings,
+#sectionMiddle .cm-tooltip__contents,
+#sectionMiddle .cm-tooltip__warnings {
     display: none;
 }
-
 
 #logButton {
     width: 90px !important;
