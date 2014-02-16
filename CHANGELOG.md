@@ -1,5 +1,12 @@
 # CookieMaster Release History
 
+### Version 1.14.2 - _2014/2/16_
+
+ - Fixed bug where the auto-clicker for popups would sometimes miss a chain cookie, thus ending the chain prematurely
+ - Tooltips should now always be positioned completely within the viewport
+ - All tooltips now have the same minimum width (300px) for better formatting
+ - Tooltips now correctly display "done" message in time left field
+
 ### Version 1.14.1 - _2014/2/16_
 
  - Fixed bug where achievements were unlocked before they were earned

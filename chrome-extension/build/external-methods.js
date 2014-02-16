@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.1
+    Version: 1.14.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -1100,4 +1100,29 @@ CMEO.getClickingWorth = function() {
  */
 CME.getClickingUpgradeWorth = function(upgrade) {
     return this.simulateBuy(upgrade, 'computedMouseCps');
+};
+
+/**
+ * Try to make tooltip stay on the screen
+ *
+ * @return {void}
+ */
+CME.controlTooltipPosition = function() {
+
+    var yMax     = Game.mouseY,
+        $tooltip = CM.config.ccTooltip,
+        $anchor  = CM.config.ccTooltipAnchor;
+
+    if (this.tooltipLastObjectId) {
+        yMax = $(window).height() - $tooltip.outerHeight();
+        yMax -= 40; // distance beetwen tooltip and anchor
+        yMax = yMax < -40 ? -40 : yMax;
+        yMax = Game.mouseY < yMax ? Game.mouseY : yMax;
+    }
+
+    $anchor.offset({
+        top: yMax,
+        left: Game.mouseX
+    });
+
 };

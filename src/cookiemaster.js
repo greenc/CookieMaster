@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.1
+    Version: 1.14.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.14.1',                         // Current version of CookieMaster
+    version:              '1.14.2',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -79,6 +79,8 @@ CM.config = {
     ccComments:      $('#comments'),
     ccGoldenCookie:  $('#goldenCookie'),
     ccSeasonPopup:   $('#seasonPopup'),
+    ccTooltipAnchor: $('#tooltipAnchor'),
+    ccTooltip:       $('#tooltip'),
     cmMessageBar:    null, // Set when bar is created
     cmTimerPanel:    null, // Set when panel is created
     cmSettingsPanel: null, // Set when panel is created
@@ -768,10 +770,17 @@ CM.init = function() {
      */
     setInterval(function() {
 
+        // Update the title tab ticker
         self.updateTitleTicker();
 
+        // Audio alerts
         if(self.config.settings.audioAlerts.current !== 'off') {
             self.playAudioAlerts();
+        }
+
+        // Auto click popups if set
+        if(self.config.settings.autoClickPopups.current !== 'off') {
+            self.autoClickPopups();
         }
 
     }, fastRefreshRate);
@@ -1673,11 +1682,6 @@ CM.mainLoop = function() {
     // Show visual alerts if active
     if(settings.visualAlerts.current !== 'off') {
         this.showVisualAlerts();
-    }
-
-    // Auto click popups if set
-    if(settings.autoClickPopups.current !== 'off') {
-        this.autoClickPopups();
     }
 
     // Handle auto-clickers
@@ -3535,6 +3539,7 @@ CM.updateTooltip = function(object, colors) {
         deficits     = CME.getThresholdAlerts(object),
         identifier   = '#' + object.identifier(),
         $object      = $(identifier),
+        timeLeft     = informations[2] > 0 ? CM.formatTime(informations[2], true) : '<span class="cmHighlight">Done!</span>',
         html;
 
     // Create tooltip if it doesn't exist
@@ -3567,7 +3572,7 @@ CM.updateTooltip = function(object, colors) {
                 '</tr>' +
                 '<tr>' +
                     '<td>Time Left:</td>' +
-                    '<td class="cmValue text-' + colors[1] + '">' + CM.formatTime(informations[2], true) + '</td>' +
+                    '<td class="cmValue text-' + colors[1] + '">' + timeLeft + '</td>' +
                 '</tr>' +
              '</table>';
 
@@ -3586,6 +3591,8 @@ CM.updateTooltip = function(object, colors) {
         $(identifier + 'note_div_caution').hide();
         $(identifier +   'note_div_chain').hide();
     }
+
+    this.tooltipLastObjectId = identifier;
 
 };
 
@@ -3794,6 +3801,11 @@ var gameReadyStateCheckInterval = setInterval(function() {
                 'if (bypass': 'CM.clearAutoClicker();if (bypass',
                 'Game.Popup(\'Game reset\');': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);}Game.Popup(\'Game reset\');'
             }, 'bypass');
+
+            /**
+             * Attempt to keep tooltips visible
+             */
+            Game.tooltip.update = CM.appendToNative(Game.tooltip.update, CME.controlTooltipPosition);
 
             /**
              * Fixes the game's mangled attempt at blocking hotlinked audio files from

@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.1
+    Version: 1.14.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -467,6 +467,10 @@
 .cmPopupWarning { color: #E37802; }
 .cmPopupError { color: #E60000; }
 
+#tooltip > div {
+    min-width: 300px !important
+}
+
 #tooltip .cmTable {
     border-top: 1px dashed #313131;
     margin: 5px 0 5px;
@@ -632,7 +636,6 @@ em { font-style: italic; }
 }
 
 .cleanUI #tooltip {
-    margin-top: 32px;
     pointer-events: none;
 }
 /* End Feature: cleanUI */
