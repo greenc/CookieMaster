@@ -1,5 +1,16 @@
 # CookieMaster Release History
 
+### Version 1.15.0 - _2014/3/01_
+
+ - Added stat to show CpS increase after a reset, based on current buildings/upgrades/etc
+ - Added time estimation to bank required for next cookie chain tier stat
+ - Messages can now be dissmissed by clicking anywhere on the message
+ - Added a button to dismiss all messages when multiple messages are on screen
+ - Changed Lucky & Lucky+Frenzy tooltip deficit warnings to warn only when a purchase would decrease your current max reward, as opposed to the higher max reward after making the purchase. This improves buying efficiency.
+ - Fixed bug where chain deficits would show in tooltips when player had not yet reached minimum chain payout amount
+ - Fixed bug where upgrades purchased during a game would continue to show empty deficit tooltips on the main stats page
+ - Shortened the bookmarklet again. No particular reason.
+
 ### Version 1.14.2 - _2014/2/16_
 
  - Fixed bug where the auto-clicker for popups would sometimes miss a chain cookie, thus ending the chain prematurely

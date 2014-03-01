@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.2
+    Version: 1.15.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -26,6 +26,30 @@
     z-index: 1000001;
 }
 
+#CMMessageBarDismissAll {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: none;
+    color: #6CF;
+    padding: 5px;
+    font-size: 12px;
+    line-height: 16px;
+    border-radius: 2px;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+}
+
+#CMMessageBarDismissAll:hover {
+    background-color: #252525;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.65);
+}
+
+
 #CMMessageBar .cmContainer {
     position: relative;
     margin: 5px;
@@ -41,6 +65,7 @@
     color: #FFF;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
     text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    cursor: pointer;
 }
 
 #CMMessageBar .cmMessage a {
@@ -62,7 +87,7 @@
     cursor: pointer;
 }
 
-#CMMessageBar .cmDismiss:hover {
+#CMMessageBar .cmContainer:hover .cmDismiss {
     opacity: 0.5;
 }
 
@@ -135,7 +160,6 @@
 
 .cmTitleSub {
     font-size: 14px;
-    font-weight: bold;
     float: right;
     font-weight: normal;
 }
@@ -449,7 +473,14 @@
 #CMShaCont .cmValue {
     width: 70%;
     color: #FFF;
-    font-weight: bold;
+    font-weight: normal;
+}
+
+#CMUpgCont q,
+#CMAchCont q,
+#CMShaCont q {
+    display: block;
+    color: #939393;
 }
 
 #game.onCMMenu #sectionMiddle {
@@ -552,8 +583,9 @@
     clear: both;
 }
 
-strong { font-weight: bold; }
-em { font-style: italic; }
+strong, b { font-weight: bold; }
+em, q { font-style: italic; }
+
 
 /* End CM UI styles */
 

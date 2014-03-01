@@ -1,6 +1,6 @@
 {
     "name":             "CookieMaster",
-    "version":          "1.14.2",
+    "version":          "1.15.0",
     "author":           "Chris Green",
     "private":          true,
     "cookieMasterURL":  "http://cookiemaster.co.uk",

@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.14.2
+    Version: 1.15.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.14.2',                         // Current version of CookieMaster
+    version:              '1.15.0',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -736,7 +736,7 @@ CM.init = function() {
         ccVers          = Game.version.toString();
 
     // Attach the message bar before anything else
-    this.config.cmMessageBar = $('<div />').attr('id', 'CMMessageBar');
+    this.config.cmMessageBar = $('<div id="CMMessageBar"><span id="CMMessageBarDismissAll">Dismiss all</span></div>');
     this.config.ccBody.append(this.config.cmMessageBar);
 
     this.loadUserSettings();      // Load current user settings from cookie
@@ -1145,6 +1145,115 @@ CM.getHCStats = function() {
     ];
 
     return stats;
+
+};
+
+CM.testResetFormula = function(M) {
+
+    var earned     = Game.cookiesEarned / 1e12,
+        now        = new Date().getTime(),
+        started    = (now - Game.startDate) / 1000,
+        cps        = CM.baseCps() / 1e12,
+        maxHC      = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
+        hcGained   = maxHC - Game.prestige['Heavenly chips'],
+        multiplier = M || 1,
+
+        X  = (multiplier * cps * started) - earned,
+        Y = Math.pow(hcGained, 2) / 2;
+
+    console.log('X: ', Beautify(X));
+    console.log('Y: ', Beautify(Y));
+
+};
+
+/**
+ * Returns the global CpS multiplier for n Heavenly Chips, or current amount if no
+ * argument supplied
+ *
+ * @param  {Integer} chips Heavenly Chips to calculate multiplier for
+ * @return {Integer}
+ */
+CM.getBaseMultiplier = function(chips) {
+
+    var hc           = chips || parseFloat(Game.prestige['Heavenly chips']),
+        mult         = 1,
+        heavenlyMult = 0,
+        milkMult     = Game.Has('Santa\'s milk and cookies') ? 1.05 : 1,
+        upgrade,
+        i;
+
+    // Add cookie upgrade multipliers
+    for(i in Game.Upgrades) {
+        upgrade = Game.Upgrades[i];
+        if(upgrade.bought > 0) {
+            if (upgrade.type === 'cookie' && Game.Has(upgrade.name)) {
+                mult += upgrade.power * 0.01;
+            }
+        }
+    }
+
+    // Add other upgrade multipliers
+    mult += Game.Has('Specialized chocolate chips') * 0.01;
+    mult += Game.Has('Designer cocoa beans')        * 0.02;
+    mult += Game.Has('Underworld ovens')            * 0.03;
+    mult += Game.Has('Exotic nuts')                 * 0.04;
+    mult += Game.Has('Arcane sugar')                * 0.05;
+    mult += Game.Has('Increased merriness')         * 0.15;
+    mult += Game.Has('Improved jolliness')          * 0.15;
+    mult += Game.Has('A lump of coal')              * 0.01;
+    mult += Game.Has('An itchy sweater')            * 0.01;
+    mult += Game.Has('Santa\'s dominion')           * 0.50;
+
+    // Add Santa upgrade multipliers
+    if(Game.Has('Santa\'s legacy')) {
+        mult += (Game.santaLevel + 1) * 0.1;
+    }
+
+    // Calculate heavenly multiplier
+    heavenlyMult += Game.Has('Heavenly chip secret')   * 0.05;
+    heavenlyMult += Game.Has('Heavenly cookie stand')  * 0.20;
+    heavenlyMult += Game.Has('Heavenly bakery')        * 0.25;
+    heavenlyMult += Game.Has('Heavenly confectionery') * 0.25;
+    heavenlyMult += Game.Has('Heavenly key')           * 0.25;
+
+    // Add heavenly multiplier
+    mult += hc * 0.02 * heavenlyMult;
+
+    // Add Milk multipliers
+    if(Game.Has('Kitten helpers')) {
+        mult *= (1 + Game.milkProgress * 0.05 * milkMult);
+    }
+    if(Game.Has('Kitten workers')) {
+        mult *= (1 + Game.milkProgress * 0.1 * milkMult);
+    }
+    if(Game.Has('Kitten engineers')) {
+        mult *= (1 + Game.milkProgress * 0.2 * milkMult);
+    }
+    if(Game.Has('Kitten overseers')) {
+        mult *= (1 + Game.milkProgress * 0.2 * milkMult);
+    }
+
+    // Add Elder Covenant multiplier
+    if(Game.Has('Elder Covenant')) {
+        mult *= 0.95;
+    }
+
+    return mult;
+
+};
+
+/**
+ * Get the CpS if player were to reset and build back to current point
+ *
+ * @return {Integer}
+ */
+CM.getResetCps = function() {
+
+    var maxHC       = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
+        newBaseMult = this.getBaseMultiplier(maxHC),
+        baseCps     = Game.cookiesPs / Game.globalCpsMult;
+
+    return baseCps * newBaseMult;
 
 };
 
@@ -1943,6 +2052,10 @@ CM.attachStatsPanel = function() {
     tableHTML +=         '<td class="cmValue" id="CMStatsHCMax"></td>';
     tableHTML +=     '</tr>';
     tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Base CpS after reset*:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsCPSReset"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
     tableHTML +=         '<td>Cookies to next HC:</td>';
     tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToNext"></td>';
     tableHTML +=     '</tr>';
@@ -1953,6 +2066,9 @@ CM.attachStatsPanel = function() {
     tableHTML +=     '<tr>';
     tableHTML +=         '<td>Cookies to ' + hcSelect + ' Heavenly Chips:</td>';
     tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td colspan="2"><small>* Based on current buildings, upgrades and achievements</small></td>';
     tableHTML +=     '</tr>';
     tableHTML += '</table>';
 
@@ -2141,6 +2257,7 @@ CM.updateStats = function() {
         maxLuckyReward       = this.maxLuckyReward(),
         luckyFrenzyReward    = this.luckyFrenzyReward(),
         maxLuckyFrenzyReward = this.maxLuckyFrenzyReward(),
+        resetPercentIncrease = this.getResetCps() / this.baseCps() * 100,
         luckyRewardStr,
         luckyFrenzyRewardStr,
         cmxhcr,
@@ -2165,7 +2282,8 @@ CM.updateStats = function() {
         if(Game.cookies > nextChainBank) {
             nextChainBankString = '<span class="cmHighlight">' + Beautify(nextChainBank) + '</span>';
         } else {
-            nextChainBankString = Beautify(nextChainBank);
+
+            nextChainBankString = Beautify(nextChainBank) + ' (' + CM.formatTime((nextChainBank - Game.cookies) / Game.cookiesPs, true) + ')';
         }
     }
 
@@ -2200,6 +2318,7 @@ CM.updateStats = function() {
     // Heavenly Chip stats
     $('#CMStatsHCCurrent').html(Beautify(hcStats[0]) + ' (' + Beautify(hcStats[1]) + '%)');
     $('#CMStatsHCMax').html(Beautify(hcStats[2]) + ' (' + Beautify(hcStats[3]) + '%)');
+    $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease) + '% increase)');
     $('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
     $('#CMStatsHCTimeToNext').html(hcStats[6]);
     $('#CMStatsHCCookiesToX').html(cmxhcr);
@@ -3449,6 +3568,30 @@ CM.setEvents = function() {
         $('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');
     });
 
+    // Message bar
+    $('#CMMessageBar').hover(function(){
+        if($(this).children().length > 3) {
+            $('#CMMessageBarDismissAll').fadeIn(200);
+        }
+    }, function(){
+        $('#CMMessageBarDismissAll').fadeOut(200);
+    });
+
+    $('#CMMessageBar').on('click', '.cmContainer', function() {
+        $(this).fadeTo(100, 0, function() {
+            $(this).slideUp(100, function() {
+                $(this).remove();
+            });
+        });
+    });
+
+    $('#CMMessageBarDismissAll').click(function() {
+        $('.cmContainer').fadeTo(100, 0, function() {
+            $(this).remove();
+        });
+        $(this).fadeOut(200);
+    });
+
 };
 
 /**
@@ -3481,15 +3624,6 @@ CM.message = function(msg, type) {
     // Nicely fade in the message
     $container.slideDown(300, function() {
         $(this).find('.cmMessage').fadeTo(300, 1);
-    });
-
-    // Click handler to dismiss the message gracefully
-    $dismiss.click(function() {
-        $(this).parent().fadeTo(200, 0, function() {
-            $(this).slideUp(200, function() {
-                $(this).remove();
-            });
-        });
     });
 
 };
@@ -3645,10 +3779,16 @@ CM.updateTooltips = function(which) {
  */
 CM.manageUpgradeTooltips = function(upgrade) {
 
-    var colors   = upgrade.getColors();
+    var colors   = upgrade.getColors(),
+        identifier   = '#' + upgrade.identifier();
+
 
     // Cancel if the upgrade isn't in the store
     if (!upgrade.isInStore()) {
+        // Make sure tooltip deficits are hidden for purchased upgrades
+        $(identifier + 'note_div_warning').hide();
+        $(identifier + 'note_div_caution').hide();
+        $(identifier +   'note_div_chain').hide();
         return;
     }
 
