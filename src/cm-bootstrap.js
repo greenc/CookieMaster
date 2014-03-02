@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.15.1
+    Version: 1.15.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -28,7 +28,7 @@ if(typeof CM === 'undefined') {
 
     (function() {
 
-        var version = '1.15.1',
+        var version = '1.15.2',
             docFrag = document.createDocumentFragment(),
             deps    = [
                 {

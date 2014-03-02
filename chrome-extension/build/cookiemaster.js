@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.15.1
+    Version: 1.15.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.15.1',                         // Current version of CookieMaster
+    version:              '1.15.2',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -1170,10 +1170,11 @@ CM.testResetFormula = function(M) {
  * Returns the global CpS multiplier for n Heavenly Chips, or current amount if no
  * argument supplied
  *
- * @param  {Integer} chips Heavenly Chips to calculate multiplier for
+ * @param  {Integer} chips        Heavenly Chips to calculate multiplier for
+ * @param  {Boolean} fullHeavenly Assume player has all HC upgrades (100% heavenly multiplier)
  * @return {Integer}
  */
-CM.getBaseMultiplier = function(chips) {
+CM.getBaseMultiplier = function(chips, fullHeavenly) {
 
     var hc           = chips || parseFloat(Game.prestige['Heavenly chips']),
         mult         = 1,
@@ -1210,11 +1211,15 @@ CM.getBaseMultiplier = function(chips) {
     }
 
     // Calculate heavenly multiplier
-    heavenlyMult += Game.Has('Heavenly chip secret')   * 0.05;
-    heavenlyMult += Game.Has('Heavenly cookie stand')  * 0.20;
-    heavenlyMult += Game.Has('Heavenly bakery')        * 0.25;
-    heavenlyMult += Game.Has('Heavenly confectionery') * 0.25;
-    heavenlyMult += Game.Has('Heavenly key')           * 0.25;
+    if(fullHeavenly) {
+        heavenlyMult = 1;
+    } else {
+        heavenlyMult += Game.Has('Heavenly chip secret')   * 0.05;
+        heavenlyMult += Game.Has('Heavenly cookie stand')  * 0.20;
+        heavenlyMult += Game.Has('Heavenly bakery')        * 0.25;
+        heavenlyMult += Game.Has('Heavenly confectionery') * 0.25;
+        heavenlyMult += Game.Has('Heavenly key')           * 0.25;
+    }
 
     // Add heavenly multiplier
     mult += hc * 0.02 * heavenlyMult;
@@ -1250,7 +1255,7 @@ CM.getBaseMultiplier = function(chips) {
 CM.getResetCps = function() {
 
     var maxHC       = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-        newBaseMult = this.getBaseMultiplier(maxHC),
+        newBaseMult = this.getBaseMultiplier(maxHC, true),
         baseCps     = Game.cookiesPs / Game.globalCpsMult;
 
     return baseCps * newBaseMult;
@@ -2068,7 +2073,7 @@ CM.attachStatsPanel = function() {
     tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
     tableHTML +=     '</tr>';
     tableHTML +=     '<tr>';
-    tableHTML +=         '<td colspan="2"><small>* Based on current buildings, upgrades and achievements</small></td>';
+    tableHTML +=         '<td colspan="2"><small>* Based on current purchases. Assumes all Heavenly Upgrades bought.</small></td>';
     tableHTML +=     '</tr>';
     tableHTML += '</table>';
 
@@ -2301,7 +2306,7 @@ CM.updateStats = function() {
         cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
     } else {
         cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
-            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.effectiveCps())) + ')';
+            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.effectiveCps()), true) + ')';
     }
 
     // Golden Cookie stats
