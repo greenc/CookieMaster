@@ -1,5 +1,9 @@
 # CookieMaster Release History
 
+### Version 1.15.1 - _2014/3/01_
+
+ - Fixed ambiguous CpS after reset stat, also now respects the user's preferred display setting for decimal places
+
 ### Version 1.15.0 - _2014/3/01_
 
  - Added stat to show CpS increase after a reset, based on current buildings/upgrades/etc

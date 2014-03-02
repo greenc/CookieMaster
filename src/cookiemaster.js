@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.15.0
+    Version: 1.15.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.15.0',                         // Current version of CookieMaster
+    version:              '1.15.1',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -2234,7 +2234,8 @@ CM.removeEfficiencyKey = function() {
 // TO DO: Possibly cache these selectors for performance :/
 CM.updateStats = function() {
 
-    var hcStats              = this.getHCStats(),
+    var precision            = this.config.settings.precision.current,
+        hcStats              = this.getHCStats(),
         cookiesToXHC         = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
         wrinklerStats        = this.getWrinklerStats(),
         lastGC               = this.toTitleCase(Game.goldenCookie.last) || '-',
@@ -2257,7 +2258,7 @@ CM.updateStats = function() {
         maxLuckyReward       = this.maxLuckyReward(),
         luckyFrenzyReward    = this.luckyFrenzyReward(),
         maxLuckyFrenzyReward = this.maxLuckyFrenzyReward(),
-        resetPercentIncrease = this.getResetCps() / this.baseCps() * 100,
+        resetPercentIncrease = (this.getResetCps() - this.baseCps()) / this.baseCps() * 100,
         luckyRewardStr,
         luckyFrenzyRewardStr,
         cmxhcr,
@@ -2318,7 +2319,7 @@ CM.updateStats = function() {
     // Heavenly Chip stats
     $('#CMStatsHCCurrent').html(Beautify(hcStats[0]) + ' (' + Beautify(hcStats[1]) + '%)');
     $('#CMStatsHCMax').html(Beautify(hcStats[2]) + ' (' + Beautify(hcStats[3]) + '%)');
-    $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease) + '% increase)');
+    $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease, precision) + '% increase)');
     $('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
     $('#CMStatsHCTimeToNext').html(hcStats[6]);
     $('#CMStatsHCCookiesToX').html(cmxhcr);
