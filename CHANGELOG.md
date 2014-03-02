@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.15.2 - _2014/3/02_
+
+ - CpS after reset stat now assumes player has bought all Heavenly Upgrades (100% HC multiplier potential)
+ - Switched Cookies to X Heavenly Chips stat to use shortened time estimation formatting
+
 ### Version 1.15.1 - _2014/3/01_
 
  - Fixed ambiguous CpS after reset stat, also now respects the user's preferred display setting for decimal places
