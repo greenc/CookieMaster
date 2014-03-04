@@ -1768,6 +1768,13 @@ CM.testAudioObject = function(obj) {
 
 };
 
+
+/**
+ * Stores the actual amount of cookies sucked by each wrinkler
+ */ 
+CM.actualCookiesSucked = [0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0];
+
 /* ================================================
     NON-RETURNING METHODS
 
@@ -1786,6 +1793,15 @@ CM.mainLoop = function() {
 
     // Update timers
     this.updateTimers();
+
+    // Update cookies sucked by wrinklers
+    $.each(Game.wrinklers, function() {
+        if (this.close == 0) {
+            CM.actualCookiesSucked[this.id] = 0;
+        } else {
+            CM.actualCookiesSucked[this.id] += Game.cookiesPs * 0.05;
+        }
+    });
 
     // Update GC Display timer
     if(settings.showGCCountdown.current === 'on') {
