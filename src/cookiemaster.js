@@ -1438,7 +1438,9 @@ CM.getWrinklerStats = function() {
         sucked += this.sucked;
     });
 
-    return [sucked, sucked * rewardMultiplier];
+    return [CM.actualCookiesSucked.reduce(function(acc, n) {
+        return acc + n;
+    }, 0), sucked * rewardMultiplier];
 
 };
 
@@ -1796,7 +1798,7 @@ CM.mainLoop = function() {
 
     // Update cookies sucked by wrinklers
     $.each(Game.wrinklers, function() {
-        if (this.close == 0) {
+        if (this.phase != 2) {
             CM.actualCookiesSucked[this.id] = 0;
         } else {
             CM.actualCookiesSucked[this.id] += Game.cookiesPs * 0.05;
