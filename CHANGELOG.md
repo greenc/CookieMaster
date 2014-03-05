@@ -1,11 +1,15 @@
 # CookieMaster Release History
 
+### Version 1.16.2 - _2014/3/05_
+
+ - Fixed Elder Pledge resetting after each purchase/golden cookie click
+ - Fixed incorrect Elder Wrath state
+
 ### Version 1.16.1 - _2014/3/05_
 
  - Fixed Season Upgrades not appearing
  - Fixed Elder Pledge/Auto-pledge not working correctly (I think)
  - Added Elder Pledge to auto-buy blacklist
-
 
 ### Version 1.16.0 - _2014/3/05_
 

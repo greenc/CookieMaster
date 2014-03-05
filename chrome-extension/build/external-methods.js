@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.16.1
+    Version: 1.16.2
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -729,8 +729,8 @@ CME.simulateBuy = function(object, statistic) {
         return 0;
     }
 
-    // Don't simulate seasonal upgrades or Elder pledge
-    var doNotSimulate = [74, 181, 182, 183, 184];
+    // Don't simulate seasonal upgrades or Elder pledge/Covenant
+    var doNotSimulate = [74, 84, 85, 181, 182, 183, 184];
     if(doNotSimulate.indexOf(object.id) !== -1) {
         return 0;
     }
@@ -748,7 +748,8 @@ CME.simulateBuy = function(object, statistic) {
             globalCpsMult    : Game.globalCpsMult,
             cookiesPs        : Game.cookiesPs,
             computedMouseCps : Game.computedMouseCps,
-            pledges          : Game.pledges
+            pledges          : Game.pledges,
+            elderWrath       : Game.elderWrath
         },
         income;
 
@@ -776,6 +777,7 @@ CME.simulateBuy = function(object, statistic) {
     Game.cookiesPs        = stored.cookiesPs;
     Game.computedMouseCps = stored.computedMouseCps;
     Game.pledges          = stored.pledges;
+    Game.elderWrath       = stored.elderWrath;
 
     // Restore native methods
     Game.SetResearch      = swapped.SetResearch;
