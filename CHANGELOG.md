@@ -1,6 +1,13 @@
 # CookieMaster Release History
 
-### Version 1.16. - _2014/3/05_
+### Version 1.16.1 - _2014/3/05_
+
+ - Fixed Season Upgrades not appearing
+ - Fixed Elder Pledge/Auto-pledge not working correctly (I think)
+ - Added Elder Pledge to auto-buy blacklist
+
+
+### Version 1.16.0 - _2014/3/05_
 
  - Added Auto-buy feature with timer and status bar
  - Auto-buy follows normal BCI rules with a few exceptions:

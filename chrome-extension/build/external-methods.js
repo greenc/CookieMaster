@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.16.0
+    Version: 1.16.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -726,6 +726,12 @@ CME.simulateBuy = function(object, statistic) {
 
     // Don't simulate if this is an upgrade that has been bought already
     if(object.getType() === 'upgrade' && object.bought > 0) {
+        return 0;
+    }
+
+    // Don't simulate seasonal upgrades or Elder pledge
+    var doNotSimulate = [74, 181, 182, 183, 184];
+    if(doNotSimulate.indexOf(object.id) !== -1) {
         return 0;
     }
 

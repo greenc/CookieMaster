@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.16.0
+    Version: 1.16.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.16.0',                         // Current version of CookieMaster
+    version:              '1.16.1',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -1836,7 +1836,7 @@ CM.AutoBuy = function() {
     // Golden Cookie upgrades
     this.gcUpgrades = [52, 53, 86];
     // Elder Covenant
-    this.elderCovenant = [84, 85];
+    this.elderCovenant = [74, 84, 85];
     // These upgrades can't have BCI calculated, but should always be bought
     this.alwaysBuy = [87, 141, 152, 157, 158, 159, 160, 161, 163, 164, 168];
     // Grandmapocalypse upgrades
