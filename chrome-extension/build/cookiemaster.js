@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.15.2
+    Version: 1.16.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.15.2',                         // Current version of CookieMaster
+    version:              '1.16.0',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -216,93 +216,140 @@ CM.config = {
     ///////////////////////////////////////////////
 
     settingsGroups: {
-        general: {
-            title: 'General',
-            desc:  ''
+        ui:      {
+            title: 'Interface',
+            desc:  'These settings modify the game interface.'
         },
         numbers: {
             title: 'Numbers',
-            desc:  ''
+            desc:  'These settings modify how numbers are displayed throughout the game.'
         },
         alerts:  {
             title: 'Timers & Alerts',
-            desc:  '<p class="cmNotice"><strong>Notice:</strong>If you want to use custom audio alerts, please be mindful to link to non-copyrighted audio files on sites that explicitly allow hotlinking to avoid http://orteil.dashnet.org getting blacklisted!<br />Links to soundjay.com files are blocked as per the main game code.</p>'
+            desc:  '<strong>Notice:</strong>If you want to use custom audio alerts, please be mindful to link to non-copyrighted audio files on sites that explicitly allow hotlinking to avoid http://orteil.dashnet.org getting blacklisted!<br />Links to soundjay.com files are blocked as per the main game code.'
         },
-        ui:      {
-            title: 'Interface',
-            desc:  ''
+        helpers:  {
+            title: 'Helpers',
+            desc:  'If you enjoy watching the game play itself, these settings are for you.'
         },
-        cheats:  {
-            title: 'I\'m a dirty rotten cheater',
-            desc:  ''
-        }
+        exp: {
+            title: 'Experimental',
+            desc:  '60% of the time, these work every time.'
+        },
     },
 
     settings: {
 
         ///////////////////////////////////////////////
-        // General
+        // UI
         ///////////////////////////////////////////////
 
+        cleanUI: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Clean Interface:',
+            desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
+            current: 'on'
+        },
+        timerBarPosition: {
+            group:   'ui',
+            type:    'select',
+            label:   'Timer Bar Position:',
+            desc:    'Position the custom timer bar at the top or bottom of the screen.',
+            options: [
+                {
+                    label: 'Top',
+                    value: 'top'
+                },
+                {
+                    label: 'Bottom',
+                    value: 'bottom'
+                }
+            ],
+            current: 'bottom'
+        },
+        hideNativeTimers: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Hide Native Timers:',
+            desc:    'Hide the native game timer bars.',
+            current: 'off'
+        },
         showMissedGC: {
-            group: 'general',
+            group: 'ui',
             type:  'checkbox',
             label: 'Show Missed Golden Cookies:',
             desc:  'Whether or not to show the stat for missed Golden Cookies.',
             current: 'on'
         },
-        enableLogging: {
-            group: 'general',
-            type:  'checkbox',
-            label: 'Enable Logging (BETA):',
-            desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
+        showAllUpgrades: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Show All Upgrades:',
+            desc:    'Always display all available upgrades in the store (no need to hover).',
             current: 'off'
         },
-        popWrinklersAtInterval: {
-            group: 'general',
+        hideBuildingInfo: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Hide Building Info Boxes:',
+            desc:    'Hides the building information boxes that normally display when hovering each building section',
+            current: 'off'
+        },
+        colorBlind: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Color Blind Mode:',
+            desc:    'Alternate color scheme that is color-blind friendly.',
+            current: 'off'
+        },
+        showEfficiencyKey: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Show Efficiency Key:',
+            desc:    'Display building efficiency color key in the right panel.',
+            current: 'on'
+        },
+        showDeficitStats: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Show Deficit Stats:',
+            desc:    'Show labels on item tooltips warning about Lucky and Chain deficits',
+            current: 'on'
+        },
+        changeFont: {
+            group: 'ui',
             type:  'select',
-            label: 'Automatically Pop Wrinklers:',
-            desc:  'Set a timer to automatically pop all Wrinklers at the specified interval.',
+            label: 'Game Font:',
+            desc:  'Set the highlight font used throughout the game.',
             options: [
                 {
-                    label: 'Off',
-                    value: 'off'
+                    label: 'Kavoon (default)',
+                    value: 'default'
                 },
                 {
-                    label: 'Every 10 minutes',
-                    value: 600000
+                    label: 'Serif',
+                    value: 'serif'
                 },
                 {
-                    label: 'Every 30 minutes',
-                    value: 1800000
-                },
-                {
-                    label: 'Every hour',
-                    value: 3600000
-                },
-                {
-                    label: 'Every 4 hours',
-                    value: 14400000
-                },
-                {
-                    label: 'Every 8 hours',
-                    value: 28800000
+                    label: 'Sans Serif',
+                    value: 'sansserif'
                 }
             ],
+            current: 'default'
+        },
+        highVisibilityCookie: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'High Visibility Cookies:',
+            desc:    'Increase the contrast between Golden Cookies and the background.',
             current: 'off'
         },
-        trueNeverclick: {
-            group: 'general',
-            type:  'checkbox',
-            label: 'True Neverclick Helper:',
-            desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
-            current: 'off'
-        },
-        autoPledge: {
-            group: 'general',
-            type:  'checkbox',
-            label: 'Auto-Pledge:',
-            desc:  'Automatically rebuy Elder Pledge upgrade to keep the Grandmapocalypse at bay.',
+        increaseClickArea: {
+            group:   'ui',
+            type:    'checkbox',
+            label:   'Increase Cookie Hitbox:',
+            desc:    'Make the clickable area larger for Golden Cookies. Helps accuracy during chains. Requires "Show Timers" to be on.',
             current: 'off'
         },
 
@@ -461,23 +508,6 @@ CM.config = {
             desc:    'Display a countdown timer on Golden Cookies showing how long you have left to click them',
             current: 'on'
         },
-        timerBarPosition: {
-            group:   'alerts',
-            type:    'select',
-            label:   'Timer Bar Position:',
-            desc:    'Position the timer bar at the top or bottom of the screen.',
-            options: [
-                {
-                    label: 'Top',
-                    value: 'top'
-                },
-                {
-                    label: 'Bottom',
-                    value: 'bottom'
-                }
-            ],
-            current: 'bottom'
-        },
         visualAlerts: {
             group:   'alerts',
             type:    'select',
@@ -558,100 +588,58 @@ CM.config = {
         },
 
         ///////////////////////////////////////////////
-        // UI
+        // Helpers
         ///////////////////////////////////////////////
 
-        cleanUI: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Clean Interface:',
-            desc:    'Hide the top bar, and make other small graphical enhancements to the game interface.',
-            current: 'on'
-        },
-        hideNativeTimers: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Hide native timers:',
-            desc:    'Hide the native game buff timers.',
+        autoPledge: {
+            group: 'helpers',
+            type:  'checkbox',
+            label: 'Auto-Pledge:',
+            desc:  'Automatically rebuy Elder Pledge upgrade to keep the Grandmapocalypse at bay.',
             current: 'off'
         },
-        showAllUpgrades: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Show All Upgrades:',
-            desc:    'Always display all available upgrades in the store (no need to hover).',
-            current: 'off'
-        },
-        hideBuildingInfo: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Hide Building Info Boxes:',
-            desc:    'Hides the building information boxes that normally display when hovering each building section',
-            current: 'off'
-        },
-        colorBlind: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Color Blind Mode:',
-            desc:    'Alternate color scheme that is color-blind friendly.',
-            current: 'off'
-        },
-        showEfficiencyKey: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Show Efficiency Key:',
-            desc:    'Display building efficiency color key in the right panel.',
-            current: 'on'
-        },
-        showDeficitStats: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Show Deficit Stats:',
-            desc:    'Show labels on item tooltips warning about Lucky and Chain deficits',
-            current: 'on'
-        },
-        changeFont: {
-            group: 'ui',
+        popWrinklersAtInterval: {
+            group: 'helpers',
             type:  'select',
-            label: 'Game Font:',
-            desc:  'Set the highlight font used throughout the game.',
+            label: 'Automatically Pop Wrinklers:',
+            desc:  'Set a timer to automatically pop all Wrinklers at the specified interval.',
             options: [
                 {
-                    label: 'Kavoon (default)',
-                    value: 'default'
+                    label: 'Off',
+                    value: 'off'
                 },
                 {
-                    label: 'Serif',
-                    value: 'serif'
+                    label: 'Every 10 minutes',
+                    value: 600000
                 },
                 {
-                    label: 'Sans Serif',
-                    value: 'sansserif'
+                    label: 'Every 30 minutes',
+                    value: 1800000
+                },
+                {
+                    label: 'Every hour',
+                    value: 3600000
+                },
+                {
+                    label: 'Every 4 hours',
+                    value: 14400000
+                },
+                {
+                    label: 'Every 8 hours',
+                    value: 28800000
                 }
             ],
-            current: 'default'
-        },
-        highVisibilityCookie: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'High Visibility Cookies:',
-            desc:    'Increase the contrast between Golden Cookies and the background.',
             current: 'off'
         },
-        increaseClickArea: {
-            group:   'ui',
-            type:    'checkbox',
-            label:   'Increase Cookie Hitbox:',
-            desc:    'Make the clickable area larger for Golden Cookies. Helps accuracy during chains. Requires "Show Timers" to be on.',
+        trueNeverclick: {
+            group: 'helpers',
+            type:  'checkbox',
+            label: 'True Neverclick Helper:',
+            desc:  'Prevents clicks on the Big Cookie until you unlock the True Neverclick achievement. Make sure to disable auto-click if using this feature.',
             current: 'off'
         },
-
-        ///////////////////////////////////////////////
-        // Cheats
-        ///////////////////////////////////////////////
-
         autoClickPopups: {
-            group:   'cheats',
+            group:   'helpers',
             type:    'select',
             label:   'Auto-click Popups:',
             desc:    'Automatically click Golden Cookies and Reindeer when they spawn.',
@@ -676,10 +664,10 @@ CM.config = {
             current: 'off'
         },
         autoClick: {
-            group:   'cheats',
+            group:   'helpers',
             type:    'select',
             label:   'Auto-click Big Cookie:',
-            desc:    'Automatically click the big cookie.',
+            desc:    'Automatically click the big cookie. WARNING: High values may cause lag (and a guilty conscience).',
             options: [
                 {
                     label: 'Off',
@@ -701,7 +689,7 @@ CM.config = {
             current: 'off'
         },
         autoClickSpeed: {
-            group: 'cheats',
+            group: 'helpers',
             type:  'range',
             label: 'Auto-click Speed:',
             desc:  'How many times per second to auto-click the big cookie. Note that most browsers throttle timers to 1 second intervals when the page is running in the background.',
@@ -711,7 +699,65 @@ CM.config = {
                 step: 1
             },
             current: 10
+        },
+
+        ///////////////////////////////////////////////
+        // Experimental
+        ///////////////////////////////////////////////
+
+        autoBuy: {
+            group:   'exp',
+            type:    'checkbox',
+            label:   'Auto-buy:',
+            desc:    'Automatically buy the most efficient buildings and upgrades',
+            current: 'off'
+        },
+        maintainBank: {
+            group:   'exp',
+            type:    'checkbox',
+            label:   'Maintain Bank:',
+            desc:    'If enabled, the auto-buyer will respect the Lucky+Frenzy bank requirements after Get Lucky has been purchased.',
+            current: 'off'
+        },
+        noPocalypse: {
+            group:   'exp',
+            type:    'checkbox',
+            label:   'No-pocalypse:',
+            desc:    'Do not let auto-buy purchase further research upgrades past Underworld ovens',
+            current: 'off'
+        },
+        enableLogging: {
+            group: 'exp',
+            type:  'checkbox',
+            label: 'Enable Logging:',
+            desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
+            current: 'off'
+        },
+        trueCpsAverage: {
+            group: 'exp',
+            type:  'range',
+            label: 'True CpS Tracking Duration:',
+            desc:  'CookieMaster tracks your true CpS on a rolling basis in order to improve efficiency algorithms. This setting allows you to adjust the rolling period in minutes. If you are building very quickly (e.g. have many HCs), you should set this to a lower value.',
+            options: {
+                min: 5,
+                max: 240,
+                step: 1
+            },
+            current: 60
+        },
+        clickingAverage: {
+            group: 'exp',
+            type:  'range',
+            label: 'Click Tracking Duration:',
+            desc:  'CookieMaster tracks your Big Cookie clicks on a rolling basis in order to improve efficiency algorithms. This setting allows you to adjust the rolling period in minutes.',
+            options: {
+                min: 5,
+                max: 240,
+                step: 1
+            },
+            current: 60
         }
+
     }
 
 };
@@ -721,6 +767,18 @@ CM.config = {
  * @type {Object}
  */
 CM.timers = {};
+
+/**
+ * Object to hold the true cps instance
+ * @type {Object}
+ */
+CM.trueCps = {};
+
+/**
+ * Object to hold the click tracker instance
+ * @type {Object}
+ */
+CM.clickTracker = {};
 
 /**
  * Initialization method. This is the first thing that gets called
@@ -747,6 +805,11 @@ CM.init = function() {
     this.setupTooltips();         // Configures the custom tooltips that overwrite the native ones
     this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
     this.setEvents();             // Set up general event handlers
+
+    // Attach the Auto-buy panel to the DOM
+    // and initialize the auto-buyer class
+    this.attachAutoBuyPanel();
+    this.autoBuyer = new this.AutoBuy();
 
     /**
      * Performs more setup routines based on current user settings
@@ -1276,16 +1339,13 @@ CM.baseCps = function() {
 };
 
 /**
- * Returns current effective CPS (factors in auto clicking if enabled)
+ * Returns current effective CPS (uses TrueCps)
  *
  * @return {Integer}
  */
 CM.effectiveCps = function() {
 
-    var settings = this.config.settings,
-        clickModifier = settings.autoClick.current === 'on' ? settings.autoClickSpeed.current * Game.mouseCps() : 0;
-
-    return clickModifier + Game.cookiesPs;
+    return this.trueCps.cps > 0 ? this.trueCps.cps : Game.cookiesPs;
 
 };
 
@@ -1768,6 +1828,504 @@ CM.testAudioObject = function(obj) {
 
 };
 
+/**
+ * Automates buying functionality
+ */
+CM.AutoBuy = function() {
+
+    // Golden Cookie upgrades
+    this.gcUpgrades = [52, 53, 86];
+    // Elder Covenant
+    this.elderCovenant = [84, 85];
+    // These upgrades can't have BCI calculated, but should always be bought
+    this.alwaysBuy = [87, 141, 152, 157, 158, 159, 160, 161, 163, 164, 168];
+    // Grandmapocalypse upgrades
+    this.grandmapocalypse = [69, 70, 71, 72, 73];
+    // Season switching upgrades
+    this.seasonal = [181, 182, 183, 184];
+
+    // setInterval to autobuy
+    this.automate = null;
+    // Threshold
+    this.threshold = 'none';
+    // Max time remaining until next purchase
+    this.nextMaxTime = 0;
+
+    /**
+     * Returns a blacklist of upgrades that should not be auto-bought
+     * @return {Array} Array of upgrade IDs
+     */
+    this.blackList = function() {
+
+        var blacklist = [];
+
+        blacklist.push.apply(blacklist, this.seasonal);
+        blacklist.push.apply(blacklist, this.elderCovenant);
+
+        if(CM.config.settings.noPocalypse.current === 'on') {
+            blacklist.push.apply(blacklist, this.grandmapocalypse);
+        }
+
+        return blacklist;
+
+    };
+
+    /**
+     * Returns a whitelist of upgrades that should be bought when possible
+     * @return {Array} Array of upgrade IDs
+     */
+    this.whiteList = function() {
+
+        var whitelist = [];
+
+        whitelist.push.apply(whitelist, this.gcUpgrades);
+        whitelist.push.apply(whitelist, this.alwaysBuy);
+
+        return whitelist;
+
+    };
+
+    /**
+     * Returns an array with the cheapest item and its price from a supplied list
+     * @param  {Integer} whiteList Upgrade ID
+     * @return {Array}
+     */
+    this.getCheapest = function(items) {
+
+        var cheapestPrice = Number.POSITIVE_INFINITY,
+            cheapestItem,
+            item,
+            price;
+
+        items.forEach(function(id) {
+            item = Game.UpgradesById[id];
+            if(item.isInStore()) {
+                price = Game.UpgradesById[id].getPrice();
+                if(price < cheapestPrice) {
+                    cheapestPrice = price;
+                    cheapestItem = item;
+                }
+            }
+        });
+
+        return cheapestItem ? [cheapestItem, cheapestPrice] : false;
+
+    };
+
+    /**
+     * Sets threshold according to GC upgrades purchased
+     */
+    this.setThreshold = function() {
+
+        var maintainBank = CM.config.settings.maintainBank.current === 'on';
+
+        this.threshold = Game.Has('Get lucky') && maintainBank ? 'frenzy' : 'none';
+
+    };
+
+    /**
+     * Returns best building available and its BCI
+     * @return {Array} [type, index, bci]
+     */
+    this.getBestBuilding = function() {
+
+        var buildings    = CME.informations.bci,
+            bestBCI      = Number.POSITIVE_INFINITY,
+            bestBuilding = false,
+            available    = false,
+            i;
+
+        for(i = 0; i < buildings.length; i++) {
+            available = Game.ObjectsById[i].getPrice() <= Game.cookiesEarned ? true : false;
+            if(buildings[i] < bestBCI && available) {
+                bestBCI = buildings[i];
+                bestBuilding = i;
+            }
+        }
+
+        return bestBuilding !== false ? ['Objects', bestBuilding, bestBCI] : false;
+
+    };
+
+    /**
+     * Returns best upgrade player can buy and its BCI
+     * @return {Array} [type, id, bci]
+     */
+    this.getBestUpgrade = function() {
+
+        var upgrades    = [],
+            blackList   = this.blackList(),
+            whiteList   = this.whiteList(),
+            cheapestW   = this.getCheapest(whiteList),
+            bestBCI     = Number.POSITIVE_INFINITY,
+            bestUpgrade = false,
+            itemBCI,
+            item,
+            i;
+
+        for(i in Game.Upgrades) {
+            item = Game.Upgrades[i];
+            if(blackList.indexOf(item.id) === -1) {
+                itemBCI = item.getBaseCostPerIncome();
+                if(item.isInStore()) {
+                    if(itemBCI < bestBCI) {
+                        bestUpgrade = item;
+                        bestBCI     = itemBCI;
+                    }
+                }
+            }
+        }
+
+        // If whitelist upgrades are available and cheapest is cheaper than the calculated one, choose it
+        if(cheapestW && cheapestW[0].getPrice() < bestUpgrade.getPrice()) {
+            return ['Upgrades', cheapestW[0].id, 0];
+        }
+
+        // Else just return the best on calculated
+        return bestUpgrade !== false ? ['Upgrades', bestUpgrade.id, bestBCI] : false;
+
+    };
+
+    /**
+     * Returns the item with best BCI
+     * @return {String or Integer} String indicates an upgrade, integer indicates building
+     */
+    this.getBestItem = function() {
+
+        var bestBuilding = this.getBestBuilding(),
+            bestUpgrade  = this.getBestUpgrade();
+
+        if(bestBuilding && bestUpgrade) {
+            return bestUpgrade[2] < bestBuilding[2] ? bestUpgrade : bestBuilding;
+        } else {
+            return bestBuilding || bestUpgrade || false;
+        }
+
+    };
+
+    /**
+     * Returns the maximum budget for a purchase
+     * @param  {Integer} bank      Current bank
+     * @param  {String}  threshold none | lucky | frenzy
+     * @return {Integer}
+     */
+    this.budget = function(bank, threshold) {
+
+        var budget,
+            thresholdAmount;
+
+        if(threshold === 'frenzy') {
+            budget = bank - CME.getLuckyTreshold('frenzy');
+        } else if(threshold === 'lucky') {
+            budget = bank - CME.getLuckyTreshold(false);
+        } else {
+            budget = bank;
+        }
+
+        return budget;
+
+    };
+
+    /**
+     * Invades a small eastern European country and plants
+     * hundreds of turnip fields
+     *
+     * @return {[type]} [description]
+     */
+    this.buyBest = function() {
+
+        // Set the correct threshold
+        this.setThreshold();
+
+        var bestItem = this.getBestItem(),
+            type     = bestItem[0] || false,
+            budget   = this.budget(Game.cookies, this.threshold),
+            canBuy   = false,
+            object   = null,
+            timeLeft,
+            price,
+            width;
+
+        if(bestItem === false) {
+            $('#CMAutoBuyNextPurchaseValue').text('Nothing to buy :(');
+            $('#CMAutoBuyTimeLeft .cmTimerContainer').fadeOut(300);
+        } else {
+            object   = Game[type + 'ById'][bestItem[1]];
+            timeLeft = object.getTimeLeft();
+            price    = object.getPrice();
+            canBuy   = price <= budget ? true : false;
+            if(canBuy) {
+                this.nextMaxTime = 0;
+                object.buy();
+            } else {
+                this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
+                width = timeLeft / this.nextMaxTime * 100;
+                $('#CMAutoBuyNextPurchaseValue').text(object.name);
+                $('#CMAutoBuyTimeLeft .cmTimer div').css('width', width + '%');
+                $('#CMAutoBuyTimeLeft .cmTimerCounter').text(timeLeft);
+                if($('#CMAutoBuyTimeLeft .cmTimerContainer').is(':hidden')) {
+                    $('#CMAutoBuyTimeLeft .cmTimerContainer').fadeIn(300);
+                }
+            }
+        }
+
+    };
+
+    this.init = function() {
+        var self = this;
+        this.automate = setInterval(function() {
+            self.buyBest();
+        }, 500);
+    };
+
+    this.stop = function() {
+        clearInterval(this.automate);
+    };
+
+    return this;
+
+};
+
+/**
+ * Class to track your true CpS over time
+ */
+CM.TrueCps = function(interval, maxTime) {
+
+    this.ready    = false;              // Set to true when at least one data point has been taken
+    this.last     = Game.cookiesEarned; // Total clicks last measured
+    this.tracked  = [];                 // Cookies made at each interval
+    this.interval = interval || 60;     // Interval in seconds between measurements
+    this.maxTime  = maxTime  || 3600;   // Maximum time frame to calculate in seconds
+    this.timer    = null;               // Object to attach the tracking timer to
+    this.cps      = 0;                  // Last average that can be referenced from elsewhere
+
+    /**
+     * Returns the average CpS measured in the maximum time period
+     *
+     * @param  {Array}   t Tracked CpS values per time interval as tracked
+     * @return {Integer}   Average CpS
+     */
+    this.getAverage = function(t) {
+
+        var tracked = t || this.tracked,
+            len     = tracked.length,
+            sum     = 0,
+            avg,
+            i;
+
+        // Return 0 if we have no tracked data
+        if(len === 0) {
+            return 0;
+        }
+
+        // Add up values
+        for(i = 0; i < len; i++) {
+            sum += parseInt(tracked[i], 10);
+        }
+
+        // Get the mean average
+        avg = sum / len / this.interval;
+        // Cache the result
+        this.cps = avg;
+
+        return avg;
+
+    };
+
+    /**
+     * Makes a record of cookies made in last interval
+     *
+     * @param  {Integer} last Total cookies last measured
+     * @param  {Integer} now  Total cookies as of now
+     * @return {Object}       Returns this instance
+     */
+    this.takeRecord = function(last, now) {
+        var earned    = now - last,
+            maxLength = Math.round(this.maxTime / this.interval);
+
+        // If array is full, remove first element
+        if(this.tracked.length === maxLength) {
+            this.tracked.shift();
+        }
+        // Append latest record
+        this.tracked.push(earned);
+
+        // Update last with new value
+        this.last = now;
+
+        // Update the average
+        this.getAverage();
+
+        // Set ready flag as we now have data
+        this.ready = true;
+
+        return this;
+
+    };
+
+    /**
+     * Returns the current tracked time
+     * @return {Integer} Tracked time in seconds
+     */
+    this.timeTracked = function() {
+        return this.tracked.length * this.interval;
+    };
+
+    /**
+     * Starts tracking
+     * @return {Object} Returns this instance
+     */
+    this.start = function() {
+
+        var self = this;
+
+        this.stop();
+        this.last    = Game.cookiesEarned;
+        this.tracked = [];
+        this.timer   = setInterval(function() {
+            self.takeRecord(self.last, Game.cookiesEarned);
+        }, self.interval * 1000);
+
+        return this;
+
+    };
+
+    /**
+     * Stops tracking
+     * @return {Object} Returns this instance
+     */
+    this.stop = function() {
+
+        clearInterval(this.timer);
+
+        return this;
+
+    };
+
+    return this;
+
+};
+
+/**
+ * Class to track your cookie clicks over time
+ */
+CM.ClickTracker = function(interval, maxTime) {
+
+    this.ready    = false;              // Set to true when at least one data point has been taken
+    this.last     = Game.cookieClicks;  // Total clicks last measured
+    this.tracked  = [];                 // Cookies made at each interval
+    this.interval = interval || 60;     // Interval in seconds between measurements
+    this.maxTime  = maxTime  || 3600;   // Maximum time frame to calculate in seconds
+    this.timer    = null;               // Object to attach the tracking timer to
+    this.clicksPs = 0;                  // Last average that can be referenced from elsewhere
+
+    /**
+     * Returns the average clicks measured in the maximum time period
+     *
+     * @param  {Array}   t Tracked clicks per time interval as tracked
+     * @return {Integer}   Average clicks
+     */
+    this.getAverage = function(t) {
+
+        var tracked = t || this.tracked,
+            len     = tracked.length,
+            sum     = 0,
+            avg,
+            i;
+
+        // Return 0 if we have no tracked data
+        if(len === 0) {
+            return 0;
+        }
+
+        // Add up values
+        for(i = 0; i < len; i++) {
+            sum += parseInt(tracked[i], 10);
+        }
+
+        // Get the mean average
+        avg = sum / len / this.interval;
+        // Cache the result
+        this.clicksPs = avg;
+
+        return avg;
+
+    };
+
+    /**
+     * Makes a record of cookies clicked in last interval
+     *
+     * @param  {Integer} last Total clicks last measured
+     * @param  {Integer} now  Total clicks as of now
+     * @return {Object}       Returns this instance
+     */
+    this.takeRecord = function(last, now) {
+        var earned    = now - last,
+            maxLength = Math.round(this.maxTime / this.interval);
+
+        // If array is full, remove first element
+        if(this.tracked.length === maxLength) {
+            this.tracked.shift();
+        }
+        // Append latest record
+        this.tracked.push(earned);
+
+        // Update last with new value
+        this.last = now;
+
+        // Update the average
+        this.getAverage();
+
+        // Set ready flag as we now have data
+        this.ready = true;
+
+        return this;
+
+    };
+
+    /**
+     * Returns the current tracked time
+     * @return {Integer} Tracked time in seconds
+     */
+    this.timeTracked = function() {
+        return this.tracked.length * this.interval;
+    };
+
+    /**
+     * Starts tracking
+     * @return {Object} Returns this instance
+     */
+    this.start = function() {
+
+        var self = this;
+
+        this.stop();
+        this.last    = Game.cookieClicks;
+        this.tracked = [];
+        this.timer   = setInterval(function() {
+            self.takeRecord(self.last, Game.cookieClicks);
+        }, self.interval * 1000);
+
+        return this;
+
+    };
+
+    /**
+     * Stops tracking
+     * @return {Object} Returns this instance
+     */
+    this.stop = function() {
+
+        clearInterval(this.timer);
+
+        return this;
+
+    };
+
+    return this;
+
+};
+
 /* ================================================
     NON-RETURNING METHODS
 
@@ -1827,6 +2385,7 @@ CM.attachSettingsPanel = function() {
         current  = '',
         selected = '',
         html     = '',
+        htmlTabs = '',
         groups   = this.config.settingsGroups,
         settings = this.config.settings,
         group,
@@ -1839,26 +2398,27 @@ CM.attachSettingsPanel = function() {
         $ccComments       = this.config.ccComments,
         $cmSettingsPanel  = $('<div />').attr('id', 'CMSettingsPanel'),
         $cmSettingsButton = $('<div />').attr({'id': 'CMSettingsPanelButton', 'class': 'button'}).text('Settings'),
-        $cmSettingsTitle  = $('<h3 />').attr('class', 'title').html('CookieMaster Settings<span class="cmTitleSub">v.' + this.config.version + '</span>'),
+        $cmSettingsTitle  = $('<h3 />').attr('class', 'title').html('CookieMaster Settings'),
+        $cmSettingsTabs   = $('<ul />').attr({'id': 'CMSettingsTabs', 'class': 'cf cmFont'}),
         $cmSettingsTables = $('<div />').attr('id', 'CMSettingsTables'),
-        $cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Apply Settings'),
-        $cmSettingsPause  = $('<button />').attr({'id': 'CMSettingsPause', 'type': 'button', 'class': 'cmFont'}).text('Pause Game');
+        $cmSettingsSave   = $('<button />').attr({'id': 'CMSettingsSave', 'type': 'button', 'class': 'cmFont'}).text('Save Settings');
 
 
     // Loop over each settings group
     for(group in groups) {
 
+        // Populate the tabs
+        htmlTabs += '<li><a data-id="CMSettings-' + group + '">' + groups[group].title + '</a></li>';
+
         // Create a table for each group
-        html += '<table class="cmTable">';
-        html +=     '<tr class="cmHeader">';
-        html +=        '<th colspan="2" class="cmFont">' + groups[group].title + '</th>';
-        html +=     '</tr>';
+        html += '<div id="CMSettings-' + group + '" class="cmTableGroup">';
+        html +=     '<table class="cmTable">';
 
         // Show group description
         if(groups[group].desc) {
 
             html +=     '<tr class="cmDesc">';
-            html +=        '<td colspan="2">' + groups[group].desc + '</td>';
+            html +=        '<td colspan="2"><p class="cmNotice">' + groups[group].desc + '</p></td>';
             html +=     '</tr>';
 
         }
@@ -1937,7 +2497,7 @@ CM.attachSettingsPanel = function() {
 
                 // Build the table row
                 html += '<tr class="setting setting-' + setting + '">';
-                html +=     '<td>';
+                html +=     '<td class="cmLabel">';
                 html +=         '<label for="CMSetting-' + setting + '">' + thisSetting.label + '</label>';
                 html +=         '<small>' + thisSetting.desc + '</small>';
                 html +=          '</td>';
@@ -1948,17 +2508,19 @@ CM.attachSettingsPanel = function() {
 
         }
 
-        html += '</table>';
+        html +=     '</table>';
+        html += '</div>';
 
     }
 
     // Glue it together
+    $cmSettingsTabs.append(htmlTabs);
     $cmSettingsTables.append(html);
     $cmSettingsPanel.append(
-        $cmSettingsTitle,
-        $cmSettingsTables,
         $cmSettingsSave,
-        $cmSettingsPause
+        $cmSettingsTitle,
+        $cmSettingsTabs,
+        $cmSettingsTables
     );
 
     // Attach to DOM
@@ -1967,6 +2529,17 @@ CM.attachSettingsPanel = function() {
 
     // Cache the selector
     this.config.cmSettingsPanel = $cmSettingsPanel;
+
+    // Behaviours
+    $('#CMSettings-ui').addClass('show'); // Show the UI tab by default
+    $('#CMSettingsTabs li:first-child a').addClass('active');
+    $('#CMSettingsTabs a').click(function() {
+        var id = $(this).data('id');
+        $('.cmTableGroup').removeClass('show');
+        $('#' + id).addClass('show');
+        $('#CMSettingsTabs a').removeClass('active');
+        $(this).addClass('active');
+    });
 
 };
 
@@ -2037,6 +2610,10 @@ CM.attachStatsPanel = function() {
     tableHTML +=     '<tr>';
     tableHTML +=         '<td>Last Golden Cookie effect:</td>';
     tableHTML +=         '<td class="cmValue" id="CMStatsLastGC"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Average clicks per second:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsAvgClicksPerSecond"></td>';
     tableHTML +=     '</tr>';
     tableHTML +=     '<tr>';
     tableHTML +=         '<td>Golden Cookies Missed:</td>';
@@ -2233,6 +2810,22 @@ CM.removeEfficiencyKey = function() {
 
 };
 
+CM.attachAutoBuyPanel = function() {
+
+    var $cmAutoBuyPanel      = $('<div />').attr({'id': 'CMAutoBuyPanel', 'class': 'cmFont'}),
+        $cmNextPurchase      = $('<div />').attr({'id': 'CMAutoBuyNextPurchase', 'class': 'cf'}),
+        $cmNextPurchaseLabel = $('<div />').attr('id', 'CMAutoBuyNextPurchaseLabel').text('Next purchase:'),
+        $cmNextPurchaseValue = $('<div />').attr('id', 'CMAutoBuyNextPurchaseValue'),
+        $cmTimeLeft          = $('<div />').attr('id', 'CMAutoBuyTimeLeft'),
+        $cmTimerBar          = $('<div class="cmTimerContainer cf"><div class="cmTimer"><div></div></div><div class="cmTimerCounter"></div></div>');
+
+    $cmNextPurchase.append($cmNextPurchaseLabel, $cmNextPurchaseValue);
+    $cmTimeLeft.append($cmTimerBar);
+    $cmAutoBuyPanel.append($cmNextPurchase, $cmTimeLeft);
+    $('#store').prepend($cmAutoBuyPanel);
+
+};
+
 /**
  * Populates the stats panel with the latest game stats
  */
@@ -2264,6 +2857,7 @@ CM.updateStats = function() {
         luckyFrenzyReward    = this.luckyFrenzyReward(),
         maxLuckyFrenzyReward = this.maxLuckyFrenzyReward(),
         resetPercentIncrease = (this.getResetCps() - this.baseCps()) / this.baseCps() * 100,
+        avgClicksPerSecond   = this.clickTracker.ready ? Math.round(this.clickTracker.clicksPs * 100) / 100 : 'Gathering data...',
         luckyRewardStr,
         luckyFrenzyRewardStr,
         cmxhcr,
@@ -2319,6 +2913,7 @@ CM.updateStats = function() {
     $('#CMStatsBankRequiredNextChainTier').html(nextChainBankString || '-');
     $('#CMStatsCPSRequiredNextChainTier').html(nextChainCPSString || '-');
     $('#CMStatsLastGC').html(lastGC);
+    $('#CMStatsAvgClicksPerSecond').html(avgClicksPerSecond);
     $('#CMStatsMissedGC').html(missedGC);
 
     // Heavenly Chip stats
@@ -3345,6 +3940,23 @@ CM.applyUserSettings = function() {
 
     // True Neverclick
     this.setTrueNeverclick();
+
+    // Initialize True CpS Tracker
+    this.trueCps = new this.TrueCps();
+    this.trueCps.start(30, this.config.settings.trueCpsAverage.current * 60);
+
+    // Initialize Click Tracker
+    this.clickTracker = new this.ClickTracker();
+    this.clickTracker.start(60, this.config.settings.clickingAverage.current * 60);
+
+    // Auto-buy
+    if(settings.autoBuy.current === 'on') {
+        this.autoBuyer.init();
+        $('#CMAutoBuyPanel').fadeIn(200);
+    } else {
+        this.autoBuyer.stop();
+        $('#CMAutoBuyPanel').fadeOut(200);
+    }
 
     // Refresh the game panels
     Game.RebuildStore();

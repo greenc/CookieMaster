@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.15.2
+    Version: 1.16.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -151,6 +151,38 @@
     padding: 0px 80px 0 64px;
 }
 
+#CMSettingsTabs {
+    border-bottom: 1px solid #444;
+    margin: 10px 0;
+}
+
+#CMSettingsTabs li {
+    margin: 0 10px 0 0;
+    display: inline-block;
+}
+
+#CMSettingsTabs a {
+    font-size: 15px;
+    color: #ddd;
+    text-decoration: none;
+    padding: 8px 10px;
+    display: inline-block;
+    text-shadow: none;
+}
+
+#CMSettingsTabs a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #6cf;
+    padding: 7px 9px 8px;
+    border: 1px solid #444;
+    border-bottom: none;
+}
+
+#CMSettingsTabs a:hover {
+    color: #6cf;
+    text-shadow: none;
+}
+
 #CMSettingsPanel h3,
 #CMStatsPanel h3 {
     color: #6CF;
@@ -164,11 +196,24 @@
     font-weight: normal;
 }
 
+#CMSettingsTables .cmTableGroup {
+    display: none;
+}
+
+#CMSettingsTables .cmTableGroup.show {
+    display: block;
+    width: 100%;
+}
+
 #CMSettingsTables small {
     display: block;
     line-height: 14px;
     font-size: 11px;
     color: #666;
+}
+
+#CMSettingsTables .cmLabel {
+    width: 50%;
 }
 
 #CMSettingsTables .cmValue {
@@ -191,7 +236,6 @@
 }
 
 #CMSettingsSave,
-#CMSettingsPause,
 #CMChartY,
 #CMChartN,
 #CMChartC,
@@ -208,7 +252,10 @@
     outline: none;
 }
 
-#CMSettingsPause,
+#CMSettingsSave {
+    float: right;
+}
+
 #CMChartC {
     border: 1px solid #5A5A5A;
     background-color: #4D4D4D;
@@ -239,7 +286,6 @@
     background-color: #6AA01A;
 }
 
-#CMSettingsPause:hover,
 #CMChartC:hover {
     background-color: #5A5A5A;
 }
@@ -573,6 +619,41 @@
     height: 500px;
 }
 
+/* Auto Buy Panel */
+#CMAutoBuyPanel {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.60);
+    padding: 10px;
+}
+
+#CMAutoBuyNextPurchaseLabel {
+    float: left;
+    width: 40%;
+}
+
+#CMAutoBuyNextPurchaseValue {
+    text-align: right;
+    float: left;
+    width: 60%;
+}
+
+#CMAutoBuyTimeLeft .cmTimer {
+    width: 85%;
+    height: 10px;
+}
+
+#CMAutoBuyTimeLeft .cmTimer div {
+    height: 10px;
+}
+
+#CMAutoBuyTimeLeft .cmTimerContainer {
+    margin: 10px 0 0;
+}
+
+#CMAutoBuyTimeLeft .cmTimerCounter {
+    width: 15%;
+}
+
 .cf:before,
 .cf:after {
     content: " ";
@@ -643,7 +724,10 @@ em, q { font-style: italic; }
 /* End External stuff */
 
 /* Feature: cleanUI */
-.cleanUI #topBar { display: none; }
+.cleanUI #topBar,
+.cleanUI #storeTitle {
+    display: none;
+}
 .cleanUI #versionNumber {
     z-index: 20;
     bottom: auto;
@@ -670,6 +754,7 @@ em, q { font-style: italic; }
 .cleanUI #tooltip {
     pointer-events: none;
 }
+
 /* End Feature: cleanUI */
 
 /* Feature: changeFont */

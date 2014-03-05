@@ -1,5 +1,30 @@
 # CookieMaster Release History
 
+### Version 1.16. - _2014/3/05_
+
+ - Added Auto-buy feature with timer and status bar
+ - Auto-buy follows normal BCI rules with a few exceptions:
+   - Upgrades without a determinable BCI are prioritized if they are the cheapest buyable item
+   - Season Switching upgrades are blacklisted from the auto-buyer
+   - Santa Upgrades must be unlocked manually, however once unlocked will be purchased automatically according to the BCI rules
+ - Added auto-buyer setting to choose whether to research Grandmapocalypse or not (warning dialogs must be clicked manually)
+ - Effective CpS is now calculated by taking a rolling average of your gross cookie gains over the last n minutes (user configurable)
+ - Effective CpS is now used to estimate time remaining for purchases
+ - Added user setting to specify click tracking period
+ - Added stat to show average cookie clicks (also used for BCI calculations for clicking related items)
+ - Upgrade efficiency now calculated using the same method as for buildings
+ - Removed many unused methods from external-methods.js as a result of the above
+ - Split Settings panel into separate tabs and screens
+ - Moved some settings around for clarity
+ - Renamed "Apply Settings" button to "Save Settings" and moved it to the top of the panel
+ - Removed the "Pause" button
+ - Clean UI feature now hides the Store title
+ - Introduced a nice sprinkling of new bugs
+ - Known bugs/issues:
+   - The auto-buy timer will sometimes fill way more than the width of its container
+   - Game can lag when building from a reset and player has a lot of HC and/or auto-clicker enabled
+   - Currently there is no indicator for when the auto-clicker is in "saving up" mode
+
 ### Version 1.15.2 - _2014/3/02_
 
  - CpS after reset stat now assumes player has bought all Heavenly Upgrades (100% HC multiplier potential)
