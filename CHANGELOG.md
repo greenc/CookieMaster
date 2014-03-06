@@ -1,5 +1,14 @@
 # CookieMaster Release History
 
+### Version 1.17.0 - _2014/3/06_
+
+ - Improved performance for auto-buying
+ - Greatly improved auto-buying speed
+ - Tweaked auto-buying efficiency slightly
+ - Fixed bug where auto-buy timer bar would be wider than panel
+ - Auto-buy "next purchase" display now updates correctly
+ - Added setting to auto-buy Santa unlocks
+
 ### Version 1.16.2 - _2014/3/05_
 
  - Fixed Elder Pledge resetting after each purchase/golden cookie click

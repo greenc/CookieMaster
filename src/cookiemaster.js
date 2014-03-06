@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.16.2
+    Version: 1.17.0
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.16.2',                         // Current version of CookieMaster
+    version:              '1.17.0',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -596,6 +596,13 @@ CM.config = {
             type:  'checkbox',
             label: 'Auto-Pledge:',
             desc:  'Automatically rebuy Elder Pledge upgrade to keep the Grandmapocalypse at bay.',
+            current: 'off'
+        },
+        clickSanta: {
+            group: 'helpers',
+            type:  'checkbox',
+            label: 'Auto-buy Santa Unlocks:',
+            desc:  'Automatically buy the Santa unlocks when they become available.',
             current: 'off'
         },
         popWrinklersAtInterval: {
@@ -1924,8 +1931,8 @@ CM.AutoBuy = function() {
     };
 
     /**
-     * Returns best building available and its BCI
-     * @return {Array} [type, index, bci]
+     * Returns array with best building object and its BCI
+     * @return {Array} [Object, bci]
      */
     this.getBestBuilding = function() {
 
@@ -1933,23 +1940,25 @@ CM.AutoBuy = function() {
             bestBCI      = Number.POSITIVE_INFINITY,
             bestBuilding = false,
             available    = false,
+            object,
             i;
 
         for(i = 0; i < buildings.length; i++) {
-            available = Game.ObjectsById[i].getPrice() <= Game.cookiesEarned ? true : false;
+            object = Game.ObjectsById[i];
+            available = object.getPrice() <= Game.cookiesEarned ? true : false;
             if(buildings[i] < bestBCI && available) {
                 bestBCI = buildings[i];
-                bestBuilding = i;
+                bestBuilding = object;
             }
         }
 
-        return bestBuilding !== false ? ['Objects', bestBuilding, bestBCI] : false;
+        return [bestBuilding, bestBCI];
 
     };
 
     /**
-     * Returns best upgrade player can buy and its BCI
-     * @return {Array} [type, id, bci]
+     * Returns array with best upgrade and its BCI
+     * @return {Array} [Upgrade, bci]
      */
     this.getBestUpgrade = function() {
 
@@ -1966,8 +1975,8 @@ CM.AutoBuy = function() {
         for(i in Game.Upgrades) {
             item = Game.Upgrades[i];
             if(blackList.indexOf(item.id) === -1) {
-                itemBCI = item.getBaseCostPerIncome();
                 if(item.isInStore()) {
+                    itemBCI = item.getBaseCostPerIncome();
                     if(itemBCI < bestBCI) {
                         bestUpgrade = item;
                         bestBCI     = itemBCI;
@@ -1977,12 +1986,12 @@ CM.AutoBuy = function() {
         }
 
         // If whitelist upgrades are available and cheapest is cheaper than the calculated one, choose it
-        if(cheapestW && cheapestW[0].getPrice() < bestUpgrade.getPrice()) {
-            return ['Upgrades', cheapestW[0].id, 0];
+        if(cheapestW && bestUpgrade && cheapestW[1] < bestUpgrade.getPrice()) {
+            return [cheapestW[0], 0];
         }
 
-        // Else just return the best on calculated
-        return bestUpgrade !== false ? ['Upgrades', bestUpgrade.id, bestBCI] : false;
+        // Else just return the best one calculated
+        return bestUpgrade !== false ? [bestUpgrade, bestBCI] : false;
 
     };
 
@@ -1996,9 +2005,9 @@ CM.AutoBuy = function() {
             bestUpgrade  = this.getBestUpgrade();
 
         if(bestBuilding && bestUpgrade) {
-            return bestUpgrade[2] < bestBuilding[2] ? bestUpgrade : bestBuilding;
+            return bestUpgrade[1] < bestBuilding[1] ? bestUpgrade[0] : bestBuilding[0];
         } else {
-            return bestBuilding || bestUpgrade || false;
+            return bestBuilding[0] || bestUpgrade[0] || false;
         }
 
     };
@@ -2011,18 +2020,15 @@ CM.AutoBuy = function() {
      */
     this.budget = function(bank, threshold) {
 
-        var budget,
-            thresholdAmount;
+        var amount = 0;
 
         if(threshold === 'frenzy') {
-            budget = bank - CME.getLuckyTreshold('frenzy');
+            amount = CME.getLuckyTreshold('frenzy');
         } else if(threshold === 'lucky') {
-            budget = bank - CME.getLuckyTreshold(false);
-        } else {
-            budget = bank;
+            amount = CME.getLuckyTreshold(false);
         }
 
-        return budget;
+        return bank - amount;
 
     };
 
@@ -2037,49 +2043,54 @@ CM.AutoBuy = function() {
         // Set the correct threshold
         this.setThreshold();
 
-        var bestItem = this.getBestItem(),
-            type     = bestItem[0] || false,
+        var self     = this,
+            bestItem = this.getBestItem(),
             budget   = this.budget(Game.cookies, this.threshold),
             canBuy   = false,
-            object   = null,
             timeLeft,
             price,
-            width;
+            width,
+            time;
 
-        if(bestItem === false) {
+        if(!bestItem) {
             $('#CMAutoBuyNextPurchaseValue').text('Nothing to buy :(');
             $('#CMAutoBuyTimeLeft .cmTimerContainer').fadeOut(300);
+            time = 1000;
         } else {
-            object   = Game[type + 'ById'][bestItem[1]];
-            timeLeft = object.getTimeLeft();
-            price    = object.getPrice();
+            timeLeft = bestItem.getTimeLeft();
+            price    = bestItem.getPrice();
             canBuy   = price <= budget ? true : false;
             if(canBuy) {
                 this.nextMaxTime = 0;
-                object.buy();
+                bestItem.buy();
+                time = 50;
             } else {
                 this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
-                width = timeLeft / this.nextMaxTime * 100;
-                $('#CMAutoBuyNextPurchaseValue').text(object.name);
-                $('#CMAutoBuyTimeLeft .cmTimer div').css('width', width + '%');
-                $('#CMAutoBuyTimeLeft .cmTimerCounter').text(timeLeft);
-                if($('#CMAutoBuyTimeLeft .cmTimerContainer').is(':hidden')) {
-                    $('#CMAutoBuyTimeLeft .cmTimerContainer').fadeIn(300);
-                }
+                //width = timeLeft / this.nextMaxTime * 100;
+                width = Math.min(timeLeft / this.nextMaxTime * 100, 100);
+                time = 200
+            }
+            // Update the information bar
+            $('#CMAutoBuyNextPurchaseValue').text(bestItem.name);
+            $('#CMAutoBuyTimeLeft .cmTimer div').css('width', width + '%');
+            $('#CMAutoBuyTimeLeft .cmTimerCounter').text(timeLeft);
+            if($('#CMAutoBuyTimeLeft .cmTimerContainer').is(':hidden')) {
+                $('#CMAutoBuyTimeLeft .cmTimerContainer').fadeIn(300);
             }
         }
+
+        this.automate = setTimeout(function() {
+            self.buyBest();
+        }, time);
 
     };
 
     this.init = function() {
-        var self = this;
-        this.automate = setInterval(function() {
-            self.buyBest();
-        }, 500);
+        this.buyBest();
     };
 
     this.stop = function() {
-        clearInterval(this.automate);
+        clearTimeout(this.automate);
     };
 
     return this;
@@ -2366,6 +2377,11 @@ CM.mainLoop = function() {
     // Auto-Pledge
     if(settings.autoPledge.current === 'on') {
         this.autoBuyPledge();
+    }
+
+    // Click santa if it exists and we haven't reached max level
+    if(settings.clickSanta.current === 'on' && Game.Has('A festive hat') && Game.santaLevel < 14) {
+        this.clickSanta();
     }
 
     // Update building efficiency info
@@ -3509,6 +3525,41 @@ CM.preventClickBleed = function() {
         event.stopPropagation();
         Game.seasonPopup.click();
     });
+
+};
+
+CM.clickSanta = function() {
+
+    var cost = Math.pow(Game.santaLevel + 1, Game.santaLevel + 1),
+        drops = [],
+        drop,
+        i;
+
+    if(Game.cookies > cost && Game.santaLevel < 14) {
+        Game.Spend(cost);
+        Game.santaLevel = (Game.santaLevel + 1) % 15;
+        if(Game.santaLevel === 14) {
+            Game.Unlock('Santa\'s dominion');
+            Game.Popup('You are granted<br>Santa\'s dominion.');
+        }
+        Game.santaTransition = 1;
+        for(i in Game.santaDrops) {
+            if(!Game.HasUnlocked(Game.santaDrops[i])){
+                drops.push(Game.santaDrops[i]);
+            }
+        }
+        drop = choose(drops);
+        if(drop) {
+            Game.Unlock(drop);
+            Game.Popup('You find a present which contains...<br>' + drop + '!');
+        }
+        if(Game.santaLevel >= 6){
+            Game.Win('Coming to town');
+        }
+        if(Game.santaLevel >= 14){
+            Game.Win('All hail Santa');
+        }
+    }
 
 };
 
