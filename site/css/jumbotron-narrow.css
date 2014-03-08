@@ -170,3 +170,7 @@ pre {
         padding: 20px;
     }
 }
+
+#paypalDonateForm {
+    display: inline;
+}
