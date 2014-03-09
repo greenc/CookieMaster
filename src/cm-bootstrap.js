@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.17.0
+    Version: 1.17.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -28,13 +28,13 @@ if(typeof CM === 'undefined') {
 
     (function() {
 
-        var version = '1.17.0',
+        var version = '1.17.1',
             docFrag = document.createDocumentFragment(),
             deps    = [
                 {
                     // CookieMaster CSS
                     type:    'link',
-                    url:     '../cookiemaster/src/cookiemaster.css',
+                    url:     '../cookiemaster/build/cookiemaster.css',
                     async:   true,
                     nocache: true
                 },
@@ -53,16 +53,9 @@ if(typeof CM === 'undefined') {
                     nocache: false
                 },
                 {
-                    // External CookieMaster methods
+                    // CookieMaster Script
                     type:    'script',
-                    url:     '../cookiemaster/src/external-methods.js',
-                    async:   false,
-                    nocache: true
-                },
-                {
-                    // CookieMaster methods
-                    type:    'script',
-                    url:     '../cookiemaster/src/cookiemaster.js',
+                    url:     '../cookiemaster/build/cookiemaster.js',
                     async:   false,
                     nocache: true
                 },

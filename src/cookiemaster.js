@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.17.0
+    Version: 1.17.1
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.17.0',                         // Current version of CookieMaster
+    version:              '1.17.1',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -869,7 +869,7 @@ CM.init = function() {
     }
 
     // All done :)
-    this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'info');
+    this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'notice');
 
 };
 
@@ -1694,12 +1694,12 @@ CM.toTitleCase = function(str) {
  * Styles CookieMaster popups differently while still using the native Game.Popup method
  *
  * @param  {String}   message
- * @param  {String}   type    optional [info|warning|error]
+ * @param  {String}   type    optional [notice|success|warning|error]
  * @return {Function}
  */
 CM.popup = function(message, type) {
 
-    var typeClass = this.toTitleCase(type) || 'Info';
+    var typeClass = this.toTitleCase(type) || 'Notice';
 
     return Game.Popup('<span class="cmPopupText cmPopup' + typeClass + '">' + message + '</span>');
 
@@ -3335,7 +3335,7 @@ CM.autoBuyPledge = function() {
 
     if(inStore && price < bank) {
         pledge.buy();
-        this.popup('Bought Elder Pledge!', 'info');
+        this.popup('Bought Elder Pledge!', 'notice');
     }
 
 };
@@ -3582,7 +3582,7 @@ CM.startLogging = function() {
     CM.logData();
     CM.config.cmStatsLogTimer = setInterval(function() {CM.logData();}, 30000);
     localStorage.setItem('CMStatsLoggingActive', 'true');
-    CM.popup('Logging data!', 'info');
+    CM.popup('Logging data!', 'notice');
 
     $('#CMChartY').hide();
     $('#CMChartN').show();
@@ -3599,7 +3599,7 @@ CM.stopLogging = function() {
         clearInterval(this.config.cmStatsLogTimer);
         localStorage.setItem('CMStatsLoggingActive', 'false');
 
-        this.popup('Stopped logging data!', 'info');
+        this.popup('Stopped logging data!', 'notice');
     }
 
     $('#CMChartN').hide();
@@ -3623,7 +3623,7 @@ CM.clearLogSesion = function() {
     // Clear the chart
     this.config.cmStatsChart.clearChart();
 
-    this.popup('Log cleared!', 'info');
+    this.popup('Log cleared!', 'notice');
 
 };
 
@@ -4044,7 +4044,7 @@ CM.saveUserSettings = function() {
     if(document.cookie.indexOf('CMSettings') === -1) {
         this.popup('Error: Could not save settings!', 'error');
     } else {
-        this.popup('Settings saved successfully!', 'info');
+        this.popup('Settings saved successfully!', 'notice');
     }
 
 };

@@ -13,7 +13,7 @@ chrome.extension.sendMessage({}, function(response) {
                     {
                         // CookieMaster CSS
                         type:  'link',
-                        url:   'build/cookiemaster.css',
+                        url:   'dist/cookiemaster.min.css',
                         async: true
                     },
                     {
@@ -41,15 +41,9 @@ chrome.extension.sendMessage({}, function(response) {
                         async: false
                     },
                     {
-                        // External CookieMaster methods
+                        // CookieMaster Script
                         type:  'script',
-                        url:   'build/external-methods.js',
-                        async: false
-                    },
-                    {
-                        // CookieMaster methods
-                        type:  'script',
-                        url:   'build/cookiemaster.js',
+                        url:   'dist/cookiemaster.min.js',
                         async: false
                     }
                 ],

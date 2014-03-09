@@ -6,33 +6,59 @@ module.exports = function(grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
+        watch: {
+            less: {
+                files: ['src/less/**/*.less'],
+                tasks: ['less'],
+                options: {
+                    interrupt: true
+                }
+            }
+        },
         /**
          * Remove all files from build directory
          */
         clean: {
             build: {
-                src: [ 'build', 'chrome-extension/build' ]
+                src: [ 'build', 'dist', 'chrome-extension/dist' ]
             },
         },
         /**
          * Copy files into build directories
          */
         copy: {
-            bookmarklet: {
+            bs: {
+                src:  'src/cm-bootstrap.js',
+                dest: 'build/cm-bootstrap.js',
+            },
+            bmb: {
                 src:  'src/bookmarklet.js',
                 dest: 'build/bookmarklet.js',
             },
+            bmd: {
+                src:  'src/bookmarklet.js',
+                dest: 'dist/bookmarklet.js',
+            },
             chromeCSS: {
-                src:  'src/cookiemaster.css',
-                dest: 'chrome-extension/build/cookiemaster.css',
+                src:  'dist/cookiemaster.min.css',
+                dest: 'chrome-extension/dist/cookiemaster.min.css',
             },
-            chromeCM: {
-                src:  'src/cookiemaster.js',
-                dest: 'chrome-extension/build/cookiemaster.js',
-            },
-            chromeEM: {
-                src:  'src/external-methods.js',
-                dest: 'chrome-extension/build/external-methods.js',
+            chromeJS: {
+                src:  'dist/cookiemaster.min.js',
+                dest: 'chrome-extension/dist/cookiemaster.min.js',
+            }
+        },
+        /**
+         * Compile the LESS into CSS
+         */
+        less: {
+            local: {
+                options: {
+                    paths: ["src/less/imports"]
+                },
+                files: {
+                    "build/cookiemaster.css": "src/less/cookiemaster.less"
+                }
             }
         },
         /**
@@ -41,9 +67,8 @@ module.exports = function(grunt) {
         uglify: {
             build: {
                 files: {
-                    'build/cm-bootstrap.min.js':     'src/cm-bootstrap.js',
-                    'build/external-methods.min.js': 'src/external-methods.js',
-                    'build/cookiemaster.min.js':     'src/cookiemaster.js'
+                    'dist/cm-bootstrap.min.js':     'build/cm-bootstrap.js',
+                    'dist/cookiemaster.min.js':     'build/cookiemaster.js'
                 }
             }
         },
@@ -57,7 +82,7 @@ module.exports = function(grunt) {
                     consolidateViaSelectors:    true
                 },
                 files: {
-                    'build/cookiemaster.min.css':        'src/cookiemaster.css',
+                    'dist/cookiemaster.min.css':        'build/cookiemaster.css',
                     'site/css/jumbotron-narrow.min.css': 'site/css/jumbotron-narrow.css'
                 }
             }
@@ -67,8 +92,8 @@ module.exports = function(grunt) {
          */
         cssmin: {
             build: {
-                src:  'build/cookiemaster.min.css',
-                dest: 'build/cookiemaster.min.css'
+                src:  'dist/cookiemaster.min.css',
+                dest: 'dist/cookiemaster.min.css'
             },
             site: {
                 src: 'site/css/jumbotron-narrow.css',
@@ -84,20 +109,28 @@ module.exports = function(grunt) {
             },
             defaults: {
                 src: [
-                    'src/external-methods.js',
-                    'src/cookiemaster.js',
-                    'src/cookiemaster.css',
-                    'src/cm-bootstrap.js',
+                    'src/*.js',
+                    'src/*.css',
+                    'src/less/*.less',
                     'chrome-extension/manifest.json'
                 ]
             },
+        },
+        /**
+         * Concatenate source JS files into build directory
+         */
+        concat: {
+            build: {
+                src: ['src/external-methods.js', 'src/cookiemaster.js'],
+                dest: 'build/cookiemaster.js'
+            }
         },
         /**
          * Execute string replacements on paths and URLs
          */
         replace: {
             paths: {
-                src: ['build/*', 'chrome-extension/build/*'],
+                src: 'dist/cookiemaster.min.js',
                 overwrite: true,
                 replacements: [
                     {
@@ -111,33 +144,25 @@ module.exports = function(grunt) {
                 ]
             },
             min: {
-                src: ['build/*'],
+                src: ['dist/cm-bootstrap.min.js'],
                 overwrite: true,
                 replacements: [
                     {
-                        from: 'src/external-methods.js',
-                        to:   'build/external-methods.min.js'
+                        from: 'build/cookiemaster.js',
+                        to:   'dist/cookiemaster.min.js'
                     },
                     {
-                        from: 'src/cookiemaster.js',
-                        to:   'build/cookiemaster.min.js'
-                    },
-                    {
-                        from: 'src/cookiemaster.css',
-                        to:   'build/cookiemaster.min.css'
-                    },
-                    {
-                        from: 'src/cm-bootstrap.js',
-                        to:   'build/cm-bootstrap.min.js'
-                    },
+                        from: 'build/cookiemaster.css',
+                        to:   'dist/cookiemaster.min.css'
+                    }
                 ]
             },
-            bookmark: {
-                src: ['build/bookmarklet.js'],
+            bm: {
+                src: ['dist/bookmarklet.js'],
                 overwrite: true,
                 replacements: [
                     {
-                        from: 'http://cookiemaster.co.uk/build/cm-bootstrap.min.js',
+                        from: '../cookiemaster/build/cm-bootstrap.js',
                         to:   '//cookiemaster.co.uk/b'
                     }
                 ]
@@ -165,17 +190,26 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', []);
     grunt.registerTask('css',  ['cssc', 'cssmin']);
+
     /**
      * Main build task
      */
     grunt.registerTask('build', [
-        'version',
-        'clean',
-        'copy',
-        'css',
-        'uglify',
-        'replace',
-        'compress'
+        'version',        // Updates version number across all src/ files
+        'clean',          // Cleans [build, dist, chrome-extension/dist]/ directories
+        'less',           // src/less/*.less > build/cookiemaster.css
+        'css',            // build/cookiemaster.css > dist/cookiemaster.min.css (also site CSS)
+        'concat',         // src/external-methods.js + src/cookiemaster.js > build/cookiemaster.js
+        'copy:bs',        // src/cm-bootstrap.js > build/cm-bootstrap.js
+        'copy:bmb',       // src/bookmarklet.js > build/bookmarklet.js
+        'uglify',         // build/cookiemaster.js > dist/cookiemaster.min.js
+        'replace:paths',  // Replace local paths in build/cookiemaster.min.js with production URLs
+        'replace:min',    // Replace local paths in dist/cm-bootstrap.min.js with production URLs
+        'copy:bmd',       // src/bookmarklet.js > dist/bookmarklet.js
+        'replace:bm',     // Replace local path in dist/bookmarklet.js with production URL
+        'copy:chromeCSS', // dist/cookiemaster.min.css > chrome-extension/dist/cookiemaster.min.css
+        'copy:chromeJS',  // dist/cookiemaster.min.js > chrome-extension/cookiemaster.min.js
+        'compress'        // Compress chrome-extension/ into a ZIP file for upload to Chrome Web Store
     ]);
 
 };

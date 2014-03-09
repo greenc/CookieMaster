@@ -1,5 +1,15 @@
 # CookieMaster Release History
 
+### Version 1.17.1 - _2014/3/09_
+
+ - Rewrote all CSS in LESS, organized into logical directories and files (yay!)
+ - Tweaked some notification colors
+ - Concatenated cookiemaster.js and external-methods.js into a single file for improved loading speed
+ - build/ directory now used for local project build (testing), minified production files now served from dist/
+ - Restructured Gruntfile.js to accommodate the new build tasks, also improved build speed
+ - Minor structural changes to accommodate the planned JS refactoring
+ - Added Bitcoin donation option to the main site
+
 ### Version 1.17.0 - _2014/3/06_
 
  - Improved performance for auto-buying

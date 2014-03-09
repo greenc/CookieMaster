@@ -1,1 +1,1 @@
-javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.co.uk/b?c='+Date.now())._
+javascript:with(document)(head.appendChild(createElement('script')).src='../cookiemaster/build/cm-bootstrap.js?c='+Date.now())._
