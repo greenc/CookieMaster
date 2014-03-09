@@ -9,6 +9,7 @@
  - Restructured Gruntfile.js to accommodate the new build tasks, also improved build speed
  - Minor structural changes to accommodate the planned JS refactoring
  - Added Bitcoin donation option to the main site
+ - Removed backwards compatibility with very outdated bookmark/userscript codes. If you are having issues loading the new release, please update your bookmark to the one currently on the site :)
 
 ### Version 1.17.0 - _2014/3/06_
 
