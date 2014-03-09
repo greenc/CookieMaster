@@ -1,0 +1,47 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Game Overlays
+ */
+
+// Overlay for visual alerts (screen flash)
+#CMOverlay {
+    position: fixed;
+    z-index: 1000000;
+    height: 100%;
+    width: 100%;
+    background: #FFF;
+    pointer-events: none;
+    display: none;
+}
+
+// Golden Cookie timer overlay
+#CMGCOverlay {
+    position: fixed;
+    font-size:32px;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 1);
+    line-height: 96px;
+    text-align: center;
+    height: 96px;
+    width: 96px;
+    z-index: 10000000001;
+    cursor: pointer;
+    border-radius: 96px;
+}

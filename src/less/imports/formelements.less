@@ -1,0 +1,63 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Form element styles within .cmTable elements
+ */
+.cmTable {
+    input, select {
+        font-size: 14px;
+        background-color: #111;
+        color: #FFF;
+        border: 1px solid #444;
+        padding: 2px;
+    }
+
+    input[type="text"] {
+        width: 250px;
+        padding: 4px;
+    }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 65%;
+        height: 8px;
+        padding: 0;
+        outline: none;
+        border-radius: 6px;
+    }
+
+    input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 10px;
+        height:25px;
+        border-radius: 10px;
+        background-image: -webkit-gradient(
+            linear,
+            left top,
+            left bottom,
+            color-stop(0, #fefefe),
+            color-stop(0.49, #dddddd),
+            color-stop(0.51, #d1d1d1),
+            color-stop(1, #a1a1a1)
+        );
+    }
+}

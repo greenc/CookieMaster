@@ -1,0 +1,51 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Auto Buy panel
+ */
+#CMAutoBuyPanel {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.60);
+    padding: 10px;
+
+    #CMAutoBuyNextPurchaseLabel {
+        float: left;
+        width: 40%;
+    }
+
+    #CMAutoBuyNextPurchaseValue {
+        text-align: right;
+        float: left;
+        width: 60%;
+    }
+
+    #CMAutoBuyTimeLeft {
+        .cmTimer {
+            width: 85%;
+            height: 10px;
+            div {
+                height: 10px;
+                background-color: @timer-default;
+            }
+        }
+        .cmTimerContainer { margin: 10px 0 0; }
+        .cmTimerCounter { width: 15%; }
+    }
+}

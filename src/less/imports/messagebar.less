@@ -1,0 +1,80 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Message Bar panel
+ */
+
+#CMMessageBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 500px;
+    z-index: 1000001;
+
+    #CMMessageBarDismissAll {
+        .secondaryButton();
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .cmContainer {
+        position: relative;
+        margin: 5px;
+        display: none;
+
+        &:hover .cmDismiss { opacity: 0.6; }
+    }
+
+    .cmMessage {
+        font-size: 13px;
+        line-height: 18px;
+        padding: 10px 30px 10px 15px;
+        border-radius: 3px;
+        opacity: 0;
+        color: #FFF;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+        text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+        cursor: pointer;
+
+        a { color: #fff; }
+    }
+
+    .cmDismiss {
+        position: absolute;
+        top: 9px;
+        right: 10px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        color: #000;
+        opacity: 0.4;
+        cursor: pointer;
+    }
+
+    .cmNotice  { background-color: fade(@bg-notice,  95%); }
+    .cmSuccess { background-color: fade(@bg-success, 95%); }
+    .cmWarning { background-color: fade(@bg-warning, 95%); }
+    .cmError   { background-color: fade(@bg-error,   95%); }
+}

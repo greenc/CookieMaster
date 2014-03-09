@@ -1,0 +1,91 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Timer panel & timers
+ */
+
+// Timer panel
+#CMTimerPanel {
+    border-top: 1px solid #000;
+    background-color: rgba(0, 0, 0, 0.75);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 20;
+    font-size: 15px;
+
+    // Timer bar colors
+    .cmTimer-gc .cmTimer div { background-color: @timer-gc; }
+    .cmTimer-sp .cmTimer div { background-color: @timer-sp; }
+    .cmTimer-frenzy .cmTimer div { background-color: @timer-frenzy; }
+    .cmTimer-clickFrenzy .cmTimer div { background-color: @timer-click-frenzy; }
+    .cmTimer-elderFrenzy .cmTimer div { background-color: @timer-elder-frenzy; }
+    .cmTimer-clot .cmTimer div { background-color: @timer-clot; }
+    .cmTimer-pledge .cmTimer div { background-color: @timer-pledge; }
+    .cmTimer-wrinklers .cmTimer div { background-color: @timer-wrinklers; }
+}
+
+// Timer bars
+.cmTimerContainer {
+    display: none;
+    margin: 6px 10px;
+
+    .cmTimerLabel {
+        float: left;
+        width: 30%;
+    }
+
+    .cmTimer {
+        float: left;
+        width: 59%;
+        height: 14px;
+        background-color: #494949;
+        position: relative;
+        border-radius: 3px;
+
+        // This is the darker portion of timer bars that have a "dead zone"
+        span {
+            display: block;
+            position: absolute;
+            height: 14px;
+            background-color: rgba(0, 0, 0, 0.5);
+            top: 0;
+            right: 0;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+
+        // This is the colored bar in the timer
+        div {
+            height: 14px;
+            background-color: @timer-default;
+            border-radius: 3px;
+        }
+    }
+
+    .cmTimerCounter {
+        float: left;
+        width: 11%;
+        color: #FFF;
+        text-align: center;
+    }
+}
+

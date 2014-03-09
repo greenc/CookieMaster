@@ -1,0 +1,83 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Settings panel
+ */
+
+#CMSettingsPanel {
+    .middlePanel();
+
+    #CMSettingsTabs {
+        border-bottom: 1px solid #444;
+        margin: 10px 0;
+
+        li {
+            margin: 0 10px 0 0;
+            display: inline-block;
+        }
+
+        a {
+            font-size: 15px;
+            color: #ddd;
+            text-decoration: none;
+            padding: 8px 10px;
+            display: inline-block;
+            text-shadow: none;
+
+            &.active {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: @highlight;
+                padding: 7px 9px 8px;
+                border: 1px solid #444;
+                border-bottom: none;
+            }
+
+            &:hover {
+                color: @highlight;
+                text-shadow: none;
+            }
+        }
+    }
+
+    // Settings panel tables
+    #CMSettingsTables {
+        .cmTableGroup {
+            display: none;
+            &.show {
+                display: block;
+                width: 100%;
+            }
+        }
+
+        small {
+            display: block;
+            line-height: 14px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .cmLabel { width: 50%; }
+
+        .cmValue {
+            vertical-align: middle;
+            text-align: right;
+        }
+    }
+}

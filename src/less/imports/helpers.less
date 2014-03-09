@@ -1,0 +1,79 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Generic and helper styles
+ */
+
+// Clearfix
+.cf {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+    &:after { clear: both; }
+}
+
+// Restore some default styles that Cookie Clicker inexplicably overrides
+strong, b { font-weight: bold; }
+em, q { font-style: italic; }
+
+// Used for default message bar color and settings table highlights
+.cmNotice { color: @highlight; }
+
+// Used on elements to style them with the Cookie Clicker font
+.cmFont { font-family: "Kavoon", Georgia, serif; }
+
+// Floats
+.cmFloatRight { float: right; }
+.cmFloatLeft { float: left; }
+
+// Make comment ticker in the center panel narrower to accommodate ethe extra buttons we add
+#commentsText { padding: 0px 80px 0 64px; }
+
+// Hide tooltip deficit warnings on upgrade icons in the native stats panel
+#sectionMiddle .cm-tooltip__contents,
+#sectionMiddle .cm-tooltip__warnings { display: none; }
+
+// Display a button as though it were a link
+.cmShowAsLink {
+    color: @highlight;
+    font-family: Tahoma, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+}
+
+// Add the dark bg texture to CookieMaster middle panels
+#game.onCMMenu #sectionMiddle { background: #000 url(http://orteil.dashnet.org/cookieclicker/img/darkNoise.png); }
+
+// Add some extra styling to native popups triggered by CookieMaster
+.cmPopupText {
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 20px 25px;
+    border-radius: 20px;
+    display: inline-block;
+
+    &.cmPopupNotice { color: @highlight; }
+    &.cmPopupWarning { color: @warning; }
+    &.cmPopupError { color: @error; }
+}

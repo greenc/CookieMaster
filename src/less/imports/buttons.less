@@ -1,0 +1,76 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Buttons
+ */
+
+// Button styles
+#CMSettingsSave,
+#CMChartY { .button(#6ca01e; #fff); }
+#CMChartC { .button(#4d4d4d; #fff); }
+#CMChartN { .button(#8d0000; #fff); }
+#CMChartD { .button(#0083c5; #fff); }
+
+// Space out the chart buttons
+#CMChartY,
+#CMChartN,
+#CMChartC,
+#CMChartD { margin-right: 10px; }
+
+// Float Save button in the Settings panel to right
+#CMSettingsSave { float: right; }
+
+// Buttons added to the native game panels
+#CMSettingsPanelButton,
+#CMStatsPanelButton {
+    width: 90px;
+    padding: 4px 16px 4px 0;
+    top: 0;
+    right: -16px;
+    font-size: 15px;
+    line-height: 24px;
+    color: @highlight;
+
+    &:hover {
+        right: -8px;
+        box-shadow: 0px 0px 12px #88C1FF inset, 0px 0px 4px #000;
+    }
+}
+
+#CMStatsPanelButton { top: 32px; }
+
+// Adjust styling of the native Log button so it fits correctly
+#logButton {
+    width: 90px !important;
+    padding: 4px 16px 4px 0;
+    right: -16px;
+    font-size: 15px;
+    line-height: 24px;
+}
+
+// Pop Wrinklers button
+#CMPopWrinklers {
+    .secondaryButton();
+    display: none;
+    position: absolute;
+    z-index: 21;
+    bottom: -183px;
+    left: -52px;
+}

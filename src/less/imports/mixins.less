@@ -1,0 +1,87 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * This file contains mixin classes that can be imported as
+ * rules into other selectors. The actual class names used in
+ * the mixins are not tied to any classes found in the HTML.
+ */
+
+// Default button style
+.button(@color; @text-color) {
+    cursor: pointer;
+    border: 1px solid lighten(@color, 5%);
+    background-color: @color;
+    color: @text-color;
+    padding: 4px 5px;
+    margin: 0 auto;
+    border-radius: 2px;
+    font-size: 14px;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
+    outline: none;
+
+    &:hover {
+        background-color: lighten(@color, 5%);
+        border-color: lighten(@color, 7%);
+    }
+}
+
+// Semi-transparent, small button outline-style
+.secondaryButton() {
+    background-color: rgba(0, 0, 0, 0.75);
+    border: none;
+    color: @highlight;
+    padding: 5px;
+    font-size: 12px;
+    line-height: 16px;
+    border-radius: 2px;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: #252525;
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.65);
+    }
+}
+
+// Styles common to panels added to #sectionMiddle
+.middlePanel() {
+    display: none;
+    z-index: 1000000;
+    position: absolute;
+    left: 16px;
+    right: 0px;
+    top: 112px;
+    padding: 20px;
+    font-size: 13px;
+
+    h3 {
+        color: @highlight;
+        font-size: 28px;
+        margin: 0 0 20px;
+
+        .cmTitleSub {
+            font-size: 14px;
+            float: right;
+            font-weight: normal;
+        }
+    }
+}

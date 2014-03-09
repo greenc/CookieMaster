@@ -1,0 +1,78 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Stats panel
+ */
+
+#CMStatsPanel {
+    .middlePanel();
+
+    p {
+        line-height: 18px;
+        margin-bottom: 20px;
+    }
+
+    .cmSubTitle {
+        color: #DDD;
+        font-size: 24px;
+        margin: 25px 0 0;
+        border-bottom: 1px dashed #3A3A3A;
+        padding: 0 0 10px;
+    }
+
+    #CMXHC { width: 70px; }
+
+    // Missing achievements and upgrades sections
+    #CMUpgCont,
+    #CMAchCont,
+    #CMShaCont { display: none; }
+
+    #CMUpgCont .cmValue,
+    #CMAchCont .cmValue,
+    #CMShaCont .cmValue {
+        width: 70%;
+        color: #FFF;
+        font-weight: normal;
+    }
+
+    #CMUpgCont q,
+    #CMAchCont q,
+    #CMShaCont q {
+        display: block;
+        color: #939393;
+    }
+
+    // Stat section icons
+    .cmIcon {
+        height: 48px;
+        width: 48px;
+        float: left;
+        margin: 0 10px 0 0;
+    }
+
+    .cmIconLucky { background-position: -481px -49px; }
+    .cmIconHC { background-position: -912px -336px; }
+    .cmIconWrinkler { background-position: -911px -384px; }
+    .cmIconMisc { background-position: -1px -336px; }
+
+    // Hide tooltip deficit warnings on icons in the stats panel
+    // .cm-tooltip__contents,
+    // .cm-tooltip__warnings { display: none; }
+}

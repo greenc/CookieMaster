@@ -1,0 +1,87 @@
+/* ================================================
+
+    CookieMaster - A Cookie Clicker plugin
+
+    Version: 1.17.0
+    License: MIT
+    Website: http://cookiemaster.co.uk
+    GitHub:  https://github.com/greenc/CookieMaster
+    Author:  Chris Green
+    Email:   c.robert.green@gmail.com
+
+    This code was written to be used, abused,
+    extended and improved upon. Feel free to do
+    with it as you please, with or without
+    permission from, nor credit given to the
+    original author (me).
+
+================================================ */
+
+/**
+ * Table styles
+ */
+
+// Generic table styling
+.cmTable {
+    width: 100%;
+    margin: 0 0 20px;
+
+    tr {
+        &:nth-child(even) { background-color: rgba(255, 255, 255, 0.03); }
+    }
+
+    td,
+    th {
+        padding: 5px 0;
+        border-bottom: 1px dashed #3A3A3A;
+        line-height: 18px;
+        color: #DDD;
+    }
+
+    .cmHeader th {
+        text-align: left;
+        font-size: 24px;
+        line-height: 48px;
+        vertical-align: top;
+        padding: 0 0 5px;
+    }
+
+    .cmFirst th { padding: 0 0 5px; }
+    .cmDesc td { padding: 10px 0; }
+    .cmHighlight { color: #6CCF00; }
+    .currentValue { margin-right: 10px; }
+
+    .cmValue {
+        width: 50%;
+        color: #FFF;
+        font-weight: bold;
+    }
+}
+
+// Efficiency Key table
+#CMEfficiencyTable {
+    width: 300px;
+    background-color: rgba(0, 0, 0, 0.75);
+
+    th {
+        text-align: center;
+        border-bottom: 1px dashed #616161;
+    }
+
+    td {
+        vertical-align: top;
+        border-bottom: 1px dashed #616161;
+        padding: 5px;
+    }
+
+    .cmValue {
+        width: 265px;
+        font-weight: normal;
+    }
+
+    .cmSample {
+        display: block;
+        height: 18px;
+        width: 18px;
+    }
+}
