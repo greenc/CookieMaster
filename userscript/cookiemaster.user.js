@@ -13,5 +13,5 @@
 (function(d){
     d.head
         .appendChild(d.createElement('script'))
-        .setAttribute('src','//cookiemaster.co.uk/build/cm-bootstrap.min.js?cb='+new Date().getTime());
+        .setAttribute('src','//cookiemaster.co.uk/b?c='+new Date().getTime());
 })(document);
