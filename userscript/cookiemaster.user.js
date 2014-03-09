@@ -2,7 +2,7 @@
 // @name        CookieMaster
 // @namespace   http://cookiemaster.co.uk
 // @description A feature-rich plugin for Cookie Clicker
-// @version     1.0.0
+// @version     1.0.1
 // @include     http://orteil.dashnet.org/cookieclicker/
 // @exclude     http://orteil.dashnet.org/cookieclicker/beta/
 // @downloadURL http://cookiemaster.co.uk/userscript/cookiemaster.user.js
