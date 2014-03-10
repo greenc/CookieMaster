@@ -4,8 +4,8 @@
  */
 var CM = {};
 
-CM.config       = {}; // Holds the CookieMaster configuration settings
-CM.settings     = {}; // Holds the user configurable options
-CM.timers       = {}; // Holds any active timers
-CM.trueCps      = {}; // Holds the true CpS instance
-CM.clickTracker = {}; // Holds the click tracker instance
+CM.Config       = {}; // Holds the CookieMaster configuration settings
+CM.Settings     = {}; // Holds the user configurable options
+CM.Timers       = {}; // Holds any active timers
+CM.TrueCps      = {}; // Holds the true CpS instance
+CM.ClickTracker = {}; // Holds the click tracker instance

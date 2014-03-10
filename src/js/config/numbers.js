@@ -2,9 +2,9 @@
 // Long number formatting settings
 ///////////////////////////////////////////////
 
-CM.config.cmNumFormatRanges = (function() {
+CM.Config.numbers = (function() {
 
-    var settings = [
+    var numbers = [
         {
             divider: 1e24,
             suffix: {
@@ -91,6 +91,6 @@ CM.config.cmNumFormatRanges = (function() {
         }
     ];
 
-    return settings;
+    return numbers;
 
 })();

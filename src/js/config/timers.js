@@ -2,15 +2,21 @@
 // Timer bar settings
 ///////////////////////////////////////////////
 
-CM.config.cmTimerSettings = (function() {
+CM.Config.timerSettings = (function() {
 
-    this.gc          = {label: 'Next Cookie:'  };
-    this.sp          = {label: 'Next Reindeer:'};
-    this.frenzy      = {label: 'Frenzy:',       hide: ['clot',   'elderFrenzy']};
-    this.elderFrenzy = {label: 'Elder Frenzy:', hide: ['clot',   'frenzy'     ]};
-    this.clickFrenzy = {label: 'Click Frenzy:' };
-    this.clot        = {label: 'Clot:',         hide: ['frenzy', 'elderFrenzy']};
-    this.pledge      = {label: 'Pledge:'       };
-    this.wrinklers   = {label: 'Pop Wrinklers:'};
+    var settings = {
+
+        gc          : {label: 'Next Cookie:'  },
+        sp          : {label: 'Next Reindeer:'},
+        frenzy      : {label: 'Frenzy:',       hide: ['clot',   'elderFrenzy']},
+        elderFrenzy : {label: 'Elder Frenzy:', hide: ['clot',   'frenzy'     ]},
+        clickFrenzy : {label: 'Click Frenzy:' },
+        clot        : {label: 'Clot:',         hide: ['frenzy', 'elderFrenzy']},
+        pledge      : {label: 'Pledge:'       },
+        wrinklers   : {label: 'Pop Wrinklers:'}
+
+    };
+
+    return settings;
 
 })();

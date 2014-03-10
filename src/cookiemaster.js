@@ -20,92 +20,6 @@
 /*global CME:false,CMEO:false,google:false */
 
 /**
- * Initialization method. This is the first thing that gets called
- * when the script runs, and all methods that need to be invoked on
- * startup should be called from here in the order needed.
- */
-CM.init = function() {
-
-    var self            = this,
-        refreshRate     = this.config.cmRefreshRate,
-        fastRefreshRate = this.config.cmFastRefreshRate,
-        checkUpdateRate = this.config.cmCheckUpdateRate,
-        ccVers          = Game.version.toString();
-
-    // Attach the message bar before anything else
-    this.config.cmMessageBar = $('<div id="CMMessageBar"><span id="CMMessageBarDismissAll">Dismiss all</span></div>');
-    this.config.ccBody.append(this.config.cmMessageBar);
-
-    this.loadUserSettings();      // Load current user settings from cookie
-    this.attachSettingsPanel();   // Attach the settings panel to the DOM
-    this.attachStatsPanel();      // Attach the stats panel to the DOM
-    this.attachTimerPanel();      // Attach the timer panel to the DOM
-    this.AddPopWrinklersButton(); // Attach the Pop Wrinklers button to the DOM
-    this.setupTooltips();         // Configures the custom tooltips that overwrite the native ones
-    this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
-    this.setEvents();             // Set up general event handlers
-
-    // Attach the Auto-buy panel to the DOM
-    // and initialize the auto-buyer class
-    this.attachAutoBuyPanel();
-    this.autoBuyer = new this.AutoBuy();
-
-    /**
-     * Performs more setup routines based on current user settings
-     * This also gets called whenever user saves settings
-     */
-    this.applyUserSettings();
-
-    // Refresh tooltips when drawn
-    Game.tooltip.draw = this.appendToNative(Game.tooltip.draw, CM.updateTooltips);
-    // Refresh tooltips on store rebuild
-    Game.RebuildStore = this.appendToNative(Game.RebuildStore, CM.updateTooltips);
-
-    /**
-     * Initialize the main game loop
-     */
-    setInterval(function() {self.mainLoop();}, refreshRate);
-
-    /**
-     * Initialize secondary, faster loop for the title bar ticker
-     * and audio alert notifications
-     */
-    setInterval(function() {
-
-        // Update the title tab ticker
-        self.updateTitleTicker();
-
-        // Audio alerts
-        if(self.config.settings.audioAlerts.current !== 'off') {
-            self.playAudioAlerts();
-        }
-
-        // Auto click popups if set
-        if(self.config.settings.autoClickPopups.current !== 'off') {
-            self.autoClickPopups();
-        }
-
-    }, fastRefreshRate);
-
-    // Check for plugin updates
-    setInterval(function() {self.checkForUpdate();}, checkUpdateRate);
-
-    // Warn user if this version of Cookie Clicker has not been tested with CookieMaster
-    if(this.compatibilityCheck(ccVers) === -1) {
-        this.message('<strong>Warning:</strong> CookieMaster has not been tested on this version of Cookie Clicker. Continue at your own peril!', 'warning');
-    }
-
-    // Silently fix new game spawns
-    if(Game.seasonPopup.maxTime === 0 && Game.goldenCookie.maxTime === 0) {
-        this.fixNewGameSpawns();
-    }
-
-    // All done :)
-    this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'notice');
-
-};
-
-/**
  * Returns index of version number in the array of known
  * compatible versions
  *
@@ -124,59 +38,6 @@ CM.compatibilityCheck = function(version) {
     }
 
     return -1;
-
-};
-
-/**
- * Formats very large numbers with their appropriate suffix, also adds
- * thousands and decimal separators and performs correct rounding for
- * smaller numbers
- *
- * @param  {Integer} num    The number to be formatted
- * @param  {Integer} floats Amount of decimal places required
- * @return {String}
- */
-CM.largeNumFormat = function(num, precision) {
-
-    var useShortNums = this.config.settings.shortNums.current === 'on' ? true : false,
-        notation     = this.config.settings.suffixFormat.current,
-        largeFloats  = this.config.settings.precision.current,
-        decSep = this.config.settings.numFormat.current === 'us' ? '.' : ',',
-        ranges = this.config.cmNumFormatRanges,
-        decimal = decSep === '.' ? '.' : ',',
-        comma = decSep === '.' ? ',' : '.',
-        floats = precision || 0,
-        qualifier    = num < 0 ? '-' : '',
-        parts,
-        i;
-
-    // We'd like our integers to be finite please :)
-    if(!isFinite(num)) {
-        return 'Infinity';
-    }
-
-    // Force positive int for working on it
-    num = Math.abs(num);
-
-    // Format the very large numbers
-    if(useShortNums) {
-        for(i = 0; i < ranges.length; i++) {
-            if(num >= ranges[i].divider) {
-                num = Math.floor((num / ranges[i].divider) * Math.pow(10, largeFloats)) / Math.pow(10, largeFloats);
-                num = num.toFixed(largeFloats) + ranges[i].suffix[notation];
-                return qualifier + num.replace('.', decimal);
-            }
-        }
-    }
-
-    // Apply rounding
-    num = Math.round(num * Math.pow(10, floats)) / Math.pow(10, floats);
-
-    // Localize
-    parts = num.toString().split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, comma);
-
-    return qualifier + parts.join(decimal);
 
 };
 
@@ -766,71 +627,6 @@ CM.fixNewGameSpawns = function() {
 };
 
 /**
- * Format a time (s) to an human-readable format
- *
- * @param {Integer} time
- * @param {String}  compressed  Compressed output (minutes => m, etc.)
- *
- * @return {String}
- */
-CM.formatTime = function(t, compressed) {
-
-    // Compute each units separately
-    var time =Math.round(t),
-        days    = parseInt(time / 86400) % 999,
-        hours   = parseInt(time / 3600) % 24,
-        minutes = parseInt(time / 60) % 60,
-        seconds = time % 60,
-        units = [' days, ', ' hours, ', ' minutes, ', ' seconds'],
-        formatted;
-
-    if (typeof compressed === 'undefined') {
-        compressed = false;
-    }
-
-    // Take care of special cases
-    if (!isFinite(time)) {
-        return 'Never';
-    } else if (time / 86400 > 1e3) {
-        return '> 1,000 days';
-    }
-
-    if (!compressed) {
-        if (days === 1) {
-            units[0] = ' day, ';
-        }
-        if (hours === 1) {
-            units[1] = ' hour, ';
-        }
-        if (minutes === 1) {
-            units[2] = ' minute, ';
-        }
-        if (seconds === 1) {
-            units[3] = ' second';
-        }
-    } else {
-        units = ['d, ', 'h, ', 'm, ', 's'];
-    }
-
-    // Create final string
-    formatted = '';
-    if (days > 0) {
-        formatted += days + units[0];
-    }
-    if (days > 0 || hours > 0) {
-        formatted += hours + units[1];
-    }
-    if (days > 0 || hours > 0 || minutes > 0) {
-        formatted += minutes + units[2];
-    }
-    if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
-        formatted += seconds + units[3];
-    }
-
-    return formatted;
-};
-
-/**
  * Checks if any Wrinklers are on screen
  *
  * @return {[Boolean]}
@@ -911,18 +707,6 @@ CM.getMissingAchievements = function(shadow) {
 };
 
 /**
- * Capitalize the first letter of each word
- *
- * @param  {String} str String to process
- * @return {String}
- */
-CM.toTitleCase = function(str) {
-    return str.replace(/\w\S*/g, function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-};
-
-/**
  * Styles CookieMaster popups differently while still using the native Game.Popup method
  *
  * @param  {String}   message
@@ -993,66 +777,6 @@ CM.replaceNative = function(native, replaces, args) {
     }
 
     Game[native] = new Function(args, this.replaceCode(newCode, replaces));
-
-};
-
-/**
- * Compares 2 version numbers
- * @param  {String} v1      version number 1
- * @param  {String} v2      version number 2
- * @param  {Object} options optional params to control sorting and matching behaviour
- * @return {Integer}         -1|0|1
- */
-CM.versionCompare = function(v1, v2, options) {
-
-    var lexicographical = options && options.lexicographical,
-        zeroExtend = options && options.zeroExtend,
-        v1parts = v1.split('.'),
-        v2parts = v2.split('.'),
-        i;
-
-    function isValidPart(x) {
-        return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
-    }
-
-    if(!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
-        return NaN;
-    }
-
-    if(zeroExtend) {
-        while(v1parts.length < v2parts.length) {
-            v1parts.push('0');
-        }
-        while(v2parts.length < v1parts.length){
-            v2parts.push('0');
-        }
-    }
-
-    if(!lexicographical) {
-        v1parts = v1parts.map(Number);
-        v2parts = v2parts.map(Number);
-    }
-
-    for(i = 0; i < v1parts.length; ++i) {
-        if(v2parts.length === i) {
-            return 1;
-        }
-        if(v1parts[i] === v2parts[i]) {
-            continue;
-        }
-        else if(v1parts[i] > v2parts[i]) {
-            return 1;
-        }
-        else {
-            return -1;
-        }
-    }
-
-    if(v1parts.length !== v2parts.length) {
-        return -1;
-    }
-
-    return 0;
 
 };
 
