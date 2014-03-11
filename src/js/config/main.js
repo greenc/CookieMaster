@@ -3,6 +3,7 @@
  *
  * @type {Object}
  */
+
 CM.Config = (function() {
 
     var config = {

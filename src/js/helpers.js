@@ -5,6 +5,28 @@
 CM.Helpers = (function() {
 
     /**
+     * Returns index of version number in the array of known
+     * compatible versions
+     *
+     * @param  {String}  version CC version
+     * @return {Integer}
+     */
+    var compatibilityCheck = function(version) {
+
+        var vArray = this.config.ccCompatibleVersions,
+            i;
+
+        for(i = 0; i < vArray.length; i++) {
+            if(vArray[i].match(version)) {
+                return i;
+            }
+        }
+
+        return -1;
+
+    };
+
+    /**
      * Capitalize the first letter of each word
      *
      * @param  {String} str String to process
@@ -141,11 +163,21 @@ CM.Helpers = (function() {
         return formatted;
     };
 
+    var fixNewGameSpawns = function() {
+        Game.goldenCookie.minTime = Game.goldenCookie.getMinTime();
+        Game.goldenCookie.maxTime = Game.goldenCookie.getMaxTime();
+        Game.seasonPopup.minTime  = Game.seasonPopup.getMinTime();
+        Game.seasonPopup.maxTime  = Game.seasonPopup.getMaxTime();
+        Game.goldenCookie.toDie   = 0;
+        Game.seasonPopup.toDie    = 0;
+    };
 
     return {
-        toTitleCase:    toTitleCase,
-        versionCompare: versionCompare,
-        formatTime:     formatTime
+        compatibilityCheck: compatibilityCheck,
+        toTitleCase:        toTitleCase,
+        versionCompare:     versionCompare,
+        formatTime:         formatTime,
+        fixNewGameSpawns:   fixNewGameSpawns
     };
 
 })();

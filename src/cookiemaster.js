@@ -20,28 +20,6 @@
 /*global CME:false,CMEO:false,google:false */
 
 /**
- * Returns index of version number in the array of known
- * compatible versions
- *
- * @param  {String}  version CC version
- * @return {Integer}
- */
-CM.compatibilityCheck = function(version) {
-
-    var vArray = this.config.ccCompatibleVersions,
-        i;
-
-    for(i = 0; i < vArray.length; i++) {
-        if(vArray[i].match(version)) {
-            return i;
-        }
-    }
-
-    return -1;
-
-};
-
-/**
  * Class for managing individual timers, e.g. Golden Cookie, Frenzies, etc.
  *
  * @param {String} type  reindeer, goldenCookie, frenzy, clickFrenzy,
@@ -617,15 +595,6 @@ CM.getReindeerReward = function() {
 
 };
 
-CM.fixNewGameSpawns = function() {
-    Game.goldenCookie.minTime = Game.goldenCookie.getMinTime();
-    Game.goldenCookie.maxTime = Game.goldenCookie.getMaxTime();
-    Game.seasonPopup.minTime  = Game.seasonPopup.getMinTime();
-    Game.seasonPopup.maxTime  = Game.seasonPopup.getMaxTime();
-    Game.goldenCookie.toDie   = 0;
-    Game.seasonPopup.toDie    = 0;
-};
-
 /**
  * Checks if any Wrinklers are on screen
  *
@@ -718,65 +687,6 @@ CM.popup = function(message, type) {
     var typeClass = this.toTitleCase(type) || 'Notice';
 
     return Game.Popup('<span class="cmPopupText cmPopup' + typeClass + '">' + message + '</span>');
-
-};
-
-/**
- * Append a piece of code to native code
- *
- * @param {String}  native
- * @param {Closure} append
- *
- * @return {Void}
- */
-CM.appendToNative = function(native, append) {
-    return function() {
-        native.apply(null, arguments);
-        append.apply(CM);
-    };
-};
-
-/**
- * Execute replacements on a method's code
- *
- * @param {String}  code
- * @param {Closure} replaces
- *
- * @return {String}
- */
-CM.replaceCode = function(code, replaces) {
-
-    var replace;
-
-    code = code.toString();
-
-    // Apply the various replaces
-    for(replace in replaces) {
-        code = code.replace(replace, replaces[replace]);
-    }
-
-    return code
-        .replace(/^function[^{]+{/i, "")
-        .replace(/}[^}]*$/i, "");
-};
-
-/**
- * Replace a native CookieClicker function with another
- *
- * @param {String}  native
- * @param {Closure} replaces
- *
- * @return {void}
- */
-CM.replaceNative = function(native, replaces, args) {
-
-    var newCode = Game[native];
-
-    if (typeof args === 'undefined') {
-        args = '';
-    }
-
-    Game[native] = new Function(args, this.replaceCode(newCode, replaces));
 
 };
 
