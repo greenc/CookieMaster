@@ -4307,7 +4307,7 @@ CM.message = function(msg, type) {
 CM.makeTooltip = function(object) {
     var identifier = object.identifier();
 
-    object.desc += '' +
+    cmTooltip = '' +
         '<div class="cm-tooltip__contents" id="' + identifier + '"></div>' +
         '<div class="cm-tooltip__warnings" id="' + identifier + 'note_div">'+
             '<div id="' + identifier + 'note_div_warning" class="cmTooltipWarningLucky">' +
@@ -4324,6 +4324,11 @@ CM.makeTooltip = function(object) {
             '</div>' +
         '</div>';
 
+
+    object.desc += cmTooltip;
+    // hack for fools day
+    Game.foolDescs[object.name] += cmTooltip;
+    // Update store
     // Update store
     Game.RebuildUpgrades();
 };
@@ -4349,7 +4354,6 @@ CM.updateTooltip = function(object, colors) {
     if (!object.matches(object.identifier())) {
         this.makeTooltip(object);
     }
-
     // Cancel if we're not in this particular tooltip at the moment
     if ($object.length !== 1 || $object.css('display') === 'none') {
         return;
