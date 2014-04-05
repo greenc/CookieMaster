@@ -730,7 +730,7 @@ CME.simulateBuy = function(object, statistic) {
     }
 
     // Don't simulate seasonal upgrades or Elder pledge/Covenant
-    var doNotSimulate = [74, 84, 85, 181, 182, 183, 184];
+    var doNotSimulate = [74, 84, 85, 181, 182, 183, 184, 185];
     if(doNotSimulate.indexOf(object.id) !== -1) {
         return 0;
     }
@@ -744,6 +744,7 @@ CME.simulateBuy = function(object, statistic) {
             Collect     : Game.CollectWrinklers
         },
         stored = {
+            seasonUses       : Game.seasonUses,
             cpsSucked        : Game.cpsSucked,
             globalCpsMult    : Game.globalCpsMult,
             cookiesPs        : Game.cookiesPs,
@@ -772,6 +773,7 @@ CME.simulateBuy = function(object, statistic) {
 
     // Reverse buy
     object.simulateToggle(false);
+    Game.seasonUses       = stored.seasonUses;
     Game.cpsSucked        = stored.cpsSucked;
     Game.globalCpsMult    = stored.globalCpsMult;
     Game.cookiesPs        = stored.cookiesPs;
