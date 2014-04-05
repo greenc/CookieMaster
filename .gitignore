@@ -12,3 +12,6 @@ node_modules
 *.pem
 *.crx
 *.zip
+
+build
+dist
