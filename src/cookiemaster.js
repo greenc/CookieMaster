@@ -1715,7 +1715,7 @@ CM.popup = function(message, type) {
  */
 CM.appendToNative = function(native, append) {
     return function() {
-        native.apply(null, arguments);
+        native.apply(this, arguments);
         append.apply(CM);
     };
 };
