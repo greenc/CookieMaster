@@ -153,11 +153,11 @@ module.exports = function(grunt) {
                     },
                     {
                         from: 'build/cookiemaster.js',
-                        to:   'dist/cookiemaster.min.js'
+                        to:   'cookiemaster.min.js'
                     },
                     {
                         from: 'build/cookiemaster.css',
-                        to:   'dist/cookiemaster.min.css'
+                        to:   'cookiemaster.min.css'
                     }
                 ]
             },
@@ -167,7 +167,7 @@ module.exports = function(grunt) {
                 replacements: [
                     {
                         from: '../cookiemaster/build/cm-bootstrap.js',
-                        to:   '//cookiemaster.co.uk/b'
+                        to:   '//cookiemaster.creatale.de/b'
                     }
                 ]
             }
