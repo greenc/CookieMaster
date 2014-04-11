@@ -38,7 +38,7 @@ CM.config = {
     ///////////////////////////////////////////////
 
     version:              '1.17.1',                         // Current version of CookieMaster
-    ccCompatibleVersions: ['1.0411'],                       // Known compatible versions of Cookie Clicker
+    ccCompatibleVersions: ['1.0453'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
     cmCheckUpdateRate:    1800000,                          // How often to check for updates (default 30 minutes)
@@ -809,7 +809,8 @@ CM.init = function() {
     this.attachStatsPanel();      // Attach the stats panel to the DOM
     this.attachTimerPanel();      // Attach the timer panel to the DOM
     this.AddPopWrinklersButton(); // Attach the Pop Wrinklers button to the DOM
-    this.setupTooltips();         // Configures the custom tooltips that overwrite the native ones
+    this.setupTooltips();        // Configures the custom tooltips that overwrite the native ones
+    this.setupDynamicTooltips();
     this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
     this.setEvents();             // Set up general event handlers
 
@@ -827,8 +828,7 @@ CM.init = function() {
     // Refresh tooltips when drawn
     Game.tooltip.draw = this.appendToNative(Game.tooltip.draw, CM.updateTooltips);
     // Refresh tooltips on store rebuild
-    Game.RebuildStore = this.appendToNative(Game.RebuildStore, CM.updateTooltips);
-
+    Game.RefreshStore = this.appendToNative(Game.RefreshStore, CM.updateTooltips);
     /**
      * Initialize the main game loop
      */
@@ -1849,7 +1849,7 @@ CM.AutoBuy = function() {
     // Grandmapocalypse upgrades
     this.grandmapocalypse = [69, 70, 71, 72, 73];
     // Season switching upgrades
-    this.seasonal = [181, 182, 183, 184];
+    this.seasonal = [181, 182, 183, 184, 185];
 
     // setInterval to autobuy
     this.automate = null;
@@ -4010,7 +4010,7 @@ CM.applyUserSettings = function() {
     }
 
     // Refresh the game panels
-    Game.RebuildStore();
+    Game.RefreshStore();
     Game.RebuildUpgrades();
 
 };
@@ -4305,6 +4305,15 @@ CM.message = function(msg, type) {
  * @return {Void}
  */
 CM.makeTooltip = function(object) {
+    object.desc += CM.makeTooltipHtml(object);
+    // hack for fools day
+    Game.foolDescs[object.name] += cmTooltip;
+    // Update store
+    // Update store
+    Game.RebuildUpgrades();
+};
+
+CM.makeTooltipHtml = function(object) {
     var identifier = object.identifier();
 
     cmTooltip = '' +
@@ -4324,14 +4333,8 @@ CM.makeTooltip = function(object) {
             '</div>' +
         '</div>';
 
-
-    object.desc += cmTooltip;
-    // hack for fools day
-    Game.foolDescs[object.name] += cmTooltip;
-    // Update store
-    // Update store
-    Game.RebuildUpgrades();
-};
+    return cmTooltip;
+}
 
 /**
  * Update a Building/Upgrade tooltip
@@ -4398,9 +4401,7 @@ CM.updateTooltip = function(object, colors) {
         $(identifier + 'note_div_caution').hide();
         $(identifier +   'note_div_chain').hide();
     }
-
     this.tooltipLastObjectId = identifier;
-
 };
 
 /**
@@ -4413,7 +4414,15 @@ CM.setupTooltips = function() {
 
     // Rebuild game elements
     Game.RebuildUpgrades();
-    Game.RebuildStore();
+};
+
+ CM.setupDynamicTooltips = function() {
+    Game.ObjectsById.forEach(function (object) {
+        _tooltip = object.tooltip;
+        object.tooltip = function(){
+             setTimeout(function(){CM.manageBuildingTooltip(object)},1);
+            return _tooltip.apply(object);}
+    });
 };
 
 /**
@@ -4435,7 +4444,7 @@ CM.updateTooltips = function(which) {
         });
     }
 
-    // Buildings
+    Buildings
     if (which === 'all' || which === 'objects') {
         Game.ObjectsById.forEach(function (building) {
             CM.manageBuildingTooltip(building);
@@ -4611,8 +4620,8 @@ var gameReadyStateCheckInterval = setInterval(function() {
              * being given to a reset game
              */
             CM.replaceNative('Reset', {
-                'if (bypass': 'CM.clearAutoClicker();if (bypass',
-                'Game.Popup(\'Game reset\');': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);}Game.Popup(\'Game reset\');'
+                'if (!bypass': 'CM.clearAutoClicker();if (!bypass',
+                'if (hard': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);} if (hard'
             }, 'bypass');
 
             /**

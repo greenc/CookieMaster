@@ -729,8 +729,8 @@ CME.simulateBuy = function(object, statistic) {
         return 0;
     }
 
-    // Don't simulate seasonal upgrades or Elder pledge/Covenant
-    var doNotSimulate = [74, 84, 85, 181, 182, 183, 184];
+    // Don't simulate seasonal upgrades, Elder pledge/Covenant or Santa's hat
+    var doNotSimulate = [74, 84, 85, 152, 181, 182, 183, 184, 185];
     if(doNotSimulate.indexOf(object.id) !== -1) {
         return 0;
     }
