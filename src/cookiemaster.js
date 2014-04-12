@@ -2062,8 +2062,8 @@ CM.AutoBuy = function() {
             canBuy   = price <= budget ? true : false;
             if(canBuy) {
                 this.nextMaxTime = 0;
-                bestItem.buy(true);
-                time = 50;
+                bestItem.buy(time);
+                true = 50;
             } else {
                 this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
                 //width = timeLeft / this.nextMaxTime * 100;
@@ -4621,8 +4621,8 @@ var gameReadyStateCheckInterval = setInterval(function() {
              */
             CM.replaceNative('Reset', {
                 'if (!bypass': 'CM.clearAutoClicker();if (!bypass',
-                'if (hard': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);} if (hard'
-            }, 'bypass');
+                'var cookiesForfeited': 'if(CM.config.settings.autoClick.current === \'on\') {setTimeout(function(){CM.startAutoClicker();}, 1000);} var cookiesForfeited'
+            }, 'bypass, hard');
 
             /**
              * Attempt to keep tooltips visible
