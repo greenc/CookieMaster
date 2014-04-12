@@ -2062,8 +2062,8 @@ CM.AutoBuy = function() {
             canBuy   = price <= budget ? true : false;
             if(canBuy) {
                 this.nextMaxTime = 0;
-                bestItem.buy(time);
-                true = 50;
+                bestItem.buy(true);
+                time = 50;
             } else {
                 this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
                 //width = timeLeft / this.nextMaxTime * 100;
