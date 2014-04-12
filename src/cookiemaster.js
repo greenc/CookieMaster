@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.17.4
+    Version: 1.17.5
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.17.4',                         // Current version of CookieMaster
+    version:              '1.17.5',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0453'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -811,7 +811,7 @@ CM.init = function() {
     this.AddPopWrinklersButton(); // Attach the Pop Wrinklers button to the DOM
     this.setupTooltips();        // Configures the custom tooltips that overwrite the native ones
     this.setupDynamicTooltips();
-    this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
+    // this.preventClickBleed();     // Overrides native click handlers for Golden Cookies and Reindeer
     this.setEvents();             // Set up general event handlers
 
     // Attach the Auto-buy panel to the DOM
@@ -1452,8 +1452,7 @@ CM.maxChainReward = function() {
     if(Game.cookiesEarned < 100000) {
         return false;
     }
-
-    while(chainValue < bankLimit && chainValue <= cpsLimit) {
+    while(chainValue < bankLimit && chainValue <= cpsLimit && chainValue < 777777777777777777777) {
         chainValue += wrath ? '6' : '7';
         chainValue = parseInt(chainValue, 10);
     }
