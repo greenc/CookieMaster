@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.17.5
+    Version: 1.17.6
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.17.5',                         // Current version of CookieMaster
+    version:              '1.17.6',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0453'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -1305,6 +1305,9 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
         mult *= (1 + Game.milkProgress * 0.2 * milkMult);
     }
     if(Game.Has('Kitten overseers')) {
+        mult *= (1 + Game.milkProgress * 0.2 * milkMult);
+    }
+    if(Game.Has('Kitten managers')) {
         mult *= (1 + Game.milkProgress * 0.2 * milkMult);
     }
 
