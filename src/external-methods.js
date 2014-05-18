@@ -728,7 +728,6 @@ CME.simulateBuy = function(object, statistic) {
     if(object.getType() === 'upgrade' && object.bought > 0) {
         return 0;
     }
-    console.log(object.id)
     // Don't simulate seasonal upgrades, Elder pledge/Covenant or Santa's hat
     var doNotSimulate = [74, 84, 85, 152, 181, 182, 183, 184, 185, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229];
     if(doNotSimulate.indexOf(object.id) !== -1) {
