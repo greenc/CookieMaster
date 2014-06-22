@@ -4446,7 +4446,7 @@ CM.updateTooltips = function(which) {
         });
     }
 
-    Buildings
+    //Buildings
     if (which === 'all' || which === 'objects') {
         Game.ObjectsById.forEach(function (building) {
             CM.manageBuildingTooltip(building);
