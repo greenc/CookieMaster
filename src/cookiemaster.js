@@ -235,7 +235,7 @@ CM.config = {
         exp: {
             title: 'Experimental',
             desc:  '60% of the time, these work every time.'
-        },
+        }
     },
 
     settings: {
@@ -2070,7 +2070,7 @@ CM.AutoBuy = function() {
                 this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
                 //width = timeLeft / this.nextMaxTime * 100;
                 width = Math.min(timeLeft / this.nextMaxTime * 100, 100);
-                time = 200
+                time = 200;
             }
             // Update the information bar
             $('#CMAutoBuyNextPurchaseValue').text(bestItem.name);
@@ -4336,7 +4336,7 @@ CM.makeTooltipHtml = function(object) {
         '</div>';
 
     return cmTooltip;
-}
+};
 
 /**
  * Update a Building/Upgrade tooltip
@@ -4422,8 +4422,9 @@ CM.setupTooltips = function() {
     Game.ObjectsById.forEach(function (object) {
         _tooltip = object.tooltip;
         object.tooltip = function(){
-             setTimeout(function(){CM.manageBuildingTooltip(object)},1);
-            return _tooltip.apply(object);}
+             setTimeout(function(){CM.manageBuildingTooltip(object);},1);
+            return _tooltip.apply(object);
+        };
     });
 };
 
@@ -4614,7 +4615,7 @@ var gameReadyStateCheckInterval = setInterval(function() {
              * game as we will use our own, faster update function
              */
             CM.replaceNative('Logic', {
-                'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': '',
+                'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': ''
             });
 
             /**
