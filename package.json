@@ -1,7 +1,8 @@
 {
   "name": "CookieMaster",
-  "version": "1.17.7",
+  "version": "1.17.8",
   "author": "Chris Green",
+  "contributors": ["rashfael", "super-aardvark"],
   "private": true,
   "cookieMasterURL": "http://cookiemaster.creatale.de",
   "cookieClickerURL": "http://orteil.dashnet.org/cookieclicker/",
