@@ -148,6 +148,10 @@ module.exports = function(grunt) {
                 overwrite: true,
                 replacements: [
                     {
+                        from: 'http://',
+                        to:   '//'
+                    },
+                    {
                         from: '../cookiemaster',
                         to:   '<%= pkg.cookieMasterURL %>'
                     },
