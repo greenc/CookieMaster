@@ -41,14 +41,14 @@ if(typeof CM === 'undefined') {
                 {
                     // jQuery
                     type:    'script',
-                    url:     '//ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js',
+                    url:     'http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js',
                     async:   false,
                     nocache: false
                 },
                 {
                     // Google Charts API
                     type:    'script',
-                    url:     '//www.google.com/jsapi',
+                    url:     'http://www.google.com/jsapi',
                     async:   false,
                     nocache: false
                 },

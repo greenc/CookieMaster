@@ -49,7 +49,7 @@ CME.milkPotentials = {
     'Kitten workers'            : 0.1,
     'Kitten engineers'          : 0.2,
     'Kitten overseers'          : 0.2,
-    'Santa\'s milk and cookies' : 0.05,
+    'Santa\'s milk and cookies' : 0.05
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -259,7 +259,7 @@ CME.updateBuildingsInformations = function() {
             bonus    : building.getWorth(true),
             bci      : building.getBaseCostPerIncome(true),
             roi      : building.getReturnInvestment(),
-            timeLeft : building.getTimeLeft(),
+            timeLeft : building.getTimeLeft()
         });
     });
 };
@@ -342,7 +342,7 @@ CME.getHeavenlyMultiplier = function() {
             'Heavenly cookie stand'  : 0.2,
             'Heavenly bakery'        : 0.25,
             'Heavenly confectionery' : 0.25,
-            'Heavenly key'           : 0.25,
+            'Heavenly key'           : 0.25
         },
         upgrade;
 

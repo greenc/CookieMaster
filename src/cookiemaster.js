@@ -235,7 +235,7 @@ CM.config = {
         exp: {
             title: 'Experimental',
             desc:  '60% of the time, these work every time.'
-        },
+        }
     },
 
     settings: {
@@ -2070,7 +2070,7 @@ CM.AutoBuy = function() {
                 this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
                 //width = timeLeft / this.nextMaxTime * 100;
                 width = Math.min(timeLeft / this.nextMaxTime * 100, 100);
-                time = 200
+                time = 200;
             }
             // Update the information bar
             $('#CMAutoBuyNextPurchaseValue').text(bestItem.name);
@@ -4336,10 +4336,12 @@ CM.makeTooltipHtml = function(object) {
         '</div>';
 
     return cmTooltip;
-}
+};
 
 /**
  * Update a Building/Upgrade tooltip
+ * 
+ * Only used for Upgrades now.  Buildings are handled in updateObjectDescription.
  *
  * @param {Object} object
  * @param {Array}  colors
@@ -4407,6 +4409,99 @@ CM.updateTooltip = function(object, colors) {
 };
 
 /**
+ * Update an object's description with our tooltip info, 
+ * so that our info is included in CC's native tooltip.
+ * 
+ * For now this is used only for buildings.  If Orteil 
+ * starts updating Upgrade tooltips the same way he's 
+ * now doing Building tooltips, this can handle both.
+ * Until then, any changes to tooltips may need to be
+ * made in both places.
+ */
+CM.updateObjectDescription=function(object) {
+	
+    var colors = object.getColors();
+
+    var informations = [object.getWorth(true), object.getBaseCostPerIncome(), object.getTimeLeft()],
+    deficits     = CME.getThresholdAlerts(object),
+    identifier   = '#' + object.identifier(),
+    $object      = $(identifier),
+    timeLeft     = informations[2] > 0 ? CM.formatTime(informations[2], true) : '<span class="cmHighlight">Done!</span>',
+    html;
+
+    var identifier = object.identifier();
+
+    var cmTooltip = '' +
+        '<div class="cm-tooltip__contents border-' + colors[0] + '" id="' + identifier + '">';
+	// Update informations
+	cmTooltip +=  '<table class="cmTable">';
+	// Add clicking bonus informations
+	if(object.getType() === 'upgrade' && object.isClickingRelated()) {
+		cmTooltip += '<tr>' +
+	                '<td>Bonus CpC:</td>' +
+	                '<td class="cmValue text-' + colors[1] + '">' + Beautify(object.getClickingWorth(), 1) + '</td>' +
+	            '</tr>';
+	}
+	cmTooltip +=     '<tr>' +
+	                '<td>Bonus Income:</td>' +
+	                '<td class="cmValue">' + Beautify(informations[0], 1) + '</td>' +
+	            '</tr>' +
+	            '<tr>' +
+	                '<td>BCI:</td>' +
+	                '<td class="cmValue text-' + colors[0] + '">' + Beautify(informations[1], 1) + '</td>' +
+	            '</tr>' +
+	            '<tr>' +
+	                '<td>Time Left:</td>' +
+	                '<td class="cmValue text-' + colors[1] + '">' + timeLeft + '</td>' +
+	            '</tr>' +
+	         '</table>';
+	
+    cmTooltip += '</div>';
+	var showDef = this.config.settings.showDeficitStats.current === 'on';
+    cmTooltip +=
+        '<div class="cm-tooltip__warnings" id="' + identifier + 'note_div">'+
+            '<div id="' + identifier + 'note_div_warning" class="cmTooltipWarningLucky"' 
+            		+ (showDef && deficits[0]>0 ? '':' style="display:none;"')+ '>' +
+                '<strong>Lucky deficit if purchased:</strong><br />' +
+                '<span id="' + identifier + 'warning_amount">' + 
+                	Beautify(deficits[0]) + ' (' + CME.getTimeToCookies(deficits[0]) + ')' + 
+            	'</span>' +
+            '</div>';
+    cmTooltip +=
+    		'<div id="' + identifier + 'note_div_caution" class="cmTooltipWarningLuckyFrenzy"' 
+    				+ (showDef && deficits[1]>0 ? '':' style="display:none;"')+ '>' +
+                '<strong>Lucky+Frenzy deficit if purchased:</strong><br />' +
+                '<span id="' + identifier + 'caution_amount">' + 
+                	Beautify(deficits[1]) + ' (' + CME.getTimeToCookies(deficits[1]) + ')' + 
+            	'</span>' +
+            '</div>';
+    cmTooltip +=
+	    	'<div id="' + identifier + 'note_div_chain" class="cmTooltipWarningChain"' 
+	    			+ (showDef && deficits[2]>0 ? '':' style="display:none;"')+ '>' +
+                '<strong>Current Chain tier deficit if purchased:</strong><br />' +
+                '<span id="' + identifier + 'chain_amount">' + 
+                	Beautify(deficits[2]) + ' (' + CME.getTimeToCookies(deficits[2]) + ')' + 
+            	'</span>' +
+            '</div>' +
+        '</div>';
+	
+    // We need to keep track of the original description
+	if (typeof(object.originalDescCM) === 'undefined') {
+		object.originalDescCM = object.desc;
+	}
+    object.desc = object.originalDescCM + cmTooltip;
+    
+    // hack for fools day
+	if (typeof(object.originalFoolDescCM) === 'undefined') {
+		object.originalFoolDescCM = Game.foolDescs[object.name];
+	}
+    Game.foolDescs[object.name] = object.originalFoolDescCM + cmTooltip;
+
+	this.tooltipLastObjectId = identifier;
+
+};
+
+/**
  * Create the DOM for all tooltips
  *
  * @return {void}
@@ -4422,8 +4517,20 @@ CM.setupTooltips = function() {
     Game.ObjectsById.forEach(function (object) {
         _tooltip = object.tooltip;
         object.tooltip = function(){
-             setTimeout(function(){CM.manageBuildingTooltip(object)},1);
-            return _tooltip.apply(object);}
+        	/* There are a couple of alternative ways this could be implemented.
+        	 * 1) The current way: insert our tooltip markup into object.desc, 
+        	 * 	  which CC's native tooltip function will use.  Pros: Robust; 
+        	 *    as long as CC includes object.desc in the tooltip, our info 
+        	 *    will be there.  Cons: Restrictive; we can't change the other
+        	 *    parts of the tooltip.
+        	 * 2) Copy CC's native tooltip logic and markup, inserting our own.  
+        	 *    Pros: Flexible; we could alter the tooltip as much as we want.  
+        	 *    Cons: Any change to CC's tooltips in the future would not be 
+        	 *    seen by CM users until we updated ours.
+        	 */
+        	CM.updateObjectDescription(object);
+            return _tooltip.apply(object);
+        };
     });
 };
 
@@ -4449,7 +4556,9 @@ CM.updateTooltips = function(which) {
     //Buildings
     if (which === 'all' || which === 'objects') {
         Game.ObjectsById.forEach(function (building) {
-            CM.manageBuildingTooltip(building);
+            // Building tooltips are handled in updateObjectDescription
+        	// We still need to update the price color based on efficiency, though
+            CM.updateBuildingDisplay(building);
         });
     }
 };
@@ -4489,7 +4598,7 @@ CM.manageUpgradeTooltips = function(upgrade) {
  *
  * @return {void}
  */
-CM.manageBuildingTooltip = function(building) {
+CM.updateBuildingDisplay = function(building) {
     var colors = building.getColors(),
         //color = this.config.settings.efficiencyCalc.current === 'roi' ? colors[2] : colors[0];
         color = colors[0];
@@ -4497,7 +4606,6 @@ CM.manageBuildingTooltip = function(building) {
     // Colorize building price
     $('.price', '#product' + building.id).attr('class', 'price text-' + color);
 
-    return this.updateTooltip(building, colors);
 };
 
 /**
@@ -4614,7 +4722,7 @@ var gameReadyStateCheckInterval = setInterval(function() {
              * game as we will use our own, faster update function
              */
             CM.replaceNative('Logic', {
-                'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': '',
+                'if (Game.T%(Game.fps*2)==0) document.title=Beautify(Game.cookies)+\' \'+(Game.cookies==1?\'cookie\':\'cookies\')+\' - Cookie Clicker\';': ''
             });
 
             /**
