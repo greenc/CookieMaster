@@ -1294,6 +1294,8 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
     // Add heavenly multiplier
     mult += hc * 0.02 * heavenlyMult;
 
+	for (var i in Game.customCps) {mult+=Game.customCps[i]();}
+	
     // Add Milk multipliers
     if(Game.Has('Kitten helpers')) {
         mult *= (1 + Game.milkProgress * 0.05 * milkMult);
@@ -1311,10 +1313,37 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
         mult *= (1 + Game.milkProgress * 0.2 * milkMult);
     }
 
+    // Easter season egg upgrades
+	var eggMult=0;
+	if (Game.Has('Chicken egg')) eggMult++;
+	if (Game.Has('Duck egg')) eggMult++;
+	if (Game.Has('Turkey egg')) eggMult++;
+	if (Game.Has('Quail egg')) eggMult++;
+	if (Game.Has('Robin egg')) eggMult++;
+	if (Game.Has('Ostrich egg')) eggMult++;
+	if (Game.Has('Cassowary egg')) eggMult++;
+	if (Game.Has('Salmon roe')) eggMult++;
+	if (Game.Has('Frogspawn')) eggMult++;
+	if (Game.Has('Shark egg')) eggMult++;
+	if (Game.Has('Turtle egg')) eggMult++;
+	if (Game.Has('Ant larva')) eggMult++;
+	if (Game.Has('Century egg'))
+	{
+		//the boost increases a little every day, with diminishing returns up to +10% on the 100th day
+		var day=Math.floor((new Date().getTime()-Game.startDate)/1000/10)*10/60/60/24;
+		day=Math.min(day,100);
+		eggMult+=(1-Math.pow(1-day/100,3))*10;
+	}
+	mult*=(1+0.01*eggMult);
+	
     // Add Elder Covenant multiplier
     if(Game.Has('Elder Covenant')) {
         mult *= 0.95;
     }
+	if (Game.Has('Golden switch')) mult*=1.25;
+	
+	for (var i in Game.customCpsMult) {mult*=Game.customCpsMult[i]();}
+	
 
     return mult;
 
