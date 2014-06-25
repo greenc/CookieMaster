@@ -728,8 +728,8 @@ CME.simulateBuy = function(object, statistic) {
     if(object.getType() === 'upgrade' && object.bought > 0) {
         return 0;
     }
-    // Don't simulate seasonal upgrades, Elder pledge/Covenant or Santa's hat
-    var doNotSimulate = [74, 84, 85, 152, 181, 182, 183, 184, 185, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229];
+    // Don't simulate upgrades with special effects, e.g. Elder pledge/Covenant, Santa's hat
+    var doNotSimulate = [74, 84, 85, 152, 181, 182, 183, 184, 185, 209, 227];
     if(doNotSimulate.indexOf(object.id) !== -1) {
         return 0;
     }
