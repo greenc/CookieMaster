@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.17.8
+    Version: 1.17.9
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,15 +37,15 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.17.8',                         // Current version of CookieMaster
-    ccCompatibleVersions: ['1.0453'],                       // Known compatible versions of Cookie Clicker
+    version:              '1.17.9',                         // Current version of CookieMaster
+    ccCompatibleVersions: ['1.0465'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
     cmCheckUpdateRate:    1800000,                          // How often to check for updates (default 30 minutes)
     cmGCAudioAlertURL:    '../cookiemaster/assets/gc.mp3',  // Default Golden Cookie audio soundbyte
     cmSPAudioAlertURL:    '../cookiemaster/assets/sp.mp3',  // Default Reindeer audio soundbyte
     cmVersionURL:         '../cookiemaster/package.json',   // URL to check for plugin updates
-    cmChangelogURL:       'https://github.com/greenc/CookieMaster/blob/master/CHANGELOG.md',
+    cmChangelogURL:       'https://github.com/rashfael/CookieMaster/blob/selfhost/CHANGELOG.md',
 
     ///////////////////////////////////////////////
     // Internal settings used by the plugin
