@@ -1476,7 +1476,7 @@ CM.luckyFrenzyReward = function() {
 CM.maxChainReward = function() {
 
     var bankLimit       = Game.cookies / 4,
-        cpsLimit        = Game.cookiesPs * 60 * 60 * 6,
+        cpsLimit        = Game.cookiesPs * 60 * 60 * 3,
         wrath           = Game.elderWrath === 3 ? true : false,
         chainValue      = wrath ? 66666 : 77777; // Minimum guaranteed chain amount
 
@@ -1518,7 +1518,7 @@ CM.requiredChainTier = function(type, which, maxReward) {
 
     chainAmount = which === 'this' ? thisChainTier : nextChainTier;
 
-    return type === 'bank' ? chainAmount * 4 : chainAmount / 6 / 60 / 60;
+    return type === 'bank' ? chainAmount * 4 : chainAmount / 3 / 60 / 60;
 
 };
 
