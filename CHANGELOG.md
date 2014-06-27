@@ -1,5 +1,8 @@
 # CookieMaster Release History
 
+### Version 1.17.10 - _2014/6/27_
+ - Cookie chain calculation now correctly stops at a maximum of three hours worth of collected cookies.
+
 ### Version 1.17.9 - _2014/6/26_
  - HC calculation now take the global multiplier from Easter upgrades into account.
  - (Most) Easter upgrades will also have the correct stats in their tooltips.
