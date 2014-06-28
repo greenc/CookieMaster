@@ -10,6 +10,9 @@
 ### Version 1.17.8 - _2014/6/24_
  - Tooltips no longer flicker
 
+### Version 1.17.6 - _2014/4/24_
+ - added Kitten Managers to CpS Reset calculation
+
 ### Version 1.17.1 - _2014/3/09_
 
  - Rewrote all CSS in LESS, organized into logical directories and files (yay!)
