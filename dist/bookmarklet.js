@@ -1,1 +1,0 @@
-javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.co.uk/b?c='+Date.now())._
