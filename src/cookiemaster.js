@@ -4220,6 +4220,7 @@ CM.setEvents = function() {
     );
     $('#CMPopWrinklers').click(function() {
         Game.CollectWrinklers();
+        CM.popWrinklersAfterXTime();
         $('#CMPopWrinklers').hide();
     });
 
