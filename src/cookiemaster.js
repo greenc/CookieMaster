@@ -740,6 +740,27 @@ CM.config = {
             desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
             current: 'off'
         },
+        cpsMethod: {
+            group:   'exp',
+            type:    'select',
+            label:   'CpS Calculation Method:',
+            desc:    'Choose the Cookies Per Second calculation method to use in timers and other functions.  Base CpS ignores frenzies.  Current CpS is modified by frenzies.  True CpS is a rolling average of your actual cookie production.',
+            options: [
+                {
+                    label: 'Base CpS',
+                    value: 'base'
+                },
+                {
+                    label: 'Current CpS',
+                    value: 'current'
+                },
+                {
+                    label: 'True CpS',
+                    value: 'effective'
+                }
+            ],
+            current: 'effective'
+        },
         trueCpsAverage: {
             group: 'exp',
             type:  'range',
@@ -1201,7 +1222,7 @@ CM.getHCStats = function() {
         maxPercent           = max * 2,
         cookiesToNext        = this.heavenlyToCookiesRemaining(max + 1),
         totalCookiesToNext   = this.heavenlyToCookies(max + 1) - this.heavenlyToCookies(max),
-        timeToNext           = Math.round(cookiesToNext / this.effectiveCps()),
+        timeToNext           = Math.round(cookiesToNext / this.configuredCps()),
         i;
 
     stats = [
@@ -1386,6 +1407,21 @@ CM.effectiveCps = function() {
 
     return this.trueCps.cps > 0 ? this.trueCps.cps : Game.cookiesPs;
 
+};
+
+/**
+ * Returns the current CPS using the configured calculation method
+ * 
+ * @return {Integer}
+ */
+CM.configuredCps = function() {
+	if (this.config.settings.cpsMethod.current === 'base') {
+		return this.baseCps();
+	} else if (this.config.settings.cpsMethod.current === 'current') {
+		return Game.cookiesPs;
+	} else /*if (this.config.settings.cpsMethod.current === 'effective')*/ {
+		return this.effectiveCps();
+	}
 };
 
 /**
@@ -2885,9 +2921,9 @@ CM.updateStats = function() {
         wrinklerStats        = this.getWrinklerStats(),
         lastGC               = this.toTitleCase(Game.goldenCookie.last) || '-',
         lbText               = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
-        lbtr                 = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+        lbtr                 = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.configuredCps()) + ')' : '',
         lfbText              = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
-        lfbtr                = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+        lfbtr                = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.configuredCps()) + ')' : '',
         missedGC             = this.config.settings.showMissedGC.current === 'on' ? Beautify(Game.missedGoldenClicks) : 'I\'m a wimp and don\'t want to know',
         chainReward          = this.maxChainReward(),
         chainRewardString    = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
@@ -2947,7 +2983,7 @@ CM.updateStats = function() {
         cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
     } else {
         cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
-            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.effectiveCps()), true) + ')';
+            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.configuredCps()), true) + ')';
     }
 
     // Golden Cookie stats
