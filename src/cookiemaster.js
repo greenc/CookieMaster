@@ -740,6 +740,27 @@ CM.config = {
             desc:  'Enables the ability to log stats and view a log chart. Logging can be managed in the Stats panel when this setting is active.',
             current: 'off'
         },
+        cpsMethod: {
+            group:   'exp',
+            type:    'select',
+            label:   'CpS Calculation Method:',
+            desc:    'Choose the Cookies Per Second calculation method to use in timers and other functions.  Base CpS ignores frenzies.  Current CpS is modified by frenzies.  True CpS is a rolling average of your actual cookie production.',
+            options: [
+                {
+                    label: 'Base CpS',
+                    value: 'base'
+                },
+                {
+                    label: 'Current CpS',
+                    value: 'current'
+                },
+                {
+                    label: 'True CpS',
+                    value: 'effective'
+                }
+            ],
+            current: 'effective'
+        },
         trueCpsAverage: {
             group: 'exp',
             type:  'range',
@@ -795,8 +816,6 @@ CM.clickTracker = {};
 CM.init = function() {
 
     var self            = this,
-        refreshRate     = this.config.cmRefreshRate,
-        fastRefreshRate = this.config.cmFastRefreshRate,
         checkUpdateRate = this.config.cmCheckUpdateRate,
         ccVers          = Game.version.toString();
 
@@ -829,31 +848,9 @@ CM.init = function() {
     Game.tooltip.draw = this.appendToNative(Game.tooltip.draw, CM.updateTooltips);
     // Refresh tooltips on store rebuild
     Game.RefreshStore = this.appendToNative(Game.RefreshStore, CM.updateTooltips);
-    /**
-     * Initialize the main game loop
-     */
-    setInterval(function() {self.mainLoop();}, refreshRate);
-
-    /**
-     * Initialize secondary, faster loop for the title bar ticker
-     * and audio alert notifications
-     */
-    setInterval(function() {
-
-        // Update the title tab ticker
-        self.updateTitleTicker();
-
-        // Audio alerts
-        if(self.config.settings.audioAlerts.current !== 'off') {
-            self.playAudioAlerts();
-        }
-
-        // Auto click popups if set
-        if(self.config.settings.autoClickPopups.current !== 'off') {
-            self.autoClickPopups();
-        }
-
-    }, fastRefreshRate);
+    
+    // Cause Cookie Clicker to call our logic every frame
+    Game.customLogic.push(self.gameLogicHook);
 
     // Check for plugin updates
     setInterval(function() {self.checkForUpdate();}, checkUpdateRate);
@@ -870,6 +867,38 @@ CM.init = function() {
 
     // All done :)
     this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'notice');
+
+};
+
+CM.gameLogicHook = function() {
+    /**
+     * The main game loop
+     */
+    if (Game.T % Math.round(Game.fps * (CM.config.cmRefreshRate / 1000)) == 0) {
+        CM.mainLoop();
+    }
+
+    /**
+     * Secondary, faster loop for the title bar ticker
+     * and audio alert notifications
+     */
+    if (Game.T % Math.round(Game.fps * (CM.config.cmFastRefreshRate / 1000)) == 0) {
+        // Update the title tab ticker
+        CM.updateTitleTicker();
+
+        // Audio alerts
+        if(CM.config.settings.audioAlerts.current !== 'off') {
+            CM.playAudioAlerts();
+        }
+
+        // Auto click popups if set
+        if(CM.config.settings.autoClickPopups.current !== 'off') {
+            CM.autoClickPopups();
+        }
+    } else 	if (Game.T%(Game.fps*2)==0) {
+        // Make sure the native title update doesn't have a chance to display
+        CM.updateTitleTicker();
+    }
 
 };
 
@@ -1201,7 +1230,7 @@ CM.getHCStats = function() {
         maxPercent           = max * 2,
         cookiesToNext        = this.heavenlyToCookiesRemaining(max + 1),
         totalCookiesToNext   = this.heavenlyToCookies(max + 1) - this.heavenlyToCookies(max),
-        timeToNext           = Math.round(cookiesToNext / this.effectiveCps()),
+        timeToNext           = Math.round(cookiesToNext / this.configuredCps()),
         i;
 
     stats = [
@@ -1386,6 +1415,21 @@ CM.effectiveCps = function() {
 
     return this.trueCps.cps > 0 ? this.trueCps.cps : Game.cookiesPs;
 
+};
+
+/**
+ * Returns the current CPS using the configured calculation method
+ * 
+ * @return {Integer}
+ */
+CM.configuredCps = function() {
+	if (this.config.settings.cpsMethod.current === 'base') {
+		return this.baseCps();
+	} else if (this.config.settings.cpsMethod.current === 'current') {
+		return Game.cookiesPs;
+	} else /*if (this.config.settings.cpsMethod.current === 'effective')*/ {
+		return this.effectiveCps();
+	}
 };
 
 /**
@@ -2885,9 +2929,9 @@ CM.updateStats = function() {
         wrinklerStats        = this.getWrinklerStats(),
         lastGC               = this.toTitleCase(Game.goldenCookie.last) || '-',
         lbText               = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
-        lbtr                 = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+        lbtr                 = Game.cookies < this.luckyBank() ? ' (' + this.formatTime((this.luckyBank() - Game.cookies) / this.configuredCps()) + ')' : '',
         lfbText              = Game.cookies >= this.luckyFrenzyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyFrenzyBank()) + '</span>' : Beautify(this.luckyFrenzyBank()),
-        lfbtr                = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.effectiveCps()) + ')' : '',
+        lfbtr                = Game.cookies < this.luckyFrenzyBank() ? ' (' + this.formatTime((this.luckyFrenzyBank() - Game.cookies) / this.configuredCps()) + ')' : '',
         missedGC             = this.config.settings.showMissedGC.current === 'on' ? Beautify(Game.missedGoldenClicks) : 'I\'m a wimp and don\'t want to know',
         chainReward          = this.maxChainReward(),
         chainRewardString    = chainReward ? Beautify(chainReward) : 'Earn ' + Beautify(100000 - Math.round(Game.cookiesEarned)) + ' more cookies for cookie chains',
@@ -2947,7 +2991,7 @@ CM.updateStats = function() {
         cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
     } else {
         cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
-            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.effectiveCps()), true) + ')';
+            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.configuredCps()), true) + ')';
     }
 
     // Golden Cookie stats
@@ -4220,6 +4264,7 @@ CM.setEvents = function() {
     );
     $('#CMPopWrinklers').click(function() {
         Game.CollectWrinklers();
+        CM.popWrinklersAfterXTime();
         $('#CMPopWrinklers').hide();
     });
 

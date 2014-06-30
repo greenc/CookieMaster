@@ -470,7 +470,7 @@ CME.secondsLeft = function(object) {
         return 0;
     }
 
-    return Math.round(Math.abs(realPrice) / CM.effectiveCps());
+    return Math.round(Math.abs(realPrice) / CM.configuredCps());
 };
 
 /**
@@ -481,7 +481,7 @@ CME.secondsLeft = function(object) {
  * @return {String}
  */
 CME.getTimeToCookies = function(cookies) {
-    return CM.formatTime(cookies / CM.effectiveCps(), true);
+    return CM.formatTime(cookies / CM.configuredCps(), true);
 };
 
 //////////////////////////////////////////////////////////////////////
