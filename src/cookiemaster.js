@@ -816,8 +816,6 @@ CM.clickTracker = {};
 CM.init = function() {
 
     var self            = this,
-        refreshRate     = this.config.cmRefreshRate,
-        fastRefreshRate = this.config.cmFastRefreshRate,
         checkUpdateRate = this.config.cmCheckUpdateRate,
         ccVers          = Game.version.toString();
 
@@ -850,31 +848,9 @@ CM.init = function() {
     Game.tooltip.draw = this.appendToNative(Game.tooltip.draw, CM.updateTooltips);
     // Refresh tooltips on store rebuild
     Game.RefreshStore = this.appendToNative(Game.RefreshStore, CM.updateTooltips);
-    /**
-     * Initialize the main game loop
-     */
-    setInterval(function() {self.mainLoop();}, refreshRate);
-
-    /**
-     * Initialize secondary, faster loop for the title bar ticker
-     * and audio alert notifications
-     */
-    setInterval(function() {
-
-        // Update the title tab ticker
-        self.updateTitleTicker();
-
-        // Audio alerts
-        if(self.config.settings.audioAlerts.current !== 'off') {
-            self.playAudioAlerts();
-        }
-
-        // Auto click popups if set
-        if(self.config.settings.autoClickPopups.current !== 'off') {
-            self.autoClickPopups();
-        }
-
-    }, fastRefreshRate);
+    
+    // Cause Cookie Clicker to call our logic every frame
+    Game.customLogic.push(self.gameLogicHook);
 
     // Check for plugin updates
     setInterval(function() {self.checkForUpdate();}, checkUpdateRate);
@@ -891,6 +867,38 @@ CM.init = function() {
 
     // All done :)
     this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'notice');
+
+};
+
+CM.gameLogicHook = function() {
+    /**
+     * The main game loop
+     */
+    if (Game.T % Math.round(Game.fps * (CM.config.cmRefreshRate / 1000)) == 0) {
+        CM.mainLoop();
+    }
+
+    /**
+     * Secondary, faster loop for the title bar ticker
+     * and audio alert notifications
+     */
+    if (Game.T % Math.round(Game.fps * (CM.config.cmFastRefreshRate / 1000)) == 0) {
+        // Update the title tab ticker
+        CM.updateTitleTicker();
+
+        // Audio alerts
+        if(CM.config.settings.audioAlerts.current !== 'off') {
+            CM.playAudioAlerts();
+        }
+
+        // Auto click popups if set
+        if(CM.config.settings.autoClickPopups.current !== 'off') {
+            CM.autoClickPopups();
+        }
+    } else 	if (Game.T%(Game.fps*2)==0) {
+        // Make sure the native title update doesn't have a chance to display
+        CM.updateTitleTicker();
+    }
 
 };
 
