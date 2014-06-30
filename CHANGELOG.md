@@ -1,5 +1,10 @@
 # CookieMaster Release History
 
+### Version 1.17.11 - _2014/6/30_
+ - Using "Pop All Wrinklers" now resets the "Automatically Pop Wrinklers" timer
+ - Setting to use "base", "current" or "effective" CpS calculation
+ - CookieMaster now uses the new CookieClicker "customLogic" hook, resulting in less flickering
+
 ### Version 1.17.10 - _2014/6/27_
  - Cookie chain calculation now correctly stops at a maximum of three hours worth of collected cookies.
 
