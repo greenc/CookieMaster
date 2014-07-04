@@ -734,6 +734,8 @@ CME.simulateBuy = function(object, statistic) {
         return 0;
     }
 
+    if (Game.recalculateGains) Game.CalculateGains();
+    
     // Disable some native methods
     var swapped = {
             SetResearch : Game.SetResearch,
@@ -743,6 +745,8 @@ CME.simulateBuy = function(object, statistic) {
             Collect     : Game.CollectWrinklers
         },
         stored = {
+            storeToRefresh   : Game.storeToRefresh,
+            upgradesToRebuild: Game.upgradesToRebuild,
             seasonUses       : Game.seasonUses,
             cpsSucked        : Game.cpsSucked,
             globalCpsMult    : Game.globalCpsMult,
@@ -772,6 +776,8 @@ CME.simulateBuy = function(object, statistic) {
 
     // Reverse buy
     object.simulateToggle(false);
+    Game.storeToRefresh   = stored.storeToRefresh;
+    Game.upgradesToRebuild= stored.upgradesToRebuild;
     Game.seasonUses       = stored.seasonUses;
     Game.cpsSucked        = stored.cpsSucked;
     Game.globalCpsMult    = stored.globalCpsMult;
