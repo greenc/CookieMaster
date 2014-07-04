@@ -721,9 +721,24 @@ CM.config = {
         },
         maintainBank: {
             group:   'exp',
-            type:    'checkbox',
+            type:    'select',
             label:   'Maintain Bank:',
-            desc:    'If enabled, the auto-buyer will respect the Lucky+Frenzy bank requirements after Get Lucky has been purchased.',
+            desc:    'Tells the auto-buyer when to respect the Lucky and Lucky+Frenzy bank requirements.' +
+                '  "Sometimes" allows the auto-buyer to use its best judgement.',
+            options: [
+                      {
+                          label: 'Never',
+                          value: 'off'
+                      },
+                      {
+                          label: 'Sometimes',
+                          value: 'smart'
+                      },
+                      {
+                          label: 'Always',
+                          value: 'on'
+                      }
+                  ],
             current: 'off'
         },
         noPocalypse: {
@@ -1433,6 +1448,22 @@ CM.configuredCps = function() {
 };
 
 /**
+ * Normalizes the given value (assumed to be based on current CPS)
+ * according to the configured CPS calculation method.
+ */
+CM.normalize = function(value) {
+    var factor;
+    if (this.config.settings.cpsMethod.current === 'base') {
+        factor = (Game.frenzy > 0) ? 1 / Game.frenzyPower : 1;
+    } else if (this.config.settings.cpsMethod.current === 'current') {
+        factor = 1;
+    } else /*if (this.config.settings.cpsMethod.current === 'effective')*/ {
+        factor = this.effectiveCps() / Game.cookiesPs;
+    }
+    return value * factor;
+};
+
+/**
  * Returns base CPC (cookies per click)
  *
  * @return {Integer}
@@ -1928,10 +1959,14 @@ CM.AutoBuy = function() {
 
     // setInterval to autobuy
     this.automate = null;
+    // alive flag
+    this.running = false;
     // Threshold
     this.threshold = 'none';
     // Max time remaining until next purchase
     this.nextMaxTime = 0;
+    // Next item to buy
+    this.nextItem = null;
 
     /**
      * Returns a blacklist of upgrades that should not be auto-bought
@@ -2001,7 +2036,11 @@ CM.AutoBuy = function() {
 
         var maintainBank = CM.config.settings.maintainBank.current === 'on';
 
-        this.threshold = Game.Has('Get lucky') && maintainBank ? 'frenzy' : 'none';
+        if (maintainBank) {
+            this.threshold = Game.Has('Get lucky') && Game.elderWrath < 3 ? 'frenzy' : 'lucky';
+        } else {
+            this.threshold = 'none';
+        }
 
     };
 
@@ -2009,25 +2048,45 @@ CM.AutoBuy = function() {
      * Returns array with best building object and its BCI
      * @return {Array} [Object, bci]
      */
-    this.getBestBuilding = function() {
+    this.getBestBuilding = function(budget) {
 
-        var buildings    = CME.informations.bci,
-            bestBCI      = Number.POSITIVE_INFINITY,
-            bestBuilding = false,
-            available    = false,
+        var buildings         = CME.informations.bci,
+            bestBCI           = Number.POSITIVE_INFINITY,
+            bestBuilding      = false,
+            bestAvailBCI      = Number.POSITIVE_INFINITY,
+            bestAvailBuilding = false,
+            bestBuildingTTB   = 0,
+            ttb,              // Time to buy
             object,
             i;
-
+        
+        budget = budget || Game.cookies;
         for(i = 0; i < buildings.length; i++) {
             object = Game.ObjectsById[i];
-            available = object.getPrice() <= Game.cookiesEarned ? true : false;
-            if(buildings[i] < bestBCI && available) {
+            if (object.getPrice() > Game.cookiesEarned) continue;
+            // How long until we can afford it?
+            ttb = object.getTimeLeft(budget);
+            if(buildings[i] < bestBCI) {
+                // Best building overall
                 bestBCI = buildings[i];
                 bestBuilding = object;
+                bestBuildingTTB = ttb;
+            }
+            if (ttb == 0 && buildings[i] < bestAvailBCI) {
+                // Best building we can buy immediately
+                bestAvailBuilding = object;
+                bestAvailBCI = buildings[i];
             }
         }
+        // If a lesser building will pay for itself before we'd be able
+        // to buy the best one, buy the lesser one now
+        if (bestAvailBCI < bestBuildingTTB) {
+            bestBuilding = bestAvailBuilding;
+            bestBCI = bestAvailBCI;
+            bestBuildingTTB = 0;
+        }
 
-        return [bestBuilding, bestBCI];
+        return bestBuilding ? [bestBuilding, bestBCI, bestBuildingTTB, bestBuilding.getWorth()] : false;
 
     };
 
@@ -2035,44 +2094,65 @@ CM.AutoBuy = function() {
      * Returns array with best upgrade and its BCI
      * @return {Array} [Upgrade, bci]
      */
-    this.getBestUpgrade = function() {
+    this.getBestUpgrade = function(budget) {
 
-        var upgrades    = [],
-            blackList   = this.blackList(),
-            whiteList   = this.whiteList(),
-            cheapestW   = this.getCheapest(whiteList),
-            bestBCI     = Number.POSITIVE_INFINITY,
-            bestUpgrade = false,
+        var upgrades         = [],
+            blackList        = this.blackList(),
+            whiteList        = this.whiteList(),
+            cheapestW        = this.getCheapest(whiteList),
+            bestBCI          = Number.POSITIVE_INFINITY,
+            bestUpgrade      = false,
+            bestAvailBCI     = Number.POSITIVE_INFINITY,
+            bestAvailUpgrade = false,
+            bestUpgradeTTB   = 0,
+            ttb,             // Time to buy
             itemBCI,
             item,
             i;
-
+        
+        budget = budget || Game.cookies;
         for(i in Game.Upgrades) {
             item = Game.Upgrades[i];
             if(blackList.indexOf(item.id) === -1) {
                 if(item.isInStore()) {
+                    // How long until we can afford it?
+                    ttb = item.getTimeLeft(budget);
                     itemBCI = item.getBaseCostPerIncome();
                     if(itemBCI < bestBCI) {
-                        bestUpgrade = item;
-                        bestBCI     = itemBCI;
+                        // Best upgrade overall
+                        bestUpgrade    = item;
+                        bestBCI        = itemBCI;
+                        bestUpgradeTTB = ttb;
+                    }
+                    if (ttb == 0 && itemBCI < bestAvailBCI) {
+                        // Best upgrade we can buy immediately
+                        bestAvailUpgrade = item;
+                        bestAvailBCI     = itemBCI;
                     }
                 }
             }
         }
+        // If a lesser upgrade will pay for itself before we'd be able
+        // to buy the best one, buy the lesser one now
+        if (bestAvailBCI < bestUpgradeTTB) {
+            bestUpgrade = bestAvailUpgrade;
+            bestBCI = bestAvailBCI;
+            bestUpgradeTTB = 0;
+        }
 
         // If whitelist upgrades are available and cheapest is cheaper than the calculated one, choose it
-        if(cheapestW && bestUpgrade && cheapestW[1] < bestUpgrade.getPrice()) {
-            return [cheapestW[0], 0];
+        if(cheapestW && (!bestUpgrade || cheapestW[1] < bestUpgrade.getPrice())) {
+            return [cheapestW[0], 0, cheapestW[0].getTimeLeft(budget), Number.POSITIVE_INFINITY];
         }
 
         // Else just return the best one calculated
-        return bestUpgrade !== false ? [bestUpgrade, bestBCI] : false;
+        return bestUpgrade !== false ? [bestUpgrade, bestBCI, bestUpgradeTTB, bestUpgrade.getWorth()] : false;
 
     };
 
     /**
      * Returns the item with best BCI
-     * @return {String or Integer} String indicates an upgrade, integer indicates building
+     * @return {Array} [item, bci]
      */
     this.getBestItem = function() {
 
@@ -2080,9 +2160,27 @@ CM.AutoBuy = function() {
             bestUpgrade  = this.getBestUpgrade();
 
         if(bestBuilding && bestUpgrade) {
-            return bestUpgrade[1] < bestBuilding[1] ? bestUpgrade[0] : bestBuilding[0];
+            if (bestUpgrade[1] < bestBuilding[1]) {
+                // Upgrade is better...
+                if ((bestBuilding[1] + bestBuilding[2]) < bestUpgrade[2]) {
+                    // ...but building will pay for itself before we can buy the upgrade.
+                    return bestBuilding;
+                } else {
+                    // ...so buy it.
+                    return bestUpgrade;
+                }
+            } else {
+                // Building is better...
+                if ((bestUpgrade[1] + bestUpgrade[2]) < bestBuilding[2]) {
+                    // ...but upgrade will pay for itself before we can buy the building.
+                    return bestUpgrade;
+                } else {
+                    // ...so buy it.
+                    return bestBuilding;
+                }
+            }
         } else {
-            return bestBuilding[0] || bestUpgrade[0] || false;
+            return bestBuilding || bestUpgrade || false;
         }
 
     };
@@ -2101,6 +2199,8 @@ CM.AutoBuy = function() {
             amount = CME.getLuckyTreshold('frenzy');
         } else if(threshold === 'lucky') {
             amount = CME.getLuckyTreshold(false);
+        } else if(threshold === 'clot') {
+            amount = CME.getLuckyTreshold('clot');
         }
 
         return bank - amount;
@@ -2118,30 +2218,65 @@ CM.AutoBuy = function() {
         // Set the correct threshold
         this.setThreshold();
 
-        var self     = this,
-            bestItem = this.getBestItem(),
-            budget   = this.budget(Game.cookies, this.threshold),
-            canBuy   = false,
+        var self         = this,
+            budget       = this.budget(Game.cookies, this.threshold),
+            canBuy       = false,
+            bestItem,
+            bci,
             timeLeft,
+            worth,
             price,
+            deficitStats,
             width,
             time;
+        var bestItemInfo = this.getBestItem();
 
-        if(!bestItem) {
+        if(!bestItemInfo || bestItemInfo.length < 3) {
             $('#CMAutoBuyNextPurchaseValue').text('Nothing to buy :(');
             $('#CMAutoBuyTimeLeft .cmTimerContainer').fadeOut(300);
             time = 1000;
         } else {
-            timeLeft = bestItem.getTimeLeft();
+            bestItem = bestItemInfo[0];
+            bci      = bestItemInfo[1];
+            timeLeft = bestItem.getTimeLeft(budget);
+            worth    = CM.normalize(bestItemInfo[3]);
             price    = bestItem.getPrice();
-            canBuy   = price <= budget ? true : false;
+            if (CM.config.settings.maintainBank.current === 'smart') {
+                canBuy = price <= Game.cookies;
+                // Check the value of banked cookies
+                deficitStats = CME.getBankDeficitStats(price);
+                for (var threshold in deficitStats) {
+                    if (deficitStats.hasOwnProperty(threshold)) {
+                        if (deficitStats[threshold] > worth) {
+                            // Cookies in the bank are worth more than the item; don't buy
+                            canBuy = false;
+                            var timeToThreshold = bestItem.getTimeLeft(this.budget(Game.cookies, threshold));
+                            if (timeToThreshold > timeLeft) {
+                                timeLeft = timeToThreshold;
+                            }
+                        }
+                    }
+                }
+            } else {
+                canBuy = price <= budget;
+            }
             if(canBuy) {
                 this.nextMaxTime = 0;
                 bestItem.buy(true);
                 time = 50;
+                // Quick and dirty upkeep of the BCI data to prevent buying too many
+                Game.ObjectsById.forEach(function (building, key) {
+                    if (building == bestItem) {
+                        CME.informations.bci[key] *= Game.priceIncrease;
+                    }
+                });
             } else {
-                this.nextMaxTime = this.nextMaxTime === 0 ? timeLeft : this.nextMaxTime;
-                //width = timeLeft / this.nextMaxTime * 100;
+                if (this.nextMaxTime === 0 
+                        || this.nextItem != bestItem 
+                        || timeLeft > this.nextMaxTime) {
+                    this.nextMaxTime = timeLeft;
+                    this.nextItem = bestItem;
+                }
                 width = Math.min(timeLeft / this.nextMaxTime * 100, 100);
                 time = 200;
             }
@@ -2154,17 +2289,23 @@ CM.AutoBuy = function() {
             }
         }
 
-        this.automate = setTimeout(function() {
-            self.buyBest();
-        }, time);
+        if (this.running) {
+            this.automate = setTimeout(function() {
+                self.buyBest();
+            }, time);
+        }
 
     };
 
     this.init = function() {
-        this.buyBest();
+        if (!this.running) {
+            this.running = true;
+            this.buyBest();
+        }
     };
 
     this.stop = function() {
+        this.running = false;
         clearTimeout(this.automate);
     };
 
