@@ -1,5 +1,18 @@
 # CookieMaster Release History
 
+### Version 1.17.12 - _2014/7/05_
+#### Fixes:
+  - Save Settings button no longer starts an extra auto-buy timeout if one is already running.
+  - Auto-Buyer does an approximate BCI adjustment as it goes (fixes #57).
+  - Now calculating gains before simulation if necessary (fixes #38).
+
+#### Improvements:
+  - Next Purchase timer accounts for Maintain Bank requirement (resolves #55).
+  - Changed Maintain Bank setting from checkbox to select.
+  - New Maintain Bank option "Smart" will maintain a bank threshold as long as the banked cookies are more valuable (based on overall GC probabilities) than the building/upgrade that could be bought with them.
+  - Maintain Bank "Always" (formerly 'on' or checked) now maintains the Lucky threshold if Get Lucky has not been purchased or the Grandmatriarchs is Angered. Previously, it wouldn't maintain anything until Get Lucky was purchased, and would maintain Lucky+Frenzy all the time after that.
+  - Auto-Buyer won't get tunnel vision when the most efficient purchase is very expensive.  It will buy a less efficient building/upgrade first if that one will pay for itself before the expensive one can be afforded.
+
 ### Version 1.17.11 - _2014/6/30_
  - Using "Pop All Wrinklers" now resets the "Automatically Pop Wrinklers" timer
  - Setting to use "base", "current" or "effective" CpS calculation
