@@ -324,9 +324,106 @@ CME.getLuckyTreshold = function(context, income) {
     // If we want we simulate a frenzy
     if (context === 'frenzy') {
         reward *= 7;
+    } else if (context === 'clot') {
+        reward *= 0.5;
     }
 
     return Math.round((reward * 60 * 20 + 13) * 10);
+};
+
+/**
+ * Returns the average time between Golden Cookies
+ *
+ * @return {Integer}
+ */
+CME.getAverageGCTime = function() {
+    var upgrades = 0;
+    if (Game.Has('Lucky day')) {
+        upgrades++;
+    }
+    if (Game.Has('Serendipity')) {
+        upgrades++;
+    }
+    var gge = Game.Has('Golden goose egg');
+    switch (upgrades) {
+    case 0:
+        return gge ? 427 : 448;
+    case 1:
+        return gge ? 222 : 233;
+    case 2:
+        return gge ? 116 : 121;
+    }
+};
+
+/**
+ * Calculates the Cookies Per Second from Lucky Golden Cookies
+ * that would be lost if the given amount was spent.
+ *
+ * @return {Number}
+ */
+CME.getBankDeficitValue = function(spend) {
+    var stats = this.getBankDeficitStats(spend);
+    return Math.max(stats['clot'], stats['lucky'], stats['frenzy']);
+};
+
+/**
+ * Calculates the Cookies Per Second from Lucky Golden Cookies
+ * that would be lost if the given amount was spent, for three
+ * thresholds (clot, normal, and frenzy).
+ *
+ * @return {Object}
+ */
+CME.getBankDeficitStats = function(spend) {
+    var newBank         = Game.cookies - spend,
+        avgGCTime       = this.getAverageGCTime(),
+        luckyThreshold  = this.getLuckyTreshold('lucky'),
+        frenzyThreshold = this.getLuckyTreshold('frenzy'),
+        clotThreshold   = this.getLuckyTreshold('clot'),
+        luckyValue      = 0,
+        frenzyValue     = 0,
+        clotValue       = 0,
+        luckyChance,
+        luckyFrenzyChance,
+        luckyClotChance;
+    
+    var clotDeficit   = Math.min(clotThreshold - newBank, spend);
+    var luckyDeficit  = Math.min(luckyThreshold - newBank, spend);
+    var frenzyDeficit = Game.Has('Get lucky') ? Math.min(frenzyThreshold - newBank, spend) : 0;
+    if (luckyDeficit <= 0 && frenzyDeficit <= 0) return 0;
+    
+    // Chance that any given GC will be Lucky or Lucky+Frenzy
+    switch (Game.elderWrath) {
+    case 0:
+        luckyChance = .0733;
+        luckyFrenzyChance = .3980;
+        luckyClotChance = 0;
+        break;
+    case 1:
+        luckyChance = .1149;
+        luckyFrenzyChance = .2156;
+        luckyClotChance = .0461;
+        break;
+    case 2:
+        luckyChance = .1473;
+        luckyFrenzyChance = .0826;
+        luckyClotChance = .0808;
+        break;
+    case 3:
+        luckyChance = .1715;
+        luckyFrenzyChance = 0;
+        luckyClotChance = .1068;
+        break;
+    }
+    if (clotDeficit > 0) {
+        clotValue = clotDeficit * 0.1 / (avgGCTime / (luckyChance + luckyFrenzyChance + luckyClotChance));
+    }
+    if (luckyDeficit > 0) {
+        luckyValue = luckyDeficit * 0.1 / (avgGCTime / (luckyChance + luckyFrenzyChance));
+    }
+    if (frenzyDeficit > 0) {
+        frenzyValue = frenzyDeficit * 0.1 / (avgGCTime / luckyFrenzyChance);
+    }
+    return {'clot': clotValue, 'lucky': luckyValue, 'frenzy': frenzyValue};
 };
 
 /**
@@ -460,9 +557,10 @@ CME.roundDecimal = function(number) {
  *
  * @return {Integer}
  */
-CME.secondsLeft = function(object) {
+CME.secondsLeft = function(object, availableBank) {
     // Get the price of the object we want and how much we need
-    var realPrice = Game.cookies - object.getPrice();
+    availableBank = availableBank || Game.cookies;
+    var realPrice = availableBank - object.getPrice();
 
     // If we're not making any cookies, or have
     // enough already, return 0
@@ -556,6 +654,11 @@ CMEO.getWorthOf = function(rounded) {
         ? CME.callCached('getUpgradeWorth', [this])
         : CME.callCached('getBuildingWorth', [this]);
 
+    // If this upgrade increases CpC, add clicking gains to worth
+    if(this.getType() === 'upgrade' && this.isClickingRelated()) {
+        worth += (this.getClickingWorth() * CM.clickTracker.clicksPs);
+    }
+
     return rounded ? CME.roundDecimal(worth) : worth;
 };
 
@@ -569,11 +672,6 @@ CMEO.getWorthOf = function(rounded) {
 CMEO.getBaseCostPerIncome = function(rounded) {
     var worth         = this.getWorth(),
         bci;
-
-    // If this upgrade increases CpC, add clicking gains to BCI
-    if(this.getType() === 'upgrade' && this.isClickingRelated()) {
-        worth = worth + (this.getClickingWorth() * CM.clickTracker.clicksPs);
-    }
 
     bci = CME.roundDecimal(this.getPrice() / worth);
 
@@ -600,8 +698,8 @@ CMEO.getReturnInvestment = function() {
  *
  * @return {String}
  */
-CMEO.getTimeLeft = function() {
-    return CME.secondsLeft(this);
+CMEO.getTimeLeft = function(availableBank) {
+    return CME.secondsLeft(this, availableBank);
 };
 
 /**
