@@ -2206,7 +2206,7 @@ CM.TrueCps = function(interval, maxTime) {
 
         // Add up values
         for(i = 0; i < len; i++) {
-            sum += parseInt(tracked[i], 10);
+            sum += tracked[i];
         }
 
         // Get the mean average
@@ -2338,7 +2338,7 @@ CM.ClickTracker = function(interval, maxTime) {
 
         // Add up values
         for(i = 0; i < len; i++) {
-            sum += parseInt(tracked[i], 10);
+            sum += tracked[i];
         }
 
         // Get the mean average
