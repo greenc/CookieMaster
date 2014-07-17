@@ -1198,7 +1198,6 @@ CM.Timer = function(type, label) {
  */
 CM.cookiesToHeavenly = function(cookies) {
 
-    //cookies = parseInt(cookies, 10);
     return Math.floor(Math.sqrt(2.5 * 1e11 + 2 * cookies) / 1e6 - 0.5);
 
 };
@@ -1211,7 +1210,6 @@ CM.cookiesToHeavenly = function(cookies) {
  */
 CM.heavenlyToCookies = function(chips) {
 
-    //chips = parseInt(chips, 10);
     return 5 * 1e11 * chips * (chips + 1);
 
 };
@@ -1224,7 +1222,6 @@ CM.heavenlyToCookies = function(chips) {
  */
 CM.heavenlyToCookiesRemaining = function(chips) {
 
-    //chips = parseInt(chips, 10);
     var remaining = this.heavenlyToCookies(chips) - (Game.cookiesReset + Game.cookiesEarned);
 
     return remaining > 0 ? remaining : 0;
@@ -1559,12 +1556,12 @@ CM.maxChainReward = function() {
     if(Game.cookiesEarned < 100000) {
         return false;
     }
-    while(chainValue < bankLimit && chainValue <= cpsLimit && chainValue < 777777777777777777777) {
-        chainValue += wrath ? '6' : '7';
-        chainValue = parseInt(chainValue, 10);
+    while(chainValue < bankLimit && chainValue <= cpsLimit) {
+        chainValue *= 10;
+        chainValue += wrath ? 6 : 7;
     }
 
-    return chainValue.toString().slice(0, -1);
+    return chainValue / 10;
 
 };
 
@@ -1579,11 +1576,11 @@ CM.maxChainReward = function() {
 CM.requiredChainTier = function(type, which, maxReward) {
 
     var wrath         = Game.elderWrath === 3 ? true : false,
-        digitString   = wrath ? '6' : '7',
+        digit         = wrath ? 6 : 7,
         minChain      = wrath ? 66666 : 77777,
         minNextChain  = wrath ? 666666 : 777777,
-        thisChainTier = (maxReward < minChain) ? minChain     : parseInt(maxReward, 10),
-        nextChainTier = (maxReward < minChain) ? minNextChain : parseInt(maxReward + digitString, 10),
+        thisChainTier = (maxReward < minChain) ? minChain     : maxReward,
+        nextChainTier = (maxReward < minChain) ? minNextChain : maxReward * 10 + digit,
         chainAmount;
 
     // Chains not possible until player has earned 100000+ cookies total
@@ -1650,10 +1647,10 @@ CM.fixNewGameSpawns = function() {
 CM.formatTime = function(t, compressed) {
 
     // Compute each units separately
-    var time =Math.round(t),
-        days    = parseInt(time / 86400) % 999,
-        hours   = parseInt(time / 3600) % 24,
-        minutes = parseInt(time / 60) % 60,
+    var time    = Math.round(t),
+        days    = (time / 86400) % 999,
+        hours   = (time / 3600) % 24,
+        minutes = (time / 60) % 60,
         seconds = time % 60,
         units = [' days, ', ' hours, ', ' minutes, ', ' seconds'],
         formatted;
