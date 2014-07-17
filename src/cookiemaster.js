@@ -879,6 +879,9 @@ CM.init = function() {
     if(Game.seasonPopup.maxTime === 0 && Game.goldenCookie.maxTime === 0) {
         this.fixNewGameSpawns();
     }
+    
+    // Miscellaneous member variables
+    this.lastRecalculatedDekasecond = 0; // For keeping simulations accurate with Century egg
 
     // All done :)
     this.popup('CookieMaster v.' + this.config.version + ' loaded successfully!', 'notice');
