@@ -832,7 +832,10 @@ CME.simulateBuy = function(object, statistic, avoidRecursion) {
         return 0;
     }
 
+    // Century egg can cause a change to CpS without the recalculateGains flag being set.
+    // We need to make sure the egg's bonus is baked in before we begin the simulation.
     if (Game.Has('Century egg')) {
+        // Bonus increases every 10 seconds.
         var dekasecond = Math.floor((new Date().getTime()-Game.startDate)/10000);
         if (CM.lastRecalculatedDekasecond < dekasecond) {
             CM.lastRecalculatedDekasecond = dekasecond;
