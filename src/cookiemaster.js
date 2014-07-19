@@ -2,7 +2,7 @@
 
     CookieMaster - A Cookie Clicker plugin
 
-    Version: 1.17.12
+    Version: 1.17.13
     License: MIT
     Website: http://cookiemaster.co.uk
     GitHub:  https://github.com/greenc/CookieMaster
@@ -37,7 +37,7 @@ CM.config = {
     // General CookieMaster settings
     ///////////////////////////////////////////////
 
-    version:              '1.17.12',                         // Current version of CookieMaster
+    version:              '1.17.13',                         // Current version of CookieMaster
     ccCompatibleVersions: ['1.0465'],                       // Known compatible versions of Cookie Clicker
     cmRefreshRate:        1000,                             // Refresh rate for main game loop
     cmFastRefreshRate:    200,                              // Refresh rate for title ticker and audio alerts
@@ -1726,9 +1726,9 @@ CM.formatTime = function(t, compressed) {
 
     // Compute each units separately
     var time    = Math.round(t),
-        days    = (time / 86400) % 999,
-        hours   = (time / 3600) % 24,
-        minutes = (time / 60) % 60,
+        days    = parseInt(time / 86400) % 999,
+        hours   = parseInt(time / 3600) % 24,
+        minutes = parseInt(time / 60) % 60,
         seconds = time % 60,
         units = [' days, ', ' hours, ', ' minutes, ', ' seconds'],
         formatted;

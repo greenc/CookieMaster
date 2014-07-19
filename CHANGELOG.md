@@ -1,5 +1,12 @@
 # CookieMaster Release History
 
+### Version 1.17.13 - _2014/7/19_
+  - Added Season Timer and Helper.
+    - Added select box to Helper settings to auto-buy season upgrades.
+    - Added check box to Timer settings to add a Season timer (resolves #67).
+  - Fixed simulation bug with Century egg.
+  - Fix TrueCps and Click Tracking issues (Saving the settings will no longer clear the tracking data, and resetting the game will clear it).
+
 ### Version 1.17.12 - _2014/7/05_
 #### Fixes:
   - Save Settings button no longer starts an extra auto-buy timeout if one is already running.
