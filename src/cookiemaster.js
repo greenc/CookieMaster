@@ -2347,7 +2347,7 @@ CM.TrueCps = function(interval, maxTime) {
 
         // Add up values
         for(i = 0; i < len; i++) {
-            sum += parseInt(tracked[i], 10);
+            sum += tracked[i];
         }
 
         // Get the mean average
@@ -2369,9 +2369,17 @@ CM.TrueCps = function(interval, maxTime) {
     this.takeRecord = function(last, now) {
         var earned    = now - last,
             maxLength = Math.round(this.maxTime / this.interval);
+        
+        if (earned < 0) {
+            // Must have reset
+            this.tracked = [];
+            this.last = now;
+            this.getAverage();
+            return;
+        }
 
         // If array is full, remove first element
-        if(this.tracked.length === maxLength) {
+        while (this.tracked.length >= maxLength) {
             this.tracked.shift();
         }
         // Append latest record
@@ -2428,7 +2436,11 @@ CM.TrueCps = function(interval, maxTime) {
         return this;
 
     };
-
+    
+    this.setWindow = function(newMaxTime) {
+        this.maxTime = newMaxTime;
+    };
+    
     return this;
 
 };
@@ -2467,7 +2479,7 @@ CM.ClickTracker = function(interval, maxTime) {
 
         // Add up values
         for(i = 0; i < len; i++) {
-            sum += parseInt(tracked[i], 10);
+            sum += tracked[i];
         }
 
         // Get the mean average
@@ -2490,8 +2502,15 @@ CM.ClickTracker = function(interval, maxTime) {
         var earned    = now - last,
             maxLength = Math.round(this.maxTime / this.interval);
 
+        if (earned < 0) {
+            // Must have reset
+            this.tracked = [];
+            this.last = now;
+            return;
+        }
+
         // If array is full, remove first element
-        if(this.tracked.length === maxLength) {
+        while (this.tracked.length >= maxLength) {
             this.tracked.shift();
         }
         // Append latest record
@@ -2549,6 +2568,10 @@ CM.ClickTracker = function(interval, maxTime) {
 
     };
 
+    this.setWindow = function(newMaxTime) {
+        this.maxTime = newMaxTime;
+    };
+    
     return this;
 
 };
@@ -4209,12 +4232,20 @@ CM.applyUserSettings = function() {
     this.setTrueNeverclick();
 
     // Initialize True CpS Tracker
-    this.trueCps = new this.TrueCps();
-    this.trueCps.start(30, this.config.settings.trueCpsAverage.current * 60);
+    if (typeof this.trueCps.timer === 'undefined') {
+        this.trueCps = new this.TrueCps(30, this.config.settings.trueCpsAverage.current * 60);
+        this.trueCps.start();
+    } else {
+        this.trueCps.setWindow(this.config.settings.trueCpsAverage.current * 60);
+    }
 
     // Initialize Click Tracker
-    this.clickTracker = new this.ClickTracker();
-    this.clickTracker.start(60, this.config.settings.clickingAverage.current * 60);
+    if (typeof this.clickTracker.timer === 'undefined') {
+        this.clickTracker = new this.ClickTracker(60, this.config.settings.clickingAverage.current * 60);
+        this.clickTracker.start();
+    } else {
+        this.clickTracker.setWindow(this.config.settings.clickingAverage.current * 60);
+    }
 
     // Auto-buy
     if(settings.autoBuy.current === 'on') {
