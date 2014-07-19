@@ -205,6 +205,24 @@ CM.config = {
         pledge: {
             label: 'Pledge:'
         },
+        season: {
+            label: function() {
+                    switch (Game.season) {
+                    case 'christmas':
+                        return 'Christmas:';
+                    case 'easter':
+                        return 'Easter:';
+                    case 'fools':
+                        return 'Fools\' Day:';
+                    case 'halloween':
+                        return 'Halloween:';
+                    case 'valentines':
+                        return 'Valentine\'s Day:';
+                    default:
+                        return 'Season:';
+                    }
+                }
+        },
         wrinklers: {
             label: 'Pop Wrinklers:'
         }
@@ -501,6 +519,13 @@ CM.config = {
             desc:    'Display time remaining for Elder Pledge when active.',
             current: 'on'
         },
+        showSeasonTimer: {
+            group:   'alerts',
+            type:    'checkbox',
+            label:   'Show Season Timer:',
+            desc:    'Display time remaining for the current season.',
+            current: 'off'
+        },
         showGCCountdown: {
             group:   'alerts',
             type:    'checkbox',
@@ -603,6 +628,39 @@ CM.config = {
             type:  'checkbox',
             label: 'Auto-buy Santa Unlocks:',
             desc:  'Automatically buy the Santa unlocks when they become available.',
+            current: 'off'
+        },
+        autoSeason: {
+            group: 'helpers',
+            type:  'select',
+            label: 'Maintain Season',
+            desc:  'Automatically buy the appropriate Season biscuit.',
+            options: [
+                  {
+                      label: 'Off',
+                      value: 'off'
+                  },
+                  {
+                      label: 'Christmas',
+                      value: 'christmas'
+                  },
+                  {
+                      label: 'Easter',
+                      value: 'easter'
+                  },
+                  {
+                      label: 'Fools\' Day',
+                      value: 'fools'
+                  },
+                  {
+                      label: 'Halloween',
+                      value: 'halloween'
+                  },
+                  {
+                      label: 'Valentine\'s Day',
+                      value: 'valentines'
+                  }
+              ],
             current: 'off'
         },
         popWrinklersAtInterval: {
@@ -1002,14 +1060,23 @@ CM.largeNumFormat = function(num, precision) {
 CM.Timer = function(type, label) {
 
     this.type      = type;
-    this.label     = label;
+    this.labelFn   = null;
+    this.label     = '';
     this.id        = 'CMTimer-' + this.type;
     this.container = {};
     this.barOuter  = {};
     this.barInner  = {};
     this.counter   = {};
+    this.labelDiv  = {};
     this.limiter   = null; // Add only if needed
 
+    if (typeof label === 'function') {
+        this.labelFn = label;
+        this.label = this.labelFn.call(this);
+    } else {
+        this.label = label;
+    }
+    
     /**
      * Create a new timer object
      * @return {Object} Timer HTML as jQuery object
@@ -1051,6 +1118,7 @@ CM.Timer = function(type, label) {
         this.barOuter  = $barOuter;
         this.barInner  = $barInner;
         this.counter   = $counter;
+        this.labelDiv  = $label;
         this.limiter   = $limiter;
 
         return $container;
@@ -1095,6 +1163,10 @@ CM.Timer = function(type, label) {
 
         this.barInner.css('width', width + '%');
         this.counter.text(Math.round(timings.minCurrent));
+        if (this.labelFn != null) {
+            this.label = this.labelFn.call(this);
+            this.labelDiv.text(this.label);
+        }
 
         return this;
 
@@ -1136,6 +1208,9 @@ CM.Timer = function(type, label) {
         } else if(this.type === 'pledge') {
             timings.minCurrent = Game.pledgeT / Game.fps;
             timings.max = 60 * maxPledge;
+        } else if(this.type === 'season') {
+            timings.minCurrent = Game.seasonT / Game.fps;
+            timings.max = 60*60*24;
         } else if(this.type === 'wrinklers') {
             timings.minCurrent = (CM.popWrinklersTime - time) / 1000;
             timings.max = WrinklerT / 1000;
@@ -2618,6 +2693,11 @@ CM.mainLoop = function() {
         this.autoBuyPledge();
     }
 
+    // Auto-Season
+    if(settings.autoSeason.current !== 'off') {
+        this.autoBuySeason();
+    }
+
     // Click santa if it exists and we haven't reached max level
     if(settings.clickSanta.current === 'on' && Game.Has('A festive hat') && Game.santaLevel < 14) {
         this.clickSanta();
@@ -3279,6 +3359,7 @@ CM.populateTimerPanel = function() {
     activeTimers.clickFrenzy = settings.showClickFrenzyTimer.current;
     activeTimers.clot        = settings.showClotTimer.current;
     activeTimers.pledge      = settings.showPledgeTimer.current;
+    activeTimers.season      = settings.showSeasonTimer.current;
 
     // Create timer for Wrinkler auto-pop feature
     if(settings.popWrinklersAtInterval.current !== 'off') {
@@ -3313,6 +3394,7 @@ CM.updateTimers = function() {
             elderFrenzy: Game.frenzy > 0 && Game.frenzyPower === 666,
             clot:        Game.frenzy > 0 && Game.frenzyPower === 0.5,
             pledge:      Game.pledgeT > 0,
+            season:      Game.seasonT > 0 && Game.season != Game.baseSeason,
             wrinklers:   CM.popWrinklersTimeRelative > 0
         },
         key;
@@ -3578,6 +3660,22 @@ CM.autoBuyPledge = function() {
     }
 
 };
+
+CM.autoBuySeason = function() {
+    var trigger = Game.Upgrades[Game.seasons[this.config.settings.autoSeason.current].trigger],
+    switcher    = Game.Upgrades['Season switcher'],
+    inStore     = trigger.isInStore();
+    price       = trigger.getPrice(),
+    bank        = Game.cookies;
+
+    if (switcher.isInStore() && switcher.getPrice() < bank) {
+        switcher.buy();
+        bank = Game.cookies;
+    }
+    if(inStore && price < bank && Game.season != this.config.settings.autoSeason.current) {
+        trigger.buy();
+    }
+}
 
 /**
  * Adds a button to pop all existing wrinklers
