@@ -1311,31 +1311,31 @@ CM.heavenlyToCookiesRemaining = function(chips) {
  *
  * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, totalCookiesToNextHC, timeToNextHC]
  */
-CM.getHCStats = function() {
+// CM.getHCStats = function() {
 
-    var stats                = [],
-        current              = Game.prestige['Heavenly chips'],
-        currentPercent       = current * 2,
-        max                  = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-        maxPercent           = max * 2,
-        cookiesToNext        = this.heavenlyToCookiesRemaining(max + 1),
-        totalCookiesToNext   = this.heavenlyToCookies(max + 1) - this.heavenlyToCookies(max),
-        timeToNext           = Math.round(cookiesToNext / this.configuredCps()),
-        i;
+//     var stats                = [],
+//         current              = Game.prestige['Heavenly chips'],
+//         currentPercent       = current * 2,
+//         max                  = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
+//         maxPercent           = max * 2,
+//         cookiesToNext        = this.heavenlyToCookiesRemaining(max + 1),
+//         totalCookiesToNext   = this.heavenlyToCookies(max + 1) - this.heavenlyToCookies(max),
+//         timeToNext           = Math.round(cookiesToNext / this.configuredCps()),
+//         i;
 
-    stats = [
-        current,
-        currentPercent,
-        max,
-        maxPercent,
-        cookiesToNext,
-        totalCookiesToNext,
-        this.formatTime(timeToNext)
-    ];
+//     stats = [
+//         current,
+//         currentPercent,
+//         max,
+//         maxPercent,
+//         cookiesToNext,
+//         totalCookiesToNext,
+//         this.formatTime(timeToNext)
+//     ];
 
-    return stats;
+//     return stats;
 
-};
+// };
 
 CM.testResetFormula = function(M) {
 
@@ -3168,8 +3168,8 @@ CM.attachAutoBuyPanel = function() {
 CM.updateStats = function() {
 
     var precision            = this.config.settings.precision.current,
-        hcStats              = this.getHCStats(),
-        cookiesToXHC         = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
+        // hcStats              = this.getHCStats(),
+        // cookiesToXHC         = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
         wrinklerStats        = this.getWrinklerStats(),
         lastGC               = this.toTitleCase(Game.goldenCookie.last) || '-',
         lbText               = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
@@ -3252,12 +3252,12 @@ CM.updateStats = function() {
     $('#CMStatsMissedGC').html(missedGC);
 
     // Heavenly Chip stats
-    $('#CMStatsHCCurrent').html(Beautify(hcStats[0]) + ' (' + Beautify(hcStats[1]) + '%)');
-    $('#CMStatsHCMax').html(Beautify(hcStats[2]) + ' (' + Beautify(hcStats[3]) + '%)');
-    $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease, precision) + '% increase)');
-    $('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
-    $('#CMStatsHCTimeToNext').html(hcStats[6]);
-    $('#CMStatsHCCookiesToX').html(cmxhcr);
+    // $('#CMStatsHCCurrent').html(Beautify(hcStats[0]) + ' (' + Beautify(hcStats[1]) + '%)');
+    // $('#CMStatsHCMax').html(Beautify(hcStats[2]) + ' (' + Beautify(hcStats[3]) + '%)');
+    // $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease, precision) + '% increase)');
+    // $('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
+    // $('#CMStatsHCTimeToNext').html(hcStats[6]);
+    // $('#CMStatsHCCookiesToX').html(cmxhcr);
 
     // Wrinkler stats
     $('#CMStatsWrinklersSucked').html(Beautify(wrinklerStats[0]));
@@ -4443,9 +4443,9 @@ CM.setEvents = function() {
         $statsPanel       = this.config.cmStatsPanel,
         $settingsPanel    = this.config.cmSettingsPanel,
         $sectionLeft      = this.config.ccSectionLeft,
-        $cmSettingsTables = $('#CMSettingsTables'),
-        nextHC            = this.getHCStats()[2] + 1,
-        cookiesToXHC      = this.heavenlyToCookiesRemaining(nextHC);
+        $cmSettingsTables = $('#CMSettingsTables');
+        // nextHC            = this.getHCStats()[2] + 1,
+        // cookiesToXHC      = this.heavenlyToCookiesRemaining(nextHC);
 
     // Handlers for the settings panel
     $cmSettingsTables.on('change', 'input, select', function() {
@@ -4574,14 +4574,14 @@ CM.setEvents = function() {
     });
 
     // HC estimation box
-    $('#CMXHC').val(nextHC);
-    $('#CMStatsHCCookiesToX').html(Beautify(cookiesToXHC));
-    $('#CMXHC').keyup(function() {
-        var value     = Number($(this).val()),
-            remaining = Beautify(CM.heavenlyToCookiesRemaining(value)),
-            total     = Beautify(CM.heavenlyToCookies(value));
-        $('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');
-    });
+    // $('#CMXHC').val(nextHC);
+    // $('#CMStatsHCCookiesToX').html(Beautify(cookiesToXHC));
+    // $('#CMXHC').keyup(function() {
+    //     var value     = Number($(this).val()),
+    //         remaining = Beautify(CM.heavenlyToCookiesRemaining(value)),
+    //         total     = Beautify(CM.heavenlyToCookies(value));
+    //     $('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');
+    // });
 
     // Message bar
     $('#CMMessageBar').hover(function(){
