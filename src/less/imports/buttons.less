@@ -41,6 +41,8 @@
 #CMSettingsPanelButton,
 #CMStatsPanelButton {
     width: 90px;
+    height: 24px;
+    box-sizing: content-box;
     padding: 4px 16px 4px 0;
     top: 0;
     right: -16px;
@@ -57,12 +59,18 @@
 #CMStatsPanelButton { top: 32px; }
 
 // Adjust styling of the native Log button so it fits correctly
-#logButton {
+#logButton, legacyButton {
     width: 90px !important;
     padding: 4px 16px 4px 0;
     right: -16px;
     font-size: 15px;
     line-height: 24px;
+    height: 24px;
+    box-sizing: content-box;
+}
+
+#logButton {
+    top: 64px;
 }
 
 // Pop Wrinklers button

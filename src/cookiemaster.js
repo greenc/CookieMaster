@@ -1365,7 +1365,7 @@ CM.testResetFormula = function(M) {
  */
 CM.getBaseMultiplier = function(chips, fullHeavenly) {
 
-    var hc           = chips || parseFloat(Game.prestige['Heavenly chips']),
+    // var hc           = chips || parseFloat(Game.prestige['Heavenly chips']),
         mult         = 1,
         heavenlyMult = 0,
         milkMult     = Game.Has('Santa\'s milk and cookies') ? 1.05 : 1,
@@ -1411,7 +1411,7 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
     }
 
     // Add heavenly multiplier
-    mult += hc * 0.02 * heavenlyMult;
+    // mult += hc * 0.02 * heavenlyMult;
 
 	for (var i in Game.customCps) {mult+=Game.customCps[i]();}
 	
@@ -2956,38 +2956,38 @@ CM.attachStatsPanel = function() {
     tableHTML +=     '</tr>';
     tableHTML += '</table>';
 
-    tableHTML += '<table class="cmTable">';
-    tableHTML +=     '<tr class="cmHeader">';
-    tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Prestige</th>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td>Current Heavenly Chips:</td>';
-    tableHTML +=         '<td class="cmValue" id="CMStatsHCCurrent"></td>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td>Heavenly Chips after reset:</td>';
-    tableHTML +=         '<td class="cmValue" id="CMStatsHCMax"></td>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td>Base CpS after reset*:</td>';
-    tableHTML +=         '<td class="cmValue" id="CMStatsCPSReset"></td>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td>Cookies to next HC:</td>';
-    tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToNext"></td>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td>Time to next HC:</td>';
-    tableHTML +=         '<td class="cmValue" id="CMStatsHCTimeToNext"></td>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td>Cookies to ' + hcSelect + ' Heavenly Chips:</td>';
-    tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
-    tableHTML +=     '</tr>';
-    tableHTML +=     '<tr>';
-    tableHTML +=         '<td colspan="2"><small>* Based on current purchases. Assumes all Heavenly Upgrades bought.</small></td>';
-    tableHTML +=     '</tr>';
-    tableHTML += '</table>';
+    // tableHTML += '<table class="cmTable">';
+    // tableHTML +=     '<tr class="cmHeader">';
+    // tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Prestige</th>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td>Current Heavenly Chips:</td>';
+    // tableHTML +=         '<td class="cmValue" id="CMStatsHCCurrent"></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td>Heavenly Chips after reset:</td>';
+    // tableHTML +=         '<td class="cmValue" id="CMStatsHCMax"></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td>Base CpS after reset*:</td>';
+    // tableHTML +=         '<td class="cmValue" id="CMStatsCPSReset"></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td>Cookies to next HC:</td>';
+    // tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToNext"></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td>Time to next HC:</td>';
+    // tableHTML +=         '<td class="cmValue" id="CMStatsHCTimeToNext"></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td>Cookies to ' + hcSelect + ' Heavenly Chips:</td>';
+    // tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML +=     '<tr>';
+    // tableHTML +=         '<td colspan="2"><small>* Based on current purchases. Assumes all Heavenly Upgrades bought.</small></td>';
+    // tableHTML +=     '</tr>';
+    // tableHTML += '</table>';
 
     tableHTML += '<table class="cmTable">';
     tableHTML +=     '<tr class="cmHeader">';
@@ -3231,12 +3231,12 @@ CM.updateStats = function() {
     }
 
     // Cookies to X HC
-    if(this.heavenlyToCookiesRemaining(cookiesToXHC) === 0) {
-        cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
-    } else {
-        cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
-            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.configuredCps()), true) + ')';
-    }
+    // if(this.heavenlyToCookiesRemaining(cookiesToXHC) === 0) {
+    //     cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
+    // } else {
+    //     cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
+    //         ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.configuredCps()), true) + ')';
+    // }
 
     // Golden Cookie stats
     $('#CMStatsLuckyRequired').html(lbText + lbtr);
