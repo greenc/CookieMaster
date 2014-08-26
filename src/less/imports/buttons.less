@@ -40,7 +40,7 @@
 // Buttons added to the native game panels
 #CMSettingsPanelButton, #CMStatsPanelButton {
     color: @highlight;
-
+    height: 50px;
     // &:hover {
     //     right: -8px;
     //     box-shadow: 0px 0px 12px #88C1FF inset, 0px 0px 4px #000;
@@ -49,10 +49,12 @@
 #CMStatsPanelButton {
     left: 96px;
     bottom: 16px;
+    background-position: 0px -46px;
+
 }
 
 #CMStatsPanelButton:hover, #CMStatsPanelButton.selected {
-    background-position: 0 -96px;
+    background-position: 0 -142px;
     color: #75d2ff;
     text-shadow: 0px 1px 0px #444,0px 0px 4px #000;
 }
@@ -60,11 +62,11 @@
 #CMSettingsPanelButton {
     bottom: 16px;
     right: 96px;
-    background-position: -96px 0;
+    background-position: -96px -46px;
 }
 
 #CMSettingsPanelButton:hover, #CMSettingsPanelButton.selected {
-    background-position: -96px -96px;
+    background-position: -96px -142px;
     color: #75d2ff;
     text-shadow: 0px 1px 0px #444,0px 0px 4px #000;
 }
