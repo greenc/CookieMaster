@@ -1269,30 +1269,6 @@ CM.Timer = function(type, label) {
 };
 
 /**
- * Get the number of Heavenly Chips from a number of cookies (all time)
- *
- * @param {integer} cookiesNumber
- * @return {integer}
- */
-CM.cookiesToHeavenly = function(cookies) {
-
-    return Math.floor(Math.sqrt(2.5 * 1e11 + 2 * cookies) / 1e6 - 0.5);
-
-};
-
-/**
- * Get the number of cookies required to have X chips
- *
- * @param {integer} chipsNumber
- * @return {integer}
- */
-CM.heavenlyToCookies = function(chips) {
-
-    return 5 * 1e11 * chips * (chips + 1);
-
-};
-
-/**
  * Get the number of cookies remaining to have X chips
  *
  * @param {integer} chipsNumber
@@ -1300,7 +1276,7 @@ CM.heavenlyToCookies = function(chips) {
  */
 CM.heavenlyToCookiesRemaining = function(chips) {
 
-    var remaining = this.heavenlyToCookies(chips) - (Game.cookiesReset + Game.cookiesEarned);
+    var remaining = Game.HowManyCookiesReset(chips) - (Game.cookiesReset + Game.cookiesEarned);
 
     return remaining > 0 ? remaining : 0;
 
@@ -1311,31 +1287,37 @@ CM.heavenlyToCookiesRemaining = function(chips) {
  *
  * @return {Array} [currentHC, currentPercent, maxHC, maxPercent, cookiesToNextHC, totalCookiesToNextHC, timeToNextHC]
  */
-// CM.getHCStats = function() {
+CM.getHCStats = function() {
 
-//     var stats                = [],
-//         current              = Game.prestige['Heavenly chips'],
-//         currentPercent       = current * 2,
-//         max                  = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-//         maxPercent           = max * 2,
-//         cookiesToNext        = this.heavenlyToCookiesRemaining(max + 1),
-//         totalCookiesToNext   = this.heavenlyToCookies(max + 1) - this.heavenlyToCookies(max),
-//         timeToNext           = Math.round(cookiesToNext / this.configuredCps()),
-//         i;
+    var stats                = [],
+        chips                = Game.heavenlyChips,
+        chipsSpent           = Game.heavenlyChipsSpent,
+        cookies              = Game.heavenlyCookies,
+        currentPercent       = cookies,
+        newChips             = Math.floor(Game.HowMuchPrestige(Game.cookiesReset+Game.cookiesEarned)-Game.HowMuchPrestige(Game.cookiesReset)),
+        maxChips             = newChips + Game.heavenlyChipsEarned,
+        maxCookies           = (chips + newChips) / 10 + cookies,
+        maxPercent           = maxCookies,
+        cookiesToNext        = this.heavenlyToCookiesRemaining(maxChips + 1),
+        totalCookiesToNext   = Game.HowManyCookiesReset(maxChips + 1) - Game.HowManyCookiesReset(maxChips),
+        timeToNext           = Math.round(cookiesToNext / this.configuredCps()),
+        i;
 
-//     stats = [
-//         current,
-//         currentPercent,
-//         max,
-//         maxPercent,
-//         cookiesToNext,
-//         totalCookiesToNext,
-//         this.formatTime(timeToNext)
-//     ];
+    stats = [
+        chips,
+        currentPercent,
+        maxChips - chipsSpent,
+        maxPercent,
+        cookiesToNext,
+        totalCookiesToNext,
+        this.formatTime(timeToNext),
+        cookies,
+        maxCookies
+    ];
 
-//     return stats;
+    return stats;
 
-// };
+};
 
 CM.testResetFormula = function(M) {
 
@@ -1343,8 +1325,8 @@ CM.testResetFormula = function(M) {
         now        = new Date().getTime(),
         started    = (now - Game.startDate) / 1000,
         cps        = CM.baseCps() / 1e12,
-        maxHC      = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-        hcGained   = maxHC - Game.prestige['Heavenly chips'],
+        maxHC      = Game.HowMuchPrestige(Game.cookiesReset + Game.cookiesEarned),
+        hcGained   = maxHC - Game.heavenlyChips,
         multiplier = M || 1,
 
         X  = (multiplier * cps * started) - earned,
@@ -1356,48 +1338,22 @@ CM.testResetFormula = function(M) {
 };
 
 /**
- * Returns the global CpS multiplier for n Heavenly Chips, or current amount if no
+ * Returns the global CpS multiplier for n Heavenly Cookies, or current amount if no
  * argument supplied
  *
- * @param  {Integer} chips        Heavenly Chips to calculate multiplier for
+ * @param  {Integer} cookies        Heavenly Cookies to calculate multiplier for
  * @param  {Boolean} fullHeavenly Assume player has all HC upgrades (100% heavenly multiplier)
  * @return {Integer}
  */
-CM.getBaseMultiplier = function(chips, fullHeavenly) {
+CM.getBaseMultiplier = function(cookies, fullHeavenly) {
 
-    // var hc           = chips || parseFloat(Game.prestige['Heavenly chips']),
+    var hc           = cookies || parseFloat(Game.heavenlyCookies),
         mult         = 1,
         heavenlyMult = 0,
         milkMult     = Game.Has('Santa\'s milk and cookies') ? 1.05 : 1,
         upgrade,
+        power,
         i;
-
-    // Add cookie upgrade multipliers
-    for(i in Game.Upgrades) {
-        upgrade = Game.Upgrades[i];
-        if(upgrade.bought > 0) {
-            if (upgrade.type === 'cookie' && Game.Has(upgrade.name)) {
-                mult += upgrade.power * 0.01;
-            }
-        }
-    }
-
-    // Add other upgrade multipliers
-    mult += Game.Has('Specialized chocolate chips') * 0.01;
-    mult += Game.Has('Designer cocoa beans')        * 0.02;
-    mult += Game.Has('Underworld ovens')            * 0.03;
-    mult += Game.Has('Exotic nuts')                 * 0.04;
-    mult += Game.Has('Arcane sugar')                * 0.05;
-    mult += Game.Has('Increased merriness')         * 0.15;
-    mult += Game.Has('Improved jolliness')          * 0.15;
-    mult += Game.Has('A lump of coal')              * 0.01;
-    mult += Game.Has('An itchy sweater')            * 0.01;
-    mult += Game.Has('Santa\'s dominion')           * 0.50;
-
-    // Add Santa upgrade multipliers
-    if(Game.Has('Santa\'s legacy')) {
-        mult += (Game.santaLevel + 1) * 0.1;
-    }
 
     // Calculate heavenly multiplier
     if(fullHeavenly) {
@@ -1411,7 +1367,38 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
     }
 
     // Add heavenly multiplier
-    // mult += hc * 0.02 * heavenlyMult;
+    // mult += hc * 0.01 * heavenlyMult;
+    mult += hc * 0.1 * heavenlyMult;
+
+    // Add cookie upgrade multipliers
+    for (var i in Game.Upgrades)
+    {
+       upgrade = Game.Upgrades[i];
+       if (upgrade.bought > 0)
+       {
+          if (upgrade.pool=='cookie' && Game.Has(upgrade.name)) {
+             power = (typeof(upgrade.power) == 'function') ? upgrade.power(upgrade) : upgrade.power;
+             mult *= 1 + (power * 0.01);
+          }
+       }
+    }
+
+    // Add other upgrade multipliers
+    if (Game.Has('Specialized chocolate chips')) mult*=1.01;
+    if (Game.Has('Designer cocoa beans')) mult*=1.02;
+    if (Game.Has('Underworld ovens')) mult*=1.03;
+    if (Game.Has('Exotic nuts')) mult*=1.04;
+    if (Game.Has('Arcane sugar')) mult*=1.05;
+    
+    if (Game.Has('Increased merriness')) mult*=1.15;
+    if (Game.Has('Improved jolliness')) mult*=1.15;
+    if (Game.Has('A lump of coal')) mult*=1.01;
+    if (Game.Has('An itchy sweater')) mult*=1.01;
+    if (Game.Has('Santa\'s dominion')) mult*=1.2;
+
+    // Add Santa upgrade multipliers
+    if (Game.Has('Santa\'s legacy')) mult *= (Game.santaLevel + 1) * 0.05;
+    // if (Game.Has('Santa\'s legacy')) mult *= 1 + (Game.santaLevel + 1) * 0.05;
 
 	for (var i in Game.customCps) {mult+=Game.customCps[i]();}
 	
@@ -1430,6 +1417,9 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
     }
     if(Game.Has('Kitten managers')) {
         mult *= (1 + Game.milkProgress * 0.2 * milkMult);
+    }
+    if(Game.Has('Kitten angels')) {
+        mult *= (1 + Game.milkProgress * 0.1 * milkMult);
     }
 
     // Easter season egg upgrades
@@ -1475,8 +1465,9 @@ CM.getBaseMultiplier = function(chips, fullHeavenly) {
  */
 CM.getResetCps = function() {
 
-    var maxHC       = this.cookiesToHeavenly(Game.cookiesReset + Game.cookiesEarned),
-        newBaseMult = this.getBaseMultiplier(maxHC, true),
+    var newHC       = Math.floor(Game.HowMuchPrestige(Game.cookiesReset+Game.cookiesEarned)-Game.HowMuchPrestige(Game.cookiesReset)),
+        maxHC       = newHC + Game.heavenlyChips,
+        newBaseMult = this.getBaseMultiplier(maxHC / 10 + Game.heavenlyCookies, true),
         baseCps     = Game.cookiesPs / Game.globalCpsMult;
 
     return baseCps * newBaseMult;
@@ -2956,38 +2947,46 @@ CM.attachStatsPanel = function() {
     tableHTML +=     '</tr>';
     tableHTML += '</table>';
 
-    // tableHTML += '<table class="cmTable">';
-    // tableHTML +=     '<tr class="cmHeader">';
-    // tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Prestige</th>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td>Current Heavenly Chips:</td>';
-    // tableHTML +=         '<td class="cmValue" id="CMStatsHCCurrent"></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td>Heavenly Chips after reset:</td>';
-    // tableHTML +=         '<td class="cmValue" id="CMStatsHCMax"></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td>Base CpS after reset*:</td>';
-    // tableHTML +=         '<td class="cmValue" id="CMStatsCPSReset"></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td>Cookies to next HC:</td>';
-    // tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToNext"></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td>Time to next HC:</td>';
-    // tableHTML +=         '<td class="cmValue" id="CMStatsHCTimeToNext"></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td>Cookies to ' + hcSelect + ' Heavenly Chips:</td>';
-    // tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML +=     '<tr>';
-    // tableHTML +=         '<td colspan="2"><small>* Based on current purchases. Assumes all Heavenly Upgrades bought.</small></td>';
-    // tableHTML +=     '</tr>';
-    // tableHTML += '</table>';
+    tableHTML += '<table class="cmTable">';
+    tableHTML +=     '<tr class="cmHeader">';
+    tableHTML +=         '<th colspan="2" class="cmFont"><span class="icon cmIcon cmIconHC"></span>Prestige</th>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Current Heavenly Chips:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHChCurrent"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Heavenly Chips after reset:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHChMax"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Current Heavenly Cookies:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHCoCurrent"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Max Heavenly Cookies after reset:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHCoMax"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Max Base CpS after reset*:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsCPSReset"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Cookies to next Heavenly Chip:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToNext"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Time to next Heavenly Chip:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHCTimeToNext"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td>Cookies to ' + hcSelect + ' Heavenly Chips:</td>';
+    tableHTML +=         '<td class="cmValue" id="CMStatsHCCookiesToX"></td>';
+    tableHTML +=     '</tr>';
+    tableHTML +=     '<tr>';
+    tableHTML +=         '<td colspan="2"><small>* Based on current purchases. Assumes all Heavenly Upgrades bought.</small></td>';
+    tableHTML +=     '</tr>';
+    tableHTML += '</table>';
 
     tableHTML += '<table class="cmTable">';
     tableHTML +=     '<tr class="cmHeader">';
@@ -3168,8 +3167,8 @@ CM.attachAutoBuyPanel = function() {
 CM.updateStats = function() {
 
     var precision            = this.config.settings.precision.current,
-        // hcStats              = this.getHCStats(),
-        // cookiesToXHC         = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
+        hcStats              = this.getHCStats(),
+        cookiesToXHC         = Number($('#CMXHC').val()) || Number(hcStats[2] + 1),
         wrinklerStats        = this.getWrinklerStats(),
         lastGC               = this.toTitleCase(Game.goldenCookie.last) || '-',
         lbText               = Game.cookies >= this.luckyBank() ? '<span class="cmHighlight">' + Beautify(this.luckyBank()) + '</span>' : Beautify(this.luckyBank()),
@@ -3231,12 +3230,13 @@ CM.updateStats = function() {
     }
 
     // Cookies to X HC
-    // if(this.heavenlyToCookiesRemaining(cookiesToXHC) === 0) {
-    //     cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(this.heavenlyToCookies(cookiesToXHC)) + ')</span>';
-    // } else {
-    //     cmxhcr = Beautify(this.heavenlyToCookiesRemaining(cookiesToXHC)) +
-    //         ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(cookiesToXHC) / this.configuredCps()), true) + ')';
-    // }
+    var totalHCTarget = cookiesToXHC + Game.heavenlyChipsSpent;
+    if(this.heavenlyToCookiesRemaining(totalHCTarget) === 0) {
+        cmxhcr = '<span class="cmHighlight">Done! (total: ' + Beautify(Game.HowManyCookiesReset(totalHCTarget)) + ')</span>';
+    } else {
+        cmxhcr = Beautify(this.heavenlyToCookiesRemaining(totalHCTarget)) +
+            ' (' + this.formatTime(Math.round(this.heavenlyToCookiesRemaining(totalHCTarget) / this.configuredCps()), true) + ')';
+    }
 
     // Golden Cookie stats
     $('#CMStatsLuckyRequired').html(lbText + lbtr);
@@ -3252,12 +3252,14 @@ CM.updateStats = function() {
     $('#CMStatsMissedGC').html(missedGC);
 
     // Heavenly Chip stats
-    // $('#CMStatsHCCurrent').html(Beautify(hcStats[0]) + ' (' + Beautify(hcStats[1]) + '%)');
-    // $('#CMStatsHCMax').html(Beautify(hcStats[2]) + ' (' + Beautify(hcStats[3]) + '%)');
-    // $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease, precision) + '% increase)');
-    // $('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
-    // $('#CMStatsHCTimeToNext').html(hcStats[6]);
-    // $('#CMStatsHCCookiesToX').html(cmxhcr);
+    $('#CMStatsHChCurrent').html(Beautify(hcStats[0]));
+    $('#CMStatsHChMax').html(Beautify(hcStats[2]));
+    $('#CMStatsCPSReset').html(Beautify(this.getResetCps()) + ' (' + Beautify(resetPercentIncrease, precision) + '% increase)');
+    $('#CMStatsHCCookiesToNext').html(Beautify(hcStats[4]) + ' / ' + Beautify(hcStats[5]));
+    $('#CMStatsHCTimeToNext').html(hcStats[6]);
+    $('#CMStatsHCoCurrent').html(Beautify(hcStats[7]) + ' (' + Beautify(hcStats[1]) + '%)');
+    $('#CMStatsHCoMax').html(Beautify(hcStats[8]) + ' (' + Beautify(hcStats[3]) + '%)');
+    $('#CMStatsHCCookiesToX').html(cmxhcr);
 
     // Wrinkler stats
     $('#CMStatsWrinklersSucked').html(Beautify(wrinklerStats[0]));
@@ -4444,8 +4446,8 @@ CM.setEvents = function() {
         $settingsPanel    = this.config.cmSettingsPanel,
         $sectionLeft      = this.config.ccSectionLeft,
         $cmSettingsTables = $('#CMSettingsTables');
-        // nextHC            = this.getHCStats()[2] + 1,
-        // cookiesToXHC      = this.heavenlyToCookiesRemaining(nextHC);
+        nextHC            = this.getHCStats()[2] + 1,
+        cookiesToXHC      = this.heavenlyToCookiesRemaining(nextHC);
 
     // Handlers for the settings panel
     $cmSettingsTables.on('change', 'input, select', function() {
@@ -4574,14 +4576,14 @@ CM.setEvents = function() {
     });
 
     // HC estimation box
-    // $('#CMXHC').val(nextHC);
-    // $('#CMStatsHCCookiesToX').html(Beautify(cookiesToXHC));
-    // $('#CMXHC').keyup(function() {
-    //     var value     = Number($(this).val()),
-    //         remaining = Beautify(CM.heavenlyToCookiesRemaining(value)),
-    //         total     = Beautify(CM.heavenlyToCookies(value));
-    //     $('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');
-    // });
+    $('#CMXHC').val(nextHC);
+    $('#CMStatsHCCookiesToX').html(Beautify(cookiesToXHC));
+    $('#CMXHC').keyup(function() {
+        var value     = Number($(this).val()),
+            remaining = Beautify(CM.heavenlyToCookiesRemaining(value + Game.heavenlyChipsEarned)),
+            total     = Beautify(Game.HowManyCookiesReset(value + Game.heavenlyChipsEarned));
+        $('#CMStatsHCCookiesToX').html(remaining + ' (total: ' + total + ')');
+    });
 
     // Message bar
     $('#CMMessageBar').hover(function(){
