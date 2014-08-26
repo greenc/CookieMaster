@@ -20,6 +20,15 @@ javascript:with(document)(head.appendChild(createElement('script')).src='//cooki
 * Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/)
 * Click on your recently created bookmark
 
+Beta
+----
+
+If you want to play CookieClicker Beta, you can use the following bookmarklet for CookieMaster:
+
+```javascript
+javascript:with(document)(head.appendChild(createElement('script')).src='//cookiemaster.creatale.de/beta/b?c='+Date.now())._
+```
+
 Screenshot
 ----------
 
