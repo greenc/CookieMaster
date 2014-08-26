@@ -4482,9 +4482,12 @@ CM.setEvents = function() {
     $('#statsButton, #prefsButton, #logButton').click(function() {
         $('#rows').show();
         $('#CMStatsPanel, #CMSettingsPanel').hide();
+        $('#CMStatsPanelButton, #CMSettingsPanelButton').removeClass('selected');
     });
     $('#CMStatsPanelButton').click(function() {
         if($statsPanel.is(':hidden')) {
+            $('#comments .button').removeClass('selected');
+            $(this).addClass('selected');
             self.updateStats();
             $statsPanel.show();
             $settingsPanel.hide();
@@ -4495,6 +4498,7 @@ CM.setEvents = function() {
                 self.drawChart();
             }
         } else {
+            $(this).removeClass('selected');
             $statsPanel.hide();
             $settingsPanel.hide();
             $('#rows').show();
@@ -4506,11 +4510,14 @@ CM.setEvents = function() {
     });
     $('#CMSettingsPanelButton').click(function() {
         if($settingsPanel.is(':hidden')) {
+            $('#comments .button').removeClass('selected');
+            $(this).addClass('selected');
             $settingsPanel.show();
             $statsPanel.hide();
             $('#rows').hide();
             $game.addClass('onCMMenu');
         } else {
+            $(this).removeClass('selected');
             $settingsPanel.hide();
             $statsPanel.hide();
             $('#rows').show();
