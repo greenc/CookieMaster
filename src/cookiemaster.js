@@ -1183,7 +1183,6 @@ CM.Timer = function(type, label) {
     this.getTimings = function() {
 
         var timings   = {},
-            lucky     = Game.Has("Get lucky"),
             maxPledge = Game.Has('Sacrificial rolling pins') ? 60 : 30,
             WrinklerT = CM.popWrinklersTimeRelative,
             time      = new Date().getTime();
@@ -1198,16 +1197,16 @@ CM.Timer = function(type, label) {
             timings.max = Game.goldenCookie.maxTime / Game.fps;
         } else if(this.type === 'frenzy') {
             timings.minCurrent = Game.frenzy / Game.fps;
-            timings.max = 77 + 77 * lucky;
+            timings.max = Game.frenzyMax / Game.fps;
         } else if(this.type === 'clickFrenzy') {
             timings.minCurrent = Game.clickFrenzy / Game.fps;
-            timings.max = 13 + 13 * lucky;
+            timings.max = Game.clickFrenzyMax / Game.fps;
         } else if(this.type === 'elderFrenzy') {
             timings.minCurrent = Game.frenzy / Game.fps;
-            timings.max = 6 + 6 * lucky;
+            timings.max = Game.frenzyMax / Game.fps;
         } else if(this.type === 'clot') {
             timings.minCurrent = Game.frenzy / Game.fps;
-            timings.max = 66 + 66 * lucky;
+            timings.max = Game.frenzyMax / Game.fps;
         } else if(this.type === 'pledge') {
             timings.minCurrent = Game.pledgeT / Game.fps;
             timings.max = 60 * maxPledge;
