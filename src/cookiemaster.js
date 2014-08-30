@@ -1672,6 +1672,8 @@ CM.getWrinklerStats = function() {
 
     var sucked = 0,
         rewardMultiplier = 1.1;
+    if (Game.Has('Wrinklerspawn')) rewardMultiplier *= 1.05;
+    if (Game.Has('Sacrilegious corruption')) rewardMultiplier *= 1.05;
 
     $.each(Game.wrinklers, function() {
         sucked += this.sucked;
