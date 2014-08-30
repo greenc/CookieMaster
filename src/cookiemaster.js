@@ -95,6 +95,94 @@ CM.config = {
 
     cmNumFormatRanges: [
         {
+            divider: 1e48,
+            suffix: {
+                math:       ' QiD',
+                si:         ' QiD',
+                standard:   ' quindecillion',
+                longscale:  ' octillion',
+                e:          'e48',
+                scientific: ' &times; 10&#8308;&#8312;',
+                compact:    '*10&#8308;&#8312;'
+            }
+        }, {
+            divider: 1e45,
+            suffix: {
+                math:       ' QaD',
+                si:         ' QaD',
+                standard:   ' quattuordecillion',
+                longscale:  ' septilliard',
+                e:          'e45',
+                scientific: ' &times; 10&#8308;&#8309;',
+                compact:    '*10&&#8308;&#8309;'
+            }
+        }, {
+            divider: 1e42,
+            suffix: {
+                math:       ' TrD',
+                si:         ' TrD',
+                standard:   ' tredecillion',
+                longscale:  ' septillion',
+                e:          'e42',
+                scientific: ' &times; 10&#8308;&sup2;',
+                compact:    '*10&&#8308;&sup2;'
+            }
+        }, {
+            divider: 1e39,
+            suffix: {
+                math:       ' DoD',
+                si:         ' DoD',
+                standard:   ' duodecillion',
+                longscale:  ' sextilliard',
+                e:          'e39',
+                scientific: ' &times; 10&sup3;&#8313;',
+                compact:    '*10&sup3;&#8313;'
+            }
+        }, {
+            divider: 1e36,
+            suffix: {
+                math:       ' UnD',
+                si:         ' UnD',
+                standard:   ' undecillion',
+                longscale:  ' sextillion',
+                e:          'e36',
+                scientific: ' &times; 10&sup3;&#8310;',
+                compact:    '*10&sup3;&#8310;'
+            }
+        }, {
+            divider: 1e33,
+            suffix: {
+                math:       ' Dc',
+                si:         ' Dc',
+                standard:   ' decillion',
+                longscale:  ' quintilliard',
+                e:          'e33',
+                scientific: ' &times; 10&sup3;&sup3;',
+                compact:    '*10&sup3;&sup3;'
+            }
+        }, {
+            divider: 1e30,
+            suffix: {
+                math:       ' No',
+                si:         ' No',
+                standard:   ' nonillion',
+                longscale:  ' quintillion',
+                e:          'e30',
+                scientific: ' &times; 10&sup3;&#8304;',
+                compact:    '*10&sup3;&#8304;'
+            }
+        }, {
+            divider: 1e27,
+            suffix: {
+                math:       ' Oc',
+                si:         ' Oc',
+                standard:   ' octillion',
+                longscale:  ' quadrilliard',
+                e:          'e27',
+                scientific: ' &times; 10&sup2;&#8311;',
+                compact:    '*10&sup2;&#8311;'
+            }
+        }, {
             divider: 1e24,
             suffix: {
                 math:       ' Sp',
@@ -105,8 +193,7 @@ CM.config = {
                 scientific: ' &times; 10&sup2;&#8308;',
                 compact:    '*10&sup2;&#8308;'
             }
-        },
-        {
+        }, {
             divider: 1e21,
             suffix: {
                 math:       ' Sx',
@@ -117,8 +204,7 @@ CM.config = {
                 scientific: ' &times; 10&sup2;&sup1;',
                 compact:    '*10&sup2;&sup1;'
             }
-        },
-        {
+        }, {
             divider: 1e18,
             suffix: {
                 math:       ' Qi',
